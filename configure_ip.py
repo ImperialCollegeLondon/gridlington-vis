@@ -53,7 +53,7 @@ with open("docker-compose.yml", "w") as f:
     yaml.safe_dump(docker_compose, f)
 
 # Read the config/credentials.json file
-with open("config/credentials.json", "r") as f:
+with open("credentials_setup.json", "r") as f:
     credentials = json.load(f)
 
 # Replace the IP in the config/credentials.json file
