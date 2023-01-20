@@ -19,3 +19,4 @@ N.B. The above process is required because the actual IP address is needed to co
 
 - Finesse the OVE configuration process.
 - Use the python API to launch OVE applications.
+- Containerise dash app.
