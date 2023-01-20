@@ -1,5 +1,7 @@
 import dash
 from dash import html, dcc, callback, Input, Output
+from dash.exceptions import PreventUpdate
+
 import numpy as np
 
 from dash.dependencies import Input, Output
@@ -39,6 +41,8 @@ layout = html.Div(
 
 @callback(Output("graph", "extendData"), [Input("interval", "n_intervals")])
 def update_data(n_intervals):
+    if n_intervals is None:
+        raise PreventUpdate
     index = n_intervals % resolution
     # tuple is (dict of new data, target trace index, number of points to keep)
     return dict(x=[[x[index]]], y=[[y[index]]]), [0], 10
