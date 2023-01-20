@@ -13,7 +13,10 @@ import yaml
 import json
 
 # Get the IP address of the machine on Macos
-ip = socket.gethostbyname(socket.gethostname())
+s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+s.connect(("10.254.254.254", 1))
+ip = s.getsockname()[0]
+s.close()
 
 # Dictionary of the lines to replace in the docker-compose.yml file
 lines_to_replace = {
