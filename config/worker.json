@@ -1,0 +1,12 @@
+{
+  "mongo": {
+    "host": "ovehub-ove-asset-mongo",
+    "port": 27017,
+    "user": "user",
+    "password": "password",
+    "db": "db",
+    "mechanism": "SCRAM-SHA-256",
+    "workerCollection": "workers",
+    "workerQueue": "workers_queue"
+  }
+}
