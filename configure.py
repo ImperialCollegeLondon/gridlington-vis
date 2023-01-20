@@ -11,12 +11,16 @@ Does the same for config/credentials.json file.
 import socket
 import yaml
 import json
+import logging
+
+logging.basicConfig(level=logging.INFO)
 
 # Get the IP address of the machine on Macos
 s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 s.connect(("10.254.254.254", 1))
 ip = s.getsockname()[0]
 s.close()
+logging.info(f"IP address of the machine: {ip}...")
 
 # Dictionary of the lines to replace in the docker-compose.yml file
 lines_to_replace = {
@@ -27,6 +31,7 @@ lines_to_replace = {
 }
 
 # Read the docker-compose.setup.ove.yml file
+logging.info(f"Generating docker-compose.yml...")
 with open("docker-compose.setup.ove.yml", "r") as f:
     docker_compose = yaml.safe_load(f)
 
@@ -51,11 +56,16 @@ docker_compose["services"]["openvidu-openvidu-call"][
     "image"
 ] = "openvidu/openvidu-call:2.12.0"
 
+# Add the dash app to to docker-compose.yml file
+logging.info(f"Adding dash app to docker-compose.yml...")
+docker_compose["services"]["dash"] = {"build": ".", "ports":["8050:8050"]}
+
 # Write the new docker-compose.yml file
 with open("docker-compose.yml", "w") as f:
     yaml.safe_dump(docker_compose, f)
 
 # Read the config/credentials.json file
+logging.info(f"Editing config/credentials.json...")
 with open("credentials_setup.json", "r") as f:
     credentials = json.load(f)
 
