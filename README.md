@@ -2,21 +2,14 @@
 
 ## Installation and setup
 
-- Create a new conda environment and install requirements in `requirements.txt`.
-- The `docker-compose.setup.ove.yml` file is used as a template to generate the `docker-compose.yml` file. The `docker-compose.yml` file is used to start the services.
-- Run `python configure_ip.py` to create `docker-compose.yml` file, as well as the `config/credentials.json` file. The script should automatically detect the IP address of the host machine. and use it to configure the services.
+The `docker-compose.setup.ove.yml` file is used as a template to generate the `docker-compose.yml` file. The `docker-compose.yml` file is used to start the services. 
 
-N.B. The above process is required because the actual IP address is needed to configure the services. `localhost` or `127.0.0.1` cannot be used (at least OVE doesn't work).
-
-## OVE testing
-
+- Using a python3 environment with the `pyyaml` library added, run `python configure.py` to create the `docker-compose.yml` file. This also generates the `config/credentials.json` file. The script should automatically detect the IP address of the host machine and use it to configure the services.
 - Run `docker-compose up -d` to start the OVE services.
-- Run `python app.py` to start the dash app. The app should be available at `http://localhost:8050/`.
-- There are four pages displaying an animated plot at `http://localhost:8050/plot1`, `http://localhost:8050/plot2` etc.
-- Go to `http://localhost:8080/ui/launcher` to launch a new OVE application. The URL should be `http://localhost:8050/plot1`, `http://localhost:8050/plot2` etc. depending on which page you want to display.
+- The Dash app should be available at `http://localhost:8050/`. There are four pages displaying an animated plot at `http://localhost:8050/plot1`, `http://localhost:8050/plot2` etc.
+- The OVE landing page should bre available at http://localhost:8080.
+- Go to `http://localhost:8080/ui/launcher` to launch a new OVE application. Select HTML from the dropdown list of app options. The URL should be `http://localhost:8050/plot1`, `http://localhost:8050/plot2` etc. depending on which page you want to display, then click launch at the bottom of the page.
+- Click "Preview" at the bottom of the same page after launching, or navigate manually to e.g. http://192.168.1.249:8080/ui/preview?oveSpace=SpaceOne to preview each space in your browser.
 
-## TODO
+N.B. The `configure.py` setup process is required because the actual IP address of the host machine is needed to configure the services. `localhost` or `127.0.0.1` cannot be used (at least OVE doesn't work).
 
-- Finesse the OVE configuration process.
-- Use the python API to launch OVE applications.
-- Containerise dash app.
