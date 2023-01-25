@@ -78,7 +78,7 @@ def generate_docker_compose(template_file, ip):
 
     # Configure logging for nginx
     logging.info(f"Adding volume for nginx logs...")
-    docker_compose["services"]["nginx"]["volumes"] = [
+    docker_compose["services"]["nginx"]["volumes"] += [
         "./logs/nginx.log:/etc/nginx/logs/error.log"
     ]
 
