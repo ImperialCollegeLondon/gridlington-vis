@@ -13,3 +13,15 @@ The `docker-compose.setup.ove.yml` file is used as a template to generate the `d
 
 N.B. The `configure.py` setup process is required because the actual IP address of the host machine is needed to configure the services. `localhost` or `127.0.0.1` cannot be used (at least OVE doesn't work).
 
+## College VM configuration
+
+A test version of the app is deployed at http://liionsden.rcs.ic.ac.uk:8080/ (internal access only). 
+
+Utimately, we will want to automate this setup as much as possible so the environment (local testing vs. deployment) is autodetected. For now, the configuration files differ from those generated in the above setup in the following ways: 
+
+**config/default.conf:**
+
+```diff
+-   server_name "";
++   server_name liionsden.rcs.ic.ac.uk;
+```
