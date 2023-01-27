@@ -42,6 +42,34 @@ def create_section_two(space):
     print(response.text)
 
 
+def move_section(id_num, space):
+    template = {
+        "space": "SpaceOne",
+        "x": 0,
+        "y": 0,
+        "w": 1440,
+        "h": 808,
+        "app": {
+            "url": "http://192.168.1.203:8080/app/html",
+            "states": {"load": {"url": "http://localhost:8050/plot1"}},
+        },
+    }
+
+    url = f"http://localhost:8080/sections/{id_num}"
+    response = pip._vendor.requests.get(url)
+    data = ast.literal_eval(response.text)
+
+    template["space"] = space
+    template["x"] = data["x"]
+    template["y"] = data["y"]
+    template["w"] = data["w"]
+    template["h"] = data["h"]
+
+    print(template)
+    response = pip._vendor.requests.post(url, json=template)
+    print(response.text)
+
+
 # Function for deleting all sections
 def delete_all():
     response = pip._vendor.requests.get("http://localhost:8080/sections")
@@ -58,3 +86,4 @@ def delete_all():
 
 create_section_one("SpaceOne")
 create_section_two("SpaceOne")
+move_section(1, "SpaceTwo")
