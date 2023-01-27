@@ -1,4 +1,6 @@
 import pip._vendor.requests
+import ast
+
 
 # Initial config for sections
 section_one = {
@@ -25,14 +27,34 @@ section_two = {
     },
 }
 
-# Function for sending request to create section one
-def create_section_one():
-    pip._vendor.requests.post("http://localhost:8080/section", json=section_one)
 
-# Function for sending request to create section two
-def create_section_two():
-    pip._vendor.requests.post("http://localhost:8080/section", json=section_two)
+# Function for sending request to create section one in specified space arg
+def create_section_one(space):
+    section_one["space"] = space
+    response = pip._vendor.requests.post("http://localhost:8080/section", json=section_one)
+    print(response.text)
 
 
-create_section_one()
-create_section_two()
+# Function for sending request to create section two in specified space arg
+def create_section_two(space):
+    section_two["space"] = space
+    response = pip._vendor.requests.post("http://localhost:8080/section", json=section_two)
+    print(response.text)
+
+
+# Function for deleting all sections
+def delete_all():
+    response = pip._vendor.requests.get("http://localhost:8080/sections")
+    data = ast.literal_eval(response.text)
+    id_nums = []
+
+    for section in data:
+        id_nums.append(section["id"])
+    
+    for num in id_nums:
+        url = f"http://localhost:8080/sections/{num}"
+        pip._vendor.requests.delete(url)
+
+
+create_section_one("SpaceOne")
+create_section_two("SpaceOne")
