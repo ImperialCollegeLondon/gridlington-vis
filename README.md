@@ -22,16 +22,6 @@ Utimately, we will want to automate this setup as much as possible so the enviro
 **config/default.conf:**
 
 ```diff
-+error_log logs/error.log debug;
-
 -   server_name "";
 +   server_name liionsden.rcs.ic.ac.uk;
-```
-
-**docker-compose.yml**
-```diff
-services:
-  nginx:
-    volumes:
-+      ./nginx_logs/error.log:/etc/nginx/logs/error.log
 ```
