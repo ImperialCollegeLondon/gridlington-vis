@@ -209,7 +209,7 @@ def move_section(id_num, space):
 
 
 # Function to swap the spaces of two sections by id
-def move_section(id_a, id_b):
+def swap_sections(id_a, id_b):
     url = f"{API_URL}/sections/{id_a}?includeAppStates=true"
     response = pip._vendor.requests.get(url)
     data_a = ast.literal_eval(response.text)
