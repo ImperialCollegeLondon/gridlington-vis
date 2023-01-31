@@ -33,13 +33,13 @@ figure = dict(
 layout = html.Div(
     [
         html.H1("Plot 6"),
-        dcc.Graph(id="graph", figure=figure),
+        dcc.Graph(id="graph6", figure=figure),
         dcc.Interval(id="interval", interval=interval),
     ]
 )
 
 
-@callback(Output("graph", "extendData"), [Input("interval", "n_intervals")])
+@callback(Output("graph6", "extendData"), [Input("interval", "n_intervals")])
 def update_data(n_intervals):
     if n_intervals is None:
         raise PreventUpdate
