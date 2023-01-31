@@ -15,7 +15,7 @@ dash.register_page(__name__)
 ##################
 resolution = 30
 interval = 100
-colour = "#EF963B"
+colour = "#50FB05"
 ##################
 
 t = np.linspace(0, np.pi * 2, resolution)
