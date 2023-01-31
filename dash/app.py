@@ -18,6 +18,7 @@ app.layout = html.Div(
             ]
         ),
         dash.page_container,
+        html.H2("Footer", style={"float": "right"}),
     ],
 )
 
