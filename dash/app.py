@@ -4,7 +4,8 @@ import dash
 app = Dash(__name__, use_pages=True, update_title=None)
 
 app.layout = html.Div(
-    [
+    style={"backgroundColor": "#F9F9F9"},
+    children=[
         html.H1("Multi-page app with Dash Pages"),
         html.Div(
             [
@@ -17,7 +18,7 @@ app.layout = html.Div(
             ]
         ),
         dash.page_container,
-    ]
+    ],
 )
 
 server = app.server
