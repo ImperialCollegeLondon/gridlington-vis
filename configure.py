@@ -92,33 +92,6 @@ def generate_docker_compose(template_file, ip):
     logging.info(f"docker-compose.yml generated.")
 
 
-def generate_credentials_json(template_file, ip):
-    """
-    Generate the config/credentials.json file using a template file and the IP
-    address of the machine.
-
-    Args:
-        template_file (str): Path to the template file.
-        ip (str): IP address of the machine.
-
-    Returns:
-        None
-    """
-    # Read the template file
-    logging.info(f"Editing config/credentials.json...")
-    with open(template_file, "r") as f:
-        credentials = json.load(f)
-
-    # Replace the IP in the config/credentials.json file
-    credentials["stores"][0]["proxyUrl"] = f"http://{ip}:6081/default/"
-
-    # Write the new config/credentials.json file
-    with open("config/credentials.json", "w") as f:
-        json.dump(credentials, f, indent=2)
-    logging.info(f"config/credentials.json generated.")
-
-
 if __name__ == "__main__":
     ip = get_ip_address()
     generate_docker_compose("docker-compose.setup.ove.yml", ip)
-    generate_credentials_json("credentials.setup.json", ip)
