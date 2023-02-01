@@ -1,14 +1,25 @@
 import requests
 import json
 
-
+"""
+Constants for API URLs.
+"""
 APP_URL = "http://146.179.34.13:8080/app/html"
 API_URL = "http://liionsden.rcs.ic.ac.uk:8080"
 PLOT_URL = "http://liionsden.rcs.ic.ac.uk:8050"
 
-
-# Initial config for sections
+"""
+Initial config for sections.
+"""
 INIT_SECTIONS = [
+    {
+        "x": 0,
+        "y": 0,
+        "w": 1440,
+        "h": 808,
+        "space": "Tablet",
+        "app": {"url": APP_URL, "states": {"load": {"url": f"{PLOT_URL}"}}},
+    },
     {
         "x": 500,
         "y": 0,
@@ -75,30 +86,9 @@ INIT_SECTIONS = [
     },
 ]
 
-section_one = {
-    "space": "PC01-Top",
-    "x": 0,
-    "y": 0,
-    "w": 1000,
-    "h": 800,
-    "app": {
-        "url": APP_URL,
-        "states": {"load": {"url": f"{PLOT_URL}/plot1"}},
-    },
-}
-
-section_two = {
-    "space": "PC02-Top",
-    "x": 30,
-    "y": 1,
-    "w": 1200,
-    "h": 808,
-    "app": {
-        "url": APP_URL,
-        "states": {"load": {"url": f"{PLOT_URL}/plot2"}},
-    },
-}
-
+"""
+Template of section config JSON.
+"""
 template = {
     "space": "SpaceOne",
     "x": 0,
@@ -112,39 +102,27 @@ template = {
 }
 
 
-# Function for creating all initial sections
 def create_all():
+    """
+    Function for creating all initial sections.
+    """
+
     for section in INIT_SECTIONS:
         response = requests.post("http://146.179.34.13:8080/section", json=section)
         print(response.text)
 
 
-# Function for creating all initial sections
-def create_all():
-    for section in INIT_SECTIONS:
-        response = requests.post("http://146.179.34.13:8080/section", json=section)
-        print(response.text)
-
-
-# Function for sending request to create section one in specified space arg
-def create_section_one(space):
-    section_one["space"] = space
-    response = requests.post(f"{API_URL}/section", json=section_one)
-    print(response.text)
-
-
-# Function for sending request to create section two in specified space arg
-def create_section_two(space):
-    section_two["space"] = space
-    response = requests.post(f"{API_URL}/section", json=section_two)
-    print(response.text)
-
-
-# Function to move a section by id to a specified space
 def move_section(id_num, space):
+    """
+    Function to move a section by ID to a specified space.
+
+    Args:
+        id_num (int): ID for section to move.
+        space (str): Name of destination space.
+    """
+
     url = f"{API_URL}/sections/{id_num}?includeAppStates=true"
     response = requests.get(url)
-    # print(response.text)
     data = json.loads(response.text)
 
     template["space"] = space
@@ -159,41 +137,30 @@ def move_section(id_num, space):
     print(response.text)
 
 
-# Function to swap the spaces of two sections by id
 def swap_sections(id_a, id_b):
-    url = f"{API_URL}/sections/{id_a}?includeAppStates=true"
+    """
+    Function to swap the spaces of two sections by ID.
+
+    Args:
+        id_a (int): ID for the first of two sections to swap.
+        id_b (int): ID for the second of two sections to swap.
+    """
+    url = f"{API_URL}/sections/{id_a}"
     response = requests.get(url)
     data_a = json.loads(response.text)
 
-    url = f"{API_URL}/sections/{id_b}?includeAppStates=true"
+    url = f"{API_URL}/sections/{id_b}"
     response = requests.get(url)
     data_b = json.loads(response.text)
 
-    template["space"] = data_b["space"]
-    template["y"] = data_a["y"]
-    template["w"] = data_a["w"]
-    template["h"] = data_a["h"]
-    template["x"] = data_a["x"]
-    template["app"] = data_a["app"]
-
-    url = f"{API_URL}/sections/{id_a}"
-    response = requests.post(url, json=template)
-    print(response.text)
-
-    template["space"] = data_a["space"]
-    template["y"] = data_b["y"]
-    template["w"] = data_b["w"]
-    template["h"] = data_b["h"]
-    template["x"] = data_b["x"]
-    template["app"] = data_b["app"]
-
-    url = f"{API_URL}/sections/{id_b}"
-    response = requests.post(url, json=template)
-    print(response.text)
+    move_section(id_a, data_b["space"])
+    move_section(id_b, data_a["space"])
 
 
-# Function for deleting all sections
 def delete_all():
+    """
+    Function for deleting all sections.
+    """
     response = requests.get(f"{API_URL}/sections")
     data = json.loads(response.text)
     id_nums = []
@@ -204,7 +171,3 @@ def delete_all():
     for num in id_nums:
         url = f"{API_URL}/sections/{num}"
         requests.delete(url)
-
-
-delete_all()
-create_all()
