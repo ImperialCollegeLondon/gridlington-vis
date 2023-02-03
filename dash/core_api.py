@@ -21,7 +21,7 @@ INIT_SECTIONS = [
         "app": {"url": APP_URL, "states": {"load": {"url": f"{PLOT_URL}"}}},
     },
     {
-        "x": 500,
+        "x": 0,
         "y": 0,
         "w": 1920,
         "h": 1080,
@@ -86,21 +86,6 @@ INIT_SECTIONS = [
     },
 ]
 
-"""
-Template of section config JSON.
-"""
-template = {
-    "space": "SpaceOne",
-    "x": 0,
-    "y": 0,
-    "w": 1440,
-    "h": 808,
-    "app": {
-        "url": APP_URL,
-        "states": {"load": {"url": f"{PLOT_URL}/plot1"}},
-    },
-}
-
 
 def create_all():
     """
@@ -108,7 +93,7 @@ def create_all():
     """
 
     for section in INIT_SECTIONS:
-        response = requests.post("http://146.179.34.13:8080/section", json=section)
+        response = requests.post(f"{API_URL}/section", json=section)
         print(response.text)
 
 
@@ -125,15 +110,27 @@ def move_section(id_num, space):
     response = requests.get(url)
     data = json.loads(response.text)
 
-    template["space"] = space
-    template["x"] = data["x"]
-    template["y"] = data["y"]
-    template["w"] = data["w"]
-    template["h"] = data["h"]
-    template["app"] = data["app"]
+    new_data = {
+        "space": "SpaceOne",
+        "x": 0,
+        "y": 0,
+        "w": 1440,
+        "h": 808,
+        "app": {
+            "url": APP_URL,
+            "states": {"load": {"url": f"{PLOT_URL}/plot1"}},
+        },
+    }
+
+    new_data["space"] = space
+    new_data["x"] = data["x"]
+    new_data["y"] = data["y"]
+    new_data["w"] = data["w"]
+    new_data["h"] = data["h"]
+    new_data["app"] = data["app"]
 
     url = f"{API_URL}/sections/{id_num}"
-    response = requests.post(url, json=template)
+    response = requests.post(url, json=new_data)
     print(response.text)
 
 
