@@ -110,17 +110,7 @@ def move_section(id_num, space):
     response = requests.get(url)
     data = json.loads(response.text)
 
-    new_data = {
-        "space": "SpaceOne",
-        "x": 0,
-        "y": 0,
-        "w": 1440,
-        "h": 808,
-        "app": {
-            "url": APP_URL,
-            "states": {"load": {"url": f"{PLOT_URL}/plot1"}},
-        },
-    }
+    new_data = {}
 
     new_data["space"] = space
     new_data["x"] = data["x"]
