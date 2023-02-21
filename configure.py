@@ -9,8 +9,8 @@ Does the same for config/credentials.json file.
 """
 
 import socket
+import sys
 import yaml
-import json
 import logging
 
 logging.basicConfig(level=logging.INFO)
@@ -27,7 +27,7 @@ def get_ip_address():
     return ip
 
 
-def generate_docker_compose(template_file, ip):
+def generate_docker_compose(template_file, ip, develop=None):
     """
     Generate the docker-compose.yml file using a template file and the IP
     address of the machine.
@@ -75,10 +75,13 @@ def generate_docker_compose(template_file, ip):
     # Add the dash app to to docker-compose.yml file
     logging.info(f"Adding dash app to docker-compose.yml...")
     docker_compose["services"]["dash"] = {
-        "build": ".",
         "ports": ["8050:8050"],
         "volumes": ["./dash:/app"],
     }
+    if develop:
+        docker_compose["services"]["dash"]["build"] = "."
+    else:
+        docker_compose["services"]["dash"]["image"] = "ghcr.io/imperialcollegelondon/gridlington-vis:main"
 
     # Configure logging for nginx
     logging.info(f"Adding volume for nginx logs...")
@@ -94,4 +97,4 @@ def generate_docker_compose(template_file, ip):
 
 if __name__ == "__main__":
     ip = get_ip_address()
-    generate_docker_compose("docker-compose.setup.ove.yml", ip)
+    generate_docker_compose("docker-compose.setup.ove.yml", ip, develop="develop" in sys.argv)
