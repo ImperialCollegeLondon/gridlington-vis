@@ -1,10 +1,7 @@
 import dash
-from dash import html, dcc, callback, Input, Output
-from dash.exceptions import PreventUpdate
-
 import numpy as np
-
-from dash.dependencies import Input, Output
+from dash import Input, Output, callback, dcc, html
+from dash.exceptions import PreventUpdate
 
 dash.register_page(__name__)
 
