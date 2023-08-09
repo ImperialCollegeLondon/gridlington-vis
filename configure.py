@@ -78,7 +78,7 @@ def generate_docker_compose(template_file: str, ip: str, develop: bool = False) 
     logging.info("Adding dash app to docker-compose.yml...")
     docker_compose["services"]["dash"] = {
         "ports": ["8050:8050"],
-        "volumes": ["./dash:/app"],
+        "volumes": ["./app:/app"],
     }
     if develop:
         docker_compose["services"]["dash"]["build"] = "."
