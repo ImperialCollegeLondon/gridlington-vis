@@ -72,7 +72,7 @@ def generate_docker_compose(template_file: str, ip: str, develop: bool = False) 
     # Also replace the openvidu-call version
     docker_compose["services"]["openvidu-openvidu-call"][
         "image"
-    ] = "openvidu/openvidu-call:2.12.0"
+    ] = "openvidu/openvidu-call:2.28.0"
 
     # Add the dash app to to docker-compose.yml file
     logging.info("Adding dash app to docker-compose.yml...")
