@@ -1,4 +1,5 @@
-"""
+"""Creates the docker-compose file for the machine it is run on.
+
 Run this script to create the docker-compose.yml file using the
 docker-compose.setup.ove.yml file and the IP address of the machine
 Finds the line in docker-compose.setup.ove.yml that contain the host IP
@@ -8,17 +9,17 @@ file. Also replaces the openvidu-call version to 2.12.0.
 Does the same for config/credentials.json file.
 """
 
+import logging
 import socket
 import sys
+
 import yaml
-import logging
 
 logging.basicConfig(level=logging.INFO)
 
 
-def get_ip_address():
-    """Get the IP address of the machine"""
-
+def get_ip_address() -> str:
+    """Get the IP address of the machine."""
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     s.connect(("10.254.254.254", 1))
     ip = s.getsockname()[0]
@@ -27,14 +28,15 @@ def get_ip_address():
     return ip
 
 
-def generate_docker_compose(template_file, ip, develop=None):
-    """
-    Generate the docker-compose.yml file using a template file and the IP
-    address of the machine.
+def generate_docker_compose(template_file: str, ip: str, develop: bool = False) -> None:
+    """Generate the docker-compose.yml file.
+
+    Uses a template file and the IP address of the machine.
 
     Args:
-        template_file (str): Path to the template file.
-        ip (str): IP address of the machine.
+        template_file: Path to the template file.
+        ip: IP address of the machine.
+        develop: Flag for when running in develop mode
 
     Returns:
         None
@@ -47,7 +49,7 @@ def generate_docker_compose(template_file, ip, develop=None):
     }
 
     # Read the template file
-    logging.info(f"Generating docker-compose.yml...")
+    logging.info("Generating docker-compose.yml...")
     with open(template_file, "r") as f:
         docker_compose = yaml.safe_load(f)
 
@@ -73,7 +75,7 @@ def generate_docker_compose(template_file, ip, develop=None):
     ] = "openvidu/openvidu-call:2.12.0"
 
     # Add the dash app to to docker-compose.yml file
-    logging.info(f"Adding dash app to docker-compose.yml...")
+    logging.info("Adding dash app to docker-compose.yml...")
     docker_compose["services"]["dash"] = {
         "ports": ["8050:8050"],
         "volumes": ["./dash:/app"],
@@ -81,10 +83,12 @@ def generate_docker_compose(template_file, ip, develop=None):
     if develop:
         docker_compose["services"]["dash"]["build"] = "."
     else:
-        docker_compose["services"]["dash"]["image"] = "ghcr.io/imperialcollegelondon/gridlington-vis:main"
+        docker_compose["services"]["dash"][
+            "image"
+        ] = "ghcr.io/imperialcollegelondon/gridlington-vis:main"
 
     # Configure logging for nginx
-    logging.info(f"Adding volume for nginx logs...")
+    logging.info("Adding volume for nginx logs...")
     docker_compose["services"]["nginx"]["volumes"] += [
         "./logs/nginx.log:/etc/nginx/logs/error.log"
     ]
@@ -92,9 +96,11 @@ def generate_docker_compose(template_file, ip, develop=None):
     # Write the new docker-compose.yml file
     with open("docker-compose.yml", "w") as f:
         yaml.safe_dump(docker_compose, f)
-    logging.info(f"docker-compose.yml generated.")
+    logging.info("docker-compose.yml generated.")
 
 
 if __name__ == "__main__":
     ip = get_ip_address()
-    generate_docker_compose("docker-compose.setup.ove.yml", ip, develop="develop" in sys.argv)
+    generate_docker_compose(
+        "docker-compose.setup.ove.yml", ip, develop="develop" in sys.argv
+    )
