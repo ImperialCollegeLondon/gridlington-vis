@@ -1,5 +1,6 @@
-import requests
 import json
+
+import requests
 
 """
 Constants for API URLs.
@@ -88,24 +89,19 @@ INIT_SECTIONS = [
 
 
 def create_all():
-    """
-    Function for creating all initial sections.
-    """
-
+    """Function for creating all initial sections."""
     for section in INIT_SECTIONS:
         response = requests.post(f"{API_URL}/section", json=section)
         print(response.text)
 
 
 def move_section(id_num, space):
-    """
-    Function to move a section by ID to a specified space.
+    """Function to move a section by ID to a specified space.
 
     Args:
         id_num (int): ID for section to move.
         space (str): Name of destination space.
     """
-
     url = f"{API_URL}/sections/{id_num}?includeAppStates=true"
     response = requests.get(url)
     data = json.loads(response.text)
@@ -125,8 +121,7 @@ def move_section(id_num, space):
 
 
 def swap_sections(id_a, id_b):
-    """
-    Function to swap the spaces of two sections by ID.
+    """Function to swap the spaces of two sections by ID.
 
     Args:
         id_a (int): ID for the first of two sections to swap.
@@ -145,9 +140,7 @@ def swap_sections(id_a, id_b):
 
 
 def delete_all():
-    """
-    Function for deleting all sections.
-    """
+    """Function for deleting all sections."""
     response = requests.get(f"{API_URL}/sections")
     data = json.loads(response.text)
     id_nums = []

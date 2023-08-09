@@ -1,5 +1,5 @@
-from dash import Dash, html, dcc
 import dash
+from dash import Dash, dcc, html
 
 app = Dash(__name__, use_pages=True, update_title=None)
 
