@@ -1,9 +1,9 @@
 """Page in dash app."""
 
-import dash
+import dash  # type: ignore
 import numpy as np
-from dash import Input, Output, callback, dcc, html
-from dash.exceptions import PreventUpdate
+from dash import Input, Output, callback, dcc, html  # type: ignore
+from dash.exceptions import PreventUpdate  # type: ignore
 
 dash.register_page(__name__)
 
