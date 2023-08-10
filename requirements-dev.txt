@@ -147,6 +147,10 @@ types-pytz==2023.3.0.0
     # via pandas-stubs
 types-pyyaml==6.0.12.11
     # via vis (pyproject.toml)
+types-requests==2.31.0.2
+    # via vis (pyproject.toml)
+types-urllib3==1.26.25.14
+    # via types-requests
 typing-extensions==4.7.1
     # via
     #   dash
