@@ -1,3 +1,4 @@
+"""Interacts with the OVE Core API."""
 import json
 
 import requests
@@ -88,14 +89,14 @@ INIT_SECTIONS = [
 ]
 
 
-def create_all():
+def create_all() -> None:
     """Function for creating all initial sections."""
     for section in INIT_SECTIONS:
         response = requests.post(f"{API_URL}/section", json=section)
         print(response.text)
 
 
-def move_section(id_num, space):
+def move_section(id_num: int, space: str) -> None:
     """Function to move a section by ID to a specified space.
 
     Args:
@@ -120,7 +121,7 @@ def move_section(id_num, space):
     print(response.text)
 
 
-def swap_sections(id_a, id_b):
+def swap_sections(id_a: int, id_b: int) -> None:
     """Function to swap the spaces of two sections by ID.
 
     Args:
@@ -139,7 +140,7 @@ def swap_sections(id_a, id_b):
     move_section(id_b, data_a["space"])
 
 
-def delete_all():
+def delete_all() -> None:
     """Function for deleting all sections."""
     response = requests.get(f"{API_URL}/sections")
     data = json.loads(response.text)

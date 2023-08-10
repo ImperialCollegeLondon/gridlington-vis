@@ -1,3 +1,4 @@
+"""Sets up the server for the Dash app."""
 import dash
 from dash import Dash, dcc, html
 

@@ -1,3 +1,5 @@
+"""Home Page for Dash app."""
+
 import dash
 from dash import html
 

@@ -23,6 +23,7 @@ dev = [
     "pytest-mock",
     "pandas-stubs",
     "types-PyYAML",
+    "types-requests",
 ]
 
 [tool.setuptools.packages.find]

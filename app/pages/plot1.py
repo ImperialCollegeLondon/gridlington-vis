@@ -1,3 +1,5 @@
+"""Page in dash app."""
+
 import dash
 import numpy as np
 from dash import Input, Output, callback, dcc, html
@@ -37,7 +39,7 @@ layout = html.Div(
 
 
 @callback(Output("graph", "extendData"), [Input("interval", "n_intervals")])
-def update_data(n_intervals):
+def update_data(n_intervals):  # type: ignore # noqa
     if n_intervals is None:
         raise PreventUpdate
     index = n_intervals % resolution
