@@ -43,7 +43,6 @@ def generate_docker_compose(template_file: str, ip: str, develop: bool = False) 
     """
     lines_to_replace = {
         "OVE_HOST": f"{ip}:8080",
-        "TOURIS_HOST": f"{ip}:7080",
         "OPENVIDU_HOST": f"{ip}:4443",
         "openvidu.publicurl": f"https://{ip}:4443",
     }
@@ -60,9 +59,6 @@ def generate_docker_compose(template_file: str, ip: str, develop: bool = False) 
     docker_compose["services"]["ovehub-ove-apps"]["environment"][
         "OVE_HOST"
     ] = lines_to_replace["OVE_HOST"]
-    docker_compose["services"]["ovehub-ove-apps"]["environment"][
-        "TOURIS_HOST"
-    ] = lines_to_replace["TOURIS_HOST"]
     docker_compose["services"]["ovehub-ove-apps"]["environment"][
         "OPENVIDU_HOST"
     ] = lines_to_replace["OPENVIDU_HOST"]
