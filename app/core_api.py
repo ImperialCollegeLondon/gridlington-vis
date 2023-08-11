@@ -6,9 +6,9 @@ import requests
 """
 Constants for API URLs.
 """
-APP_URL = "http://192.168.0.5:8080"  # "http://146.179.34.13:8080/app/html"
-API_URL = "http://localhost:8080"  # "http://liionsden.rcs.ic.ac.uk:8080"
-PLOT_URL = "http://localhost:8050"  # "http://liionsden.rcs.ic.ac.uk:8050"
+APP_URL = "http://146.179.34.13:8080/app/html"
+API_URL = "http://liionsden.rcs.ic.ac.uk:8080"
+PLOT_URL = "http://liionsden.rcs.ic.ac.uk:8050"
 
 """
 Initial config for sections.
