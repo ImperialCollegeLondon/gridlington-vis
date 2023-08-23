@@ -1,16 +1,20 @@
-import dash
-from dash import html, dcc, callback, Input, Output
-from dash.exceptions import PreventUpdate
-import numpy as np
+"""Page in dash app."""
 
-from dash.dependencies import Input, Output
+import dash  # type: ignore
+import numpy as np
+from dash import Input, Output, callback, dcc, html  # type: ignore
+from dash.exceptions import PreventUpdate  # type: ignore
 
 dash.register_page(__name__)
+
+
+# Example data (a circle). See https://stackoverflow.com/a/63681810 for more including
+# how to increase refresh rate.
 
 ##################
 resolution = 30
 interval = 100
-colour = "#0D76BF"
+colour = "#F905FB"
 ##################
 
 t = np.linspace(0, np.pi * 2, resolution)
@@ -27,15 +31,15 @@ figure = dict(
 
 layout = html.Div(
     [
-        html.H1("Plot 2"),
-        dcc.Graph(id="graph2", figure=figure),
+        html.H1("Plot 7"),
+        dcc.Graph(id="graph7", figure=figure),
         dcc.Interval(id="interval", interval=interval),
     ]
 )
 
 
-@callback(Output("graph2", "extendData"), [Input("interval", "n_intervals")])
-def update_data(n_intervals):
+@callback(Output("graph7", "extendData"), [Input("interval", "n_intervals")])
+def update_data(n_intervals):  # type: ignore # noqa
     if n_intervals is None:
         raise PreventUpdate
     index = n_intervals % resolution

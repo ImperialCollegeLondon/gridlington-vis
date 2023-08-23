@@ -1,5 +1,7 @@
-import dash
-from dash import html, dcc
+"""Home Page for Dash app."""
+
+import dash  # type: ignore
+from dash import html  # type: ignore
 
 dash.register_page(__name__, path="/")
 

@@ -1,5 +1,6 @@
-from dash import Dash, html, dcc
-import dash
+"""Sets up the server for the Dash app."""
+import dash  # type: ignore
+from dash import Dash, dcc, html  # type: ignore
 
 app = Dash(__name__, use_pages=True, update_title=None)
 

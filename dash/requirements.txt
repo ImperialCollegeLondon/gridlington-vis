@@ -1,5 +1,0 @@
-flask
-dash
-pandas
-pyyaml
-gunicorn

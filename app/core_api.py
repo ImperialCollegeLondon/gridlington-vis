@@ -1,5 +1,7 @@
-import requests
+"""Interacts with the OVE Core API."""
 import json
+
+import requests
 
 """
 Constants for API URLs.
@@ -87,25 +89,20 @@ INIT_SECTIONS = [
 ]
 
 
-def create_all():
-    """
-    Function for creating all initial sections.
-    """
-
+def create_all() -> None:
+    """Function for creating all initial sections."""
     for section in INIT_SECTIONS:
         response = requests.post(f"{API_URL}/section", json=section)
         print(response.text)
 
 
-def move_section(id_num, space):
-    """
-    Function to move a section by ID to a specified space.
+def move_section(id_num: int, space: str) -> None:
+    """Function to move a section by ID to a specified space.
 
     Args:
         id_num (int): ID for section to move.
         space (str): Name of destination space.
     """
-
     url = f"{API_URL}/sections/{id_num}?includeAppStates=true"
     response = requests.get(url)
     data = json.loads(response.text)
@@ -124,9 +121,8 @@ def move_section(id_num, space):
     print(response.text)
 
 
-def swap_sections(id_a, id_b):
-    """
-    Function to swap the spaces of two sections by ID.
+def swap_sections(id_a: int, id_b: int) -> None:
+    """Function to swap the spaces of two sections by ID.
 
     Args:
         id_a (int): ID for the first of two sections to swap.
@@ -144,10 +140,8 @@ def swap_sections(id_a, id_b):
     move_section(id_b, data_a["space"])
 
 
-def delete_all():
-    """
-    Function for deleting all sections.
-    """
+def delete_all() -> None:
+    """Function for deleting all sections."""
     response = requests.get(f"{API_URL}/sections")
     data = json.loads(response.text)
     id_nums = []

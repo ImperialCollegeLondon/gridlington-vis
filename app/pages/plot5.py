@@ -1,10 +1,9 @@
-import dash
-from dash import html, dcc, callback, Input, Output
-from dash.exceptions import PreventUpdate
+"""Page in dash app."""
 
+import dash  # type: ignore
 import numpy as np
-
-from dash.dependencies import Input, Output
+from dash import Input, Output, callback, dcc, html  # type: ignore
+from dash.exceptions import PreventUpdate  # type: ignore
 
 dash.register_page(__name__)
 
@@ -40,7 +39,7 @@ layout = html.Div(
 
 
 @callback(Output("graph5", "extendData"), [Input("interval", "n_intervals")])
-def update_data(n_intervals):
+def update_data(n_intervals):  # type: ignore # noqa
     if n_intervals is None:
         raise PreventUpdate
     index = n_intervals % resolution
