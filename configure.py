@@ -71,6 +71,9 @@ def generate_docker_compose(template_file: str, ip: str, develop: bool = False) 
     }
     if develop:
         docker_compose["services"]["dash"]["build"] = "."
+        docker_compose["services"]["ovehub-ove-apps"]["image"] = "ove-apps:9.9.9"
+        docker_compose["services"]["ovehub-ove-ove"]["image"] = "ove-ove:9.9.9"
+        docker_compose["services"]["ovehub-ove-ui"]["image"] = "ove-ui:9.9.9"
     else:
         docker_compose["services"]["dash"][
             "image"
