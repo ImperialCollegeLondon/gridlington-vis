@@ -1,26 +1,21 @@
 """Page in dash app."""
 
-import dash  # type: ignore
 import numpy as np
-from dash import Input, Output, callback, dcc, html  # type: ignore
-from dash.exceptions import PreventUpdate  # type: ignore
 import pandas as pd
 import plotly.express as px
 
+import dash  # type: ignore
+from dash import Input, Output, callback, dcc, html  # type: ignore
+from dash.exceptions import PreventUpdate  # type: ignore
+
 # from app.opal import opal_data
+
 
 dash.register_page(__name__)
 
 opal_data = {
     "data": {
-        "index": [
-            0.0,
-            1.0,
-            2.0,
-            3.0,
-            4.0,
-            5.0
-        ],
+        "index": [0.0, 1.0, 2.0, 3.0, 4.0, 5.0],
         "columns": [
             "Time",
             "Total Generation",
@@ -62,7 +57,7 @@ opal_data = {
             "Real Ev Charging Power",
             "Ev Status (Charging)",
             "Ev Status (Travelling)",
-            "Ev Status (Idle)"
+            "Ev Status (Idle)",
         ],
         "data": [
             [
@@ -106,7 +101,7 @@ opal_data = {
                 0.0,
                 0.0,
                 0.0,
-                0.0
+                0.0,
             ],
             [
                 "2035-01-22T00:00:08.580000",
@@ -149,7 +144,7 @@ opal_data = {
                 3.774,
                 510.0,
                 2.0,
-                34.0
+                34.0,
             ],
             [
                 "2035-01-22T00:00:16.110000",
@@ -192,7 +187,7 @@ opal_data = {
                 3.7148,
                 502.0,
                 2.0,
-                42.0
+                42.0,
             ],
             [
                 "2035-01-22T00:00:23.660000",
@@ -235,7 +230,7 @@ opal_data = {
                 3.663,
                 495.0,
                 2.0,
-                49.0
+                49.0,
             ],
             [
                 "2035-01-22T00:00:31.100000",
@@ -278,7 +273,7 @@ opal_data = {
                 3.6408,
                 492.0,
                 3.0,
-                51.0
+                51.0,
             ],
             [
                 "2035-01-22T00:00:38.560000",
@@ -321,9 +316,9 @@ opal_data = {
                 3.5742,
                 483.0,
                 3.0,
-                60.0
-            ]
-        ]
+                60.0,
+            ],
+        ],
     }
 }
 
@@ -342,43 +337,56 @@ print(gen_split_df)
 t = np.linspace(0, np.pi * 2, resolution)
 x, y = np.cos(t), np.sin(t)
 # Example app.
-gen_split_fig = px.pie(names=[
-    "Battery Generation",
-    "Interconnector Power",
-    "Offshore Wind Generation",
-    "Onshore Wind Generation",
-    "Other Generation",
-    "Pump Generation",
-    "Pv Generation",
-    "Nuclear Generation",
-    "Hydro Generation",
-    "Gas Generation",
-],
-values=gen_split_df)
+gen_split_fig = px.pie(
+    names=[
+        "Battery Generation",
+        "Interconnector Power",
+        "Offshore Wind Generation",
+        "Onshore Wind Generation",
+        "Other Generation",
+        "Pump Generation",
+        "Pv Generation",
+        "Nuclear Generation",
+        "Hydro Generation",
+        "Gas Generation",
+    ],
+    values=gen_split_df,
+)
 
-total_gen_fig = px.line(df, x="Time", y=[
-    "Total Generation",
-    "Battery Generation",
-    "Interconnector Power",
-    "Offshore Wind Generation",
-    "Onshore Wind Generation",
-    "Other Generation",
-    "Pump Generation",
-    "Pv Generation",
-    "Nuclear Generation",
-    "Hydro Generation",
-    "Gas Generation",
-],
+total_gen_fig = px.line(
+    df,
+    x="Time",
+    y=[
+        "Total Generation",
+        "Battery Generation",
+        "Interconnector Power",
+        "Offshore Wind Generation",
+        "Onshore Wind Generation",
+        "Other Generation",
+        "Pump Generation",
+        "Pv Generation",
+        "Nuclear Generation",
+        "Hydro Generation",
+        "Gas Generation",
+    ],
 ).update_layout(yaxis_title="GW")
 
-total_dem_fig = px.line(df, x="Time", y=[
-    "Total Demand",
-]).update_layout(yaxis_title="GW")
+total_dem_fig = px.line(
+    df,
+    x="Time",
+    y=[
+        "Total Demand",
+    ],
+).update_layout(yaxis_title="GW")
 
-system_freq_fig = px.line(df, x="Time", y=[
-    "Total Generation",
-    "Total Demand",
-]).update_layout(yaxis_title="GW")
+system_freq_fig = px.line(
+    df,
+    x="Time",
+    y=[
+        "Total Generation",
+        "Total Demand",
+    ],
+).update_layout(yaxis_title="GW")
 
 layout = html.Div(
     [
@@ -390,16 +398,16 @@ layout = html.Div(
                     children=[
                         html.H1("Generation Split"),
                         dcc.Graph(id="graph-gen-split", figure=gen_split_fig),
-                    ]
+                    ],
                 ),
                 html.Div(
                     style={"width": "45%"},
                     children=[
                         html.H1("Generation Total"),
                         dcc.Graph(id="graph-gen-total", figure=total_gen_fig),
-                    ]
+                    ],
                 ),
-            ]
+            ],
         ),
         html.Div(
             style={"display": "flex", "justify-content": "space-around"},
@@ -409,16 +417,16 @@ layout = html.Div(
                     children=[
                         html.H1("Demand Total"),
                         dcc.Graph(id="graph-demand", figure=total_dem_fig),
-                    ]
+                    ],
                 ),
                 html.Div(
                     style={"width": "45%"},
                     children=[
                         html.H1("System Frequency"),
                         dcc.Graph(id="graph-freq", figure=system_freq_fig),
-                    ]
+                    ],
                 ),
-            ]
+            ],
         ),
     ]
 )
