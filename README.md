@@ -26,3 +26,25 @@ Utimately, we will want to automate this setup as much as possible so the enviro
 -   server_name "";
 +   server_name liionsden.rcs.ic.ac.uk;
 ```
+
+## Current steps for Running a WebRTC app and sharing an application window
+
+1. Make sure nothings running
+2. Run `run.sh`` for vis system to run config script and docker-compose
+   * For local/develop versions, use locally built images (the run.sh should cover the config for this). Images must be named:
+     * ove-apps:9.9.9
+     * ove-ove:9.9.9
+     * ove-ui:9.9.9
+   * Check get_ip_address is correct
+   * Check ip address from configure.py is running OVE
+3. Go to OVE Core at http://localhost:8080  <!-- markdownlint-disable-line MD034 -->
+4. Select "Launch new OVE Application instances"
+5. Select WebRTC application, fill in settings and launch instance
+6. Start call button on controller and get session ID
+   * Note: closing controller ends the session
+7. Go to openvidu ip address and manually trust website (OPENVIDU_HOST in the docker-compose.yml)
+8. Log in with username: admin, password: (OPENVIDU_SECRET from docker-compose.yml)
+9. Enter session ID (from controller window) as room name and join the call
+10. Share a window and check it can be viewed from other windows
+
+**Note:** Only one screen can be shared from one browser, so multiple screens will require multiple computers/browsers/incognito windows etc.
