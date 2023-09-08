@@ -328,65 +328,73 @@ interval = 100
 colour = "#0D76BF"
 ##################
 
+def generate_gen_split_fig(df):
+    gen_split_df = df.iloc[-1, 13:23]
+
+    gen_split_fig = px.pie(
+        names=[
+            "Battery Generation",
+            "Interconnector Power",
+            "Offshore Wind Generation",
+            "Onshore Wind Generation",
+            "Other Generation",
+            "Pump Generation",
+            "Pv Generation",
+            "Nuclear Generation",
+            "Hydro Generation",
+            "Gas Generation",
+        ],
+        values=gen_split_df,
+    ).update_layout(title_text=df.iloc[-1]["Time"])
+    return gen_split_fig
+
+def generate_total_gen_fig(df):
+    total_gen_fig = px.line(
+        df,
+        x="Time",
+        y=[
+            "Total Generation",
+            "Battery Generation",
+            "Interconnector Power",
+            "Offshore Wind Generation",
+            "Onshore Wind Generation",
+            "Other Generation",
+            "Pump Generation",
+            "Pv Generation",
+            "Nuclear Generation",
+            "Hydro Generation",
+            "Gas Generation",
+        ],
+    ).update_layout(yaxis_title="GW")
+    return total_gen_fig
+
+def generate_total_dem_fig(df):
+    total_dem_fig = px.line(
+        df,
+        x="Time",
+        y=[
+            "Total Demand",
+        ],
+    ).update_layout(yaxis_title="GW")
+    return total_dem_fig
+
+def generate_system_freq_fig(df):
+    system_freq_fig = px.line(
+        df,
+        x="Time",
+        y=[
+            "Total Generation",
+            "Total Demand",
+        ],
+    ).update_layout(yaxis_title="GW")
+    return system_freq_fig
+
 df = pd.DataFrame(**opal_data["data"])
 
-gen_split_df = df.iloc[-1, 13:23]
-
-print(gen_split_df)
-
-t = np.linspace(0, np.pi * 2, resolution)
-x, y = np.cos(t), np.sin(t)
-# Example app.
-gen_split_fig = px.pie(
-    names=[
-        "Battery Generation",
-        "Interconnector Power",
-        "Offshore Wind Generation",
-        "Onshore Wind Generation",
-        "Other Generation",
-        "Pump Generation",
-        "Pv Generation",
-        "Nuclear Generation",
-        "Hydro Generation",
-        "Gas Generation",
-    ],
-    values=gen_split_df,
-)
-
-total_gen_fig = px.line(
-    df,
-    x="Time",
-    y=[
-        "Total Generation",
-        "Battery Generation",
-        "Interconnector Power",
-        "Offshore Wind Generation",
-        "Onshore Wind Generation",
-        "Other Generation",
-        "Pump Generation",
-        "Pv Generation",
-        "Nuclear Generation",
-        "Hydro Generation",
-        "Gas Generation",
-    ],
-).update_layout(yaxis_title="GW")
-
-total_dem_fig = px.line(
-    df,
-    x="Time",
-    y=[
-        "Total Demand",
-    ],
-).update_layout(yaxis_title="GW")
-
-system_freq_fig = px.line(
-    df,
-    x="Time",
-    y=[
-        "Total Generation",
-        "Total Demand",
-    ],
-).update_layout(yaxis_title="GW")
+gen_split_fig = generate_gen_split_fig(df)
+total_gen_fig = generate_total_gen_fig(df)
+total_dem_fig = generate_total_dem_fig(df)
+system_freq_fig = generate_system_freq_fig(df)
 
 layout = html.Div(
     [
@@ -428,16 +436,39 @@ layout = html.Div(
                 ),
             ],
         ),
+        dcc.Interval(id="interval", interval=interval),
     ]
 )
 
-# dcc.Interval(id="interval", interval=interval)
 
-
-@callback(Output("graph2", "extendData"), [Input("interval", "n_intervals")])
+@callback(Output("graph-gen-split", "figure"), [Input("interval", "n_intervals")])
 def update_data(n_intervals):  # type: ignore # noqa
     if n_intervals is None:
         raise PreventUpdate
-    index = n_intervals % resolution
-    # tuple is (dict of new data, target trace index, number of points to keep)
-    return dict(x=[[x[index]]], y=[[y[index]]]), [0], 10
+    
+    gen_split_fig = generate_gen_split_fig(df)
+    return gen_split_fig
+
+@callback(Output("graph-gen-total", "figure"), [Input("interval", "n_intervals")])
+def update_data(n_intervals):  # type: ignore # noqa
+    if n_intervals is None:
+        raise PreventUpdate
+    
+    total_gen_fig = generate_total_gen_fig(df)
+    return total_gen_fig
+
+@callback(Output("graph-demand", "figure"), [Input("interval", "n_intervals")])
+def update_data(n_intervals):  # type: ignore # noqa
+    if n_intervals is None:
+        raise PreventUpdate
+    
+    total_dem_fig = generate_total_dem_fig(df)
+    return total_dem_fig
+
+@callback(Output("graph-freq", "figure"), [Input("interval", "n_intervals")])
+def update_data(n_intervals):  # type: ignore # noqa
+    if n_intervals is None:
+        raise PreventUpdate
+    
+    system_freq_fig = generate_system_freq_fig(df)
+    return system_freq_fig
