@@ -336,19 +336,12 @@ def update_data(n_intervals):  # type: ignore # noqa
         raise PreventUpdate
     
     for idx, x in enumerate(opal_post["array"]):
-        print("idx:", idx)
-        print("x:", x)
         if idx == 0:
             opal_post["array"][idx] = x + 1
-            print("frame")
         elif idx == 1:
             opal_post["array"][idx] = x + 7
-            print("time")
         else:
             opal_post["array"][idx] = x + random.randint(2, 20)
-            print("random")
-
-    print(opal_post)
     
     req = requests.post("http://127.0.0.1:8000/opal", json = opal_post)
     req = requests.get("http://127.0.0.1:8000/opal")
