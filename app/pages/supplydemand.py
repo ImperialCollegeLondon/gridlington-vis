@@ -1,11 +1,10 @@
 """Page in dash app."""
 
-import requests
 import random
 
-import numpy as np
 import pandas as pd
 import plotly.express as px
+import requests
 
 import dash  # type: ignore
 from dash import Input, Output, callback, dcc, html  # type: ignore
@@ -18,7 +17,7 @@ dash.register_page(__name__)
 
 opal_data = {
     "data": {
-        "index": [0.0, 1.0,],
+        "index": [0.0, 1.0],
         "columns": [
             "Time",
             "Total Generation",
@@ -209,7 +208,16 @@ interval = 7000
 colour = "#0D76BF"
 ##################
 
-def generate_gen_split_fig(df):
+
+def generate_gen_split_fig(df: pd.DataFrame) -> px.pie:
+    """Creates Plotly figure for Generation Split graph.
+
+    Args:
+        df: Opal data DataFrame
+
+    Returns:
+        Plotly express figure
+    """
     gen_split_df = df.iloc[-1, 13:23]
 
     gen_split_fig = px.pie(
@@ -229,7 +237,16 @@ def generate_gen_split_fig(df):
     ).update_layout(title_text=df.iloc[-1]["Time"])
     return gen_split_fig
 
-def generate_total_gen_fig(df):
+
+def generate_total_gen_fig(df: pd.DataFrame) -> px.line:
+    """Creates Plotly figure for Total Generation graph.
+
+    Args:
+        df: Opal data DataFrame
+
+    Returns:
+        Plotly express figure
+    """
     total_gen_fig = px.line(
         df,
         x="Time",
@@ -249,7 +266,16 @@ def generate_total_gen_fig(df):
     ).update_layout(yaxis_title="GW")
     return total_gen_fig
 
-def generate_total_dem_fig(df):
+
+def generate_total_dem_fig(df: pd.DataFrame) -> px.line:
+    """Creates Plotly figure for Total Demand graph.
+
+    Args:
+        df: Opal data DataFrame
+
+    Returns:
+        Plotly express figure
+    """
     total_dem_fig = px.line(
         df,
         x="Time",
@@ -259,7 +285,16 @@ def generate_total_dem_fig(df):
     ).update_layout(yaxis_title="GW")
     return total_dem_fig
 
-def generate_system_freq_fig(df):
+
+def generate_system_freq_fig(df: pd.DataFrame) -> px.line:
+    """Creates Plotly figure for System Frequency graph.
+
+    Args:
+        df: Opal data DataFrame
+
+    Returns:
+        Plotly express figure
+    """
     system_freq_fig = px.line(
         df,
         x="Time",
@@ -269,6 +304,7 @@ def generate_system_freq_fig(df):
         ],
     ).update_layout(yaxis_title="GW")
     return system_freq_fig
+
 
 df = pd.DataFrame(**opal_data["data"])
 
@@ -329,12 +365,12 @@ layout = html.Div(
         Output("graph-demand", "figure"),
         Output("graph-freq", "figure"),
     ],
-    [Input("interval", "n_intervals")]
+    [Input("interval", "n_intervals")],
 )
 def update_data(n_intervals):  # type: ignore # noqa
     if n_intervals is None:
         raise PreventUpdate
-    
+
     for idx, x in enumerate(opal_post["array"]):
         if idx == 0:
             opal_post["array"][idx] = x + 1
@@ -342,12 +378,12 @@ def update_data(n_intervals):  # type: ignore # noqa
             opal_post["array"][idx] = x + 7
         else:
             opal_post["array"][idx] = x + random.randint(2, 20)
-    
-    req = requests.post("http://127.0.0.1:8000/opal", json = opal_post)
+
+    req = requests.post("http://127.0.0.1:8000/opal", json=opal_post)
     req = requests.get("http://127.0.0.1:8000/opal")
 
     new_df = pd.DataFrame(**req.json()["data"])
-    
+
     gen_split_fig = generate_gen_split_fig(new_df)
     total_gen_fig = generate_total_gen_fig(new_df)
     total_dem_fig = generate_total_dem_fig(new_df)
