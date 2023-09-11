@@ -1,5 +1,8 @@
 """Page in dash app."""
 
+import requests
+import random
+
 import numpy as np
 import pandas as pd
 import plotly.express as px
@@ -15,7 +18,7 @@ dash.register_page(__name__)
 
 opal_data = {
     "data": {
-        "index": [0.0, 1.0, 2.0, 3.0, 4.0, 5.0],
+        "index": [0.0, 1.0,],
         "columns": [
             "Time",
             "Total Generation",
@@ -146,185 +149,63 @@ opal_data = {
                 2.0,
                 34.0,
             ],
-            [
-                "2035-01-22T00:00:16.110000",
-                34.7576,
-                34.7548,
-                16.2635,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                16279.2764,
-                16281.797,
-                -0.5729,
-                -1.0155,
-                16.2868,
-                8.9761,
-                0.2806,
-                -2.1394,
-                0.0,
-                0.7946,
-                0.052,
-                0.052,
-                34.687,
-                34.6842,
-                0.0,
-                0.0,
-                30.7926,
-                30.7926,
-                23.0,
-                5.0,
-                80.0,
-                173.0,
-                0.0,
-                311.0,
-                7170.0,
-                3.7148,
-                3.7148,
-                502.0,
-                2.0,
-                42.0,
-            ],
-            [
-                "2035-01-22T00:00:23.660000",
-                34.6068,
-                34.6036,
-                16.3504,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                16367.0406,
-                16368.53,
-                -0.5745,
-                -1.1827,
-                16.3735,
-                8.8902,
-                0.2807,
-                -2.146,
-                0.0,
-                0.7961,
-                0.0519,
-                0.0519,
-                34.5363,
-                34.5335,
-                0.0,
-                0.0,
-                30.7094,
-                30.7094,
-                20.0,
-                5.0,
-                72.0,
-                107.0,
-                0.0,
-                291.0,
-                7164.0,
-                3.663,
-                3.663,
-                495.0,
-                2.0,
-                49.0,
-            ],
-            [
-                "2035-01-22T00:00:31.100000",
-                34.4579,
-                34.4543,
-                16.4357,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                16451.253,
-                16452.6278,
-                -0.576,
-                -1.3463,
-                16.4578,
-                8.8063,
-                0.2807,
-                -2.1524,
-                0.0,
-                0.7975,
-                0.0517,
-                0.0517,
-                34.3888,
-                34.3862,
-                0.0,
-                0.0,
-                30.7065,
-                30.7065,
-                30.0,
-                5.0,
-                59.0,
-                124.0,
-                0.0,
-                316.0,
-                7161.0,
-                3.6408,
-                3.6408,
-                492.0,
-                3.0,
-                51.0,
-            ],
-            [
-                "2035-01-22T00:00:38.560000",
-                34.3088,
-                34.3056,
-                16.5206,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                16536.7257,
-                16538.3297,
-                -0.5776,
-                -1.5122,
-                16.543,
-                8.7217,
-                0.2807,
-                -2.1589,
-                0.0,
-                0.799,
-                0.0515,
-                0.0515,
-                34.2416,
-                34.239,
-                0.0,
-                0.0,
-                30.6399,
-                30.6399,
-                30.0,
-                5.0,
-                59.0,
-                124.0,
-                0.0,
-                316.0,
-                7161.0,
-                3.5742,
-                3.5742,
-                483.0,
-                3.0,
-                60.0,
-            ],
         ],
     }
 }
 
+opal_post = {
+    "array": [
+        1,
+        8.58,
+        34.9085,
+        34.9055,
+        16.177,
+        7.8868,
+        15.1744,
+        3.3549,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        16192.8871,
+        16194.8348,
+        -0.5713,
+        -0.8467,
+        16.2002,
+        9.0618,
+        0.2806,
+        -2.1328,
+        0,
+        0.7931,
+        0.0522,
+        0.0522,
+        34.8373,
+        34.8343,
+        0,
+        0,
+        30.801,
+        30.801,
+        28,
+        5,
+        63,
+        72,
+        0,
+        303,
+        7230,
+        3.774,
+        3.774,
+        510,
+        2,
+        34,
+    ]
+}
+
 ##################
 resolution = 30
-interval = 100
+interval = 7000
 colour = "#0D76BF"
 ##################
 
@@ -441,34 +322,41 @@ layout = html.Div(
 )
 
 
-@callback(Output("graph-gen-split", "figure"), [Input("interval", "n_intervals")])
+@callback(
+    [
+        Output("graph-gen-split", "figure"),
+        Output("graph-gen-total", "figure"),
+        Output("graph-demand", "figure"),
+        Output("graph-freq", "figure"),
+    ],
+    [Input("interval", "n_intervals")]
+)
 def update_data(n_intervals):  # type: ignore # noqa
     if n_intervals is None:
         raise PreventUpdate
     
-    gen_split_fig = generate_gen_split_fig(df)
-    return gen_split_fig
+    for idx, x in enumerate(opal_post["array"]):
+        print("idx:", idx)
+        print("x:", x)
+        if idx == 0:
+            opal_post["array"][idx] = x + 1
+            print("frame")
+        elif idx == 1:
+            opal_post["array"][idx] = x + 7
+            print("time")
+        else:
+            opal_post["array"][idx] = x + random.randint(2, 20)
+            print("random")
 
-@callback(Output("graph-gen-total", "figure"), [Input("interval", "n_intervals")])
-def update_data(n_intervals):  # type: ignore # noqa
-    if n_intervals is None:
-        raise PreventUpdate
+    print(opal_post)
     
-    total_gen_fig = generate_total_gen_fig(df)
-    return total_gen_fig
+    req = requests.post("http://127.0.0.1:8000/opal", json = opal_post)
+    req = requests.get("http://127.0.0.1:8000/opal")
 
-@callback(Output("graph-demand", "figure"), [Input("interval", "n_intervals")])
-def update_data(n_intervals):  # type: ignore # noqa
-    if n_intervals is None:
-        raise PreventUpdate
+    new_df = pd.DataFrame(**req.json()["data"])
     
-    total_dem_fig = generate_total_dem_fig(df)
-    return total_dem_fig
-
-@callback(Output("graph-freq", "figure"), [Input("interval", "n_intervals")])
-def update_data(n_intervals):  # type: ignore # noqa
-    if n_intervals is None:
-        raise PreventUpdate
-    
-    system_freq_fig = generate_system_freq_fig(df)
-    return system_freq_fig
+    gen_split_fig = generate_gen_split_fig(new_df)
+    total_gen_fig = generate_total_gen_fig(new_df)
+    total_dem_fig = generate_total_dem_fig(new_df)
+    system_freq_fig = generate_system_freq_fig(new_df)
+    return gen_split_fig, total_gen_fig, total_dem_fig, system_freq_fig
