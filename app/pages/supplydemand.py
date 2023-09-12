@@ -378,8 +378,9 @@ def update_data(n_intervals):  # type: ignore # noqa
 
     req = requests.post("http://127.0.0.1:8000/opal", json=opal_post)
     req = requests.get("http://127.0.0.1:8000/opal")
+    data = req.json()["data"]
 
-    new_df = pd.DataFrame(**req.json()["data"])
+    new_df = pd.DataFrame(**data)
 
     gen_split_fig = generate_gen_split_fig(new_df)
     total_gen_fig = generate_total_gen_fig(new_df)
