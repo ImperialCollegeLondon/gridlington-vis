@@ -2,11 +2,10 @@
 
 import random
 
+import dash  # type: ignore
 import pandas as pd
 import plotly.express as px
 import requests
-
-import dash  # type: ignore
 from dash import Input, Output, callback, dcc, html  # type: ignore
 from dash.exceptions import PreventUpdate  # type: ignore
 

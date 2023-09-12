@@ -1,4 +1,4 @@
-"""Test data for Opal"""
+"""Test data for Opal."""
 
 opal_data = {
     "data": {
