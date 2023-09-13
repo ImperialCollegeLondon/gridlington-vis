@@ -303,7 +303,7 @@ def generate_system_freq_fig(df: pd.DataFrame) -> px.line:
     return system_freq_fig
 
 
-df = pd.DataFrame(**opal_data)
+df = pd.DataFrame(**opal_data)  # type: ignore
 
 gen_split_fig = generate_gen_split_fig(df)
 total_gen_fig = generate_total_gen_fig(df)
