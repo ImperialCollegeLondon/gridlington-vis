@@ -6,36 +6,14 @@ services:
     volumes:
       - ./config/Spaces.json:/usr/src/app/packages/ove-core/dist/client/Spaces.json:ro
 
-  ovehub-ove-external-tuoris:
-    image: ovehub/ove-external-tuoris:v0.1
-    restart: unless-stopped
-    ports:
-    - "7080:7080"
-
-  openvidu-openvidu-call:
-    image: openvidu/openvidu-call:2.7.0
-    restart: unless-stopped
-    ports:
-    - "4443:4443"
-    environment:
-      openvidu.secret: "MY_SECRET"
-      openvidu.publicurl: "https://0.0.0.0:4443"
-
-  ovehub-ove-service-persistence-inmemory:
-    image: ovehub/ove-service-persistence-inmemory:0.2.1
-    restart: unless-stopped
-
   ovehub-ove-apps:
     image: ovehub/ove-apps:0.5.0
     restart: unless-stopped
     depends_on:
       - ovehub-ove-ove
-      - ovehub-ove-external-tuoris
-      - openvidu-openvidu-call
     environment:
       OVE_HOST: "0.0.0.0:8080"
-      TUORIS_HOST: "0.0.0.0:7080"
-      OPENVIDU_HOST: "0.0.0.0:4443"
+      OPENVIDU_HOST: "https://0.0.0.0:443"
       OPENVIDU_SECRET: "MY_SECRET"
 
   ovehub-ove-ui:
@@ -53,9 +31,8 @@ services:
     depends_on:
       - ovehub-ove-ove
       - ovehub-ove-apps
-      - ovehub-ove-service-persistence-inmemory
       - ovehub-ove-ui
     ports:
-    - "8080:8080"
+      - "8080:8080"
     volumes:
       - ./config/default.conf:/etc/nginx/conf.d/default.conf:ro

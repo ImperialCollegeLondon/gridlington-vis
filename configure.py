@@ -4,7 +4,7 @@ Run this script to create the docker-compose.yml file using the
 docker-compose.setup.ove.yml file and the IP address of the machine
 Finds the line in docker-compose.setup.ove.yml that contain the host IP
 address and replaces the value with the IP address of the machine in the new
-file. Also replaces the openvidu-call version to 2.12.0.
+file.
 
 Does the same for config/credentials.json file.
 """
@@ -43,9 +43,8 @@ def generate_docker_compose(template_file: str, ip: str, develop: bool = False) 
     """
     lines_to_replace = {
         "OVE_HOST": f"{ip}:8080",
-        "TOURIS_HOST": f"{ip}:7080",
-        "OPENVIDU_HOST": f"{ip}:4443",
-        "openvidu.publicurl": f"https://{ip}:4443",
+        # TODO: Point to the on-prem openvidu (keep as port 4443)
+        "OPENVIDU_HOST": "https://146.179.34.13:4443",
     }
 
     # Read the template file
@@ -54,25 +53,15 @@ def generate_docker_compose(template_file: str, ip: str, develop: bool = False) 
         docker_compose = yaml.safe_load(f)
 
     # Replace the values in the docker-compose.yml file
-    docker_compose["services"]["openvidu-openvidu-call"]["environment"][
-        "openvidu.publicurl"
-    ] = lines_to_replace["openvidu.publicurl"]
     docker_compose["services"]["ovehub-ove-apps"]["environment"][
         "OVE_HOST"
     ] = lines_to_replace["OVE_HOST"]
-    docker_compose["services"]["ovehub-ove-apps"]["environment"][
-        "TOURIS_HOST"
-    ] = lines_to_replace["TOURIS_HOST"]
     docker_compose["services"]["ovehub-ove-apps"]["environment"][
         "OPENVIDU_HOST"
     ] = lines_to_replace["OPENVIDU_HOST"]
     docker_compose["services"]["ovehub-ove-ui"]["environment"][
         "OVE_HOST"
     ] = lines_to_replace["OVE_HOST"]
-    # Also replace the openvidu-call version
-    docker_compose["services"]["openvidu-openvidu-call"][
-        "image"
-    ] = "openvidu/openvidu-call:2.12.0"
 
     # Add the dash app to to docker-compose.yml file
     logging.info("Adding dash app to docker-compose.yml...")
@@ -82,6 +71,9 @@ def generate_docker_compose(template_file: str, ip: str, develop: bool = False) 
     }
     if develop:
         docker_compose["services"]["dash"]["build"] = "."
+        docker_compose["services"]["ovehub-ove-apps"]["image"] = "ove-apps:9.9.9"
+        docker_compose["services"]["ovehub-ove-ove"]["image"] = "ove-ove:9.9.9"
+        docker_compose["services"]["ovehub-ove-ui"]["image"] = "ove-ui:9.9.9"
     else:
         docker_compose["services"]["dash"][
             "image"
