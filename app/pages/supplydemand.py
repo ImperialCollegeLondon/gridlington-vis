@@ -1,13 +1,10 @@
 """Page in dash app."""
 
-import random
 
 import dash  # type: ignore
 import datahub_api as datahub
-import opal
 import pandas as pd
 import plotly.express as px  # type: ignore
-import requests
 from dash import Input, Output, callback, dcc, html  # type: ignore
 from dash.exceptions import PreventUpdate  # type: ignore
 
@@ -27,23 +24,26 @@ def generate_gen_split_fig(df: pd.DataFrame) -> px.pie:
     Returns:
         Plotly express figure
     """
-    gen_split_df = df.iloc[-1, 13:23]
+    if len(df.columns) == 1:
+        gen_split_fig = px.pie()
+    else:
+        gen_split_df = df.iloc[-1, 13:23]
 
-    gen_split_fig = px.pie(
-        names=[
-            "Battery Generation",
-            "Interconnector Power",
-            "Offshore Wind Generation",
-            "Onshore Wind Generation",
-            "Other Generation",
-            "Pump Generation",
-            "Pv Generation",
-            "Nuclear Generation",
-            "Hydro Generation",
-            "Gas Generation",
-        ],
-        values=gen_split_df,
-    ).update_layout(title_text=df.iloc[-1]["Time"])
+        gen_split_fig = px.pie(
+            names=[
+                "Battery Generation",
+                "Interconnector Power",
+                "Offshore Wind Generation",
+                "Onshore Wind Generation",
+                "Other Generation",
+                "Pump Generation",
+                "Pv Generation",
+                "Nuclear Generation",
+                "Hydro Generation",
+                "Gas Generation",
+            ],
+            values=gen_split_df,
+        ).update_layout(title_text=df.iloc[-1]["Time"])
     return gen_split_fig
 
 
@@ -56,23 +56,26 @@ def generate_total_gen_fig(df: pd.DataFrame) -> px.line:
     Returns:
         Plotly express figure
     """
-    total_gen_fig = px.line(
-        df,
-        x="Time",
-        y=[
-            "Total Generation",
-            "Battery Generation",
-            "Interconnector Power",
-            "Offshore Wind Generation",
-            "Onshore Wind Generation",
-            "Other Generation",
-            "Pump Generation",
-            "Pv Generation",
-            "Nuclear Generation",
-            "Hydro Generation",
-            "Gas Generation",
-        ],
-    ).update_layout(yaxis_title="GW")
+    if len(df.columns) == 1:
+        total_gen_fig = px.line()
+    else:
+        total_gen_fig = px.line(
+            df,
+            x="Time",
+            y=[
+                "Total Generation",
+                "Battery Generation",
+                "Interconnector Power",
+                "Offshore Wind Generation",
+                "Onshore Wind Generation",
+                "Other Generation",
+                "Pump Generation",
+                "Pv Generation",
+                "Nuclear Generation",
+                "Hydro Generation",
+                "Gas Generation",
+            ],
+        ).update_layout(yaxis_title="GW")
     return total_gen_fig
 
 
@@ -85,13 +88,16 @@ def generate_total_dem_fig(df: pd.DataFrame) -> px.line:
     Returns:
         Plotly express figure
     """
-    total_dem_fig = px.line(
-        df,
-        x="Time",
-        y=[
-            "Total Demand",
-        ],
-    ).update_layout(yaxis_title="GW")
+    if len(df.columns) == 1:
+        total_dem_fig = px.line()
+    else:
+        total_dem_fig = px.line(
+            df,
+            x="Time",
+            y=[
+                "Total Demand",
+            ],
+        ).update_layout(yaxis_title="GW")
     return total_dem_fig
 
 
@@ -104,20 +110,21 @@ def generate_system_freq_fig(df: pd.DataFrame) -> px.line:
     Returns:
         Plotly express figure
     """
-    system_freq_fig = px.line(
-        df,
-        x="Time",
-        y=[
-            "Total Generation",
-            "Total Demand",
-        ],
-    ).update_layout(yaxis_title="GW")
+    if len(df.columns) == 1:
+        system_freq_fig = px.line()
+    else:
+        system_freq_fig = px.line(
+            df,
+            x="Time",
+            y=[
+                "Total Generation",
+                "Total Demand",
+            ],
+        ).update_layout(yaxis_title="GW")
     return system_freq_fig
 
 
-df = pd.DataFrame(**opal.opal_data)  # type: ignore
-
-opal_post = opal.opal_post.copy()
+df = pd.DataFrame({"Col": [0]})
 
 gen_split_fig = generate_gen_split_fig(df)
 total_gen_fig = generate_total_gen_fig(df)
@@ -181,18 +188,6 @@ layout = html.Div(
 def update_data(n_intervals):  # type: ignore # noqa
     if n_intervals is None:
         raise PreventUpdate
-
-    # POSTing random Opal data for test purposes
-    for idx, x in enumerate(opal_post["array"]):
-        if idx == 0:
-            opal_post["array"][idx] = x + 1
-        elif idx == 1:
-            opal_post["array"][idx] = x + 7
-        else:
-            opal_post["array"][idx] = x + random.randint(2, 20)
-
-    requests.post("http://127.0.0.1:8000/opal", json=opal_post)
-    ##################
 
     data = datahub.get_opal_data()
 
