@@ -2,6 +2,8 @@
 import dash  # type: ignore
 from dash import Dash, dcc, html  # type: ignore
 
+from .core_api import create_all
+
 app = Dash(__package__, use_pages=True, update_title=None)
 
 app.layout = html.Div(
@@ -24,6 +26,10 @@ app.layout = html.Div(
 )
 
 server = app.server
+
+# Create the OVE Sections
+create_all()
+
 
 if __name__ == "__main__":
     app.run_server(debug=True)

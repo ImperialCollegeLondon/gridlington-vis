@@ -45,6 +45,7 @@ def generate_docker_compose(template_file: str, ip: str, develop: bool = False) 
         "OVE_HOST": f"{ip}:8080",
         # TODO: Point to the on-prem openvidu (keep as port 4443)
         "OPENVIDU_HOST": "https://146.179.34.13:4443",
+        "PLOT_URL": f"{ip}:8050",
     }
 
     # Read the template file
@@ -68,6 +69,11 @@ def generate_docker_compose(template_file: str, ip: str, develop: bool = False) 
     docker_compose["services"]["dash"] = {
         "ports": ["8050:8050"],
         "volumes": ["./app:/app"],
+        "environment": {
+            "APP_URL": f"http://{lines_to_replace['OVE_HOST']}/app/html",
+            "API_URL": f"http://{lines_to_replace['OVE_HOST']}",
+            "PLOT_URL": f"http://{lines_to_replace['PLOT_URL']}",
+        },
     }
     if develop:
         docker_compose["services"]["dash"]["build"] = "."
