@@ -9,7 +9,6 @@ import requests
 """
 Constants for API URLs.
 """
-APP_URL = os.environ.get("APP_URL", "http://146.179.34.13:8080/app/html")
 API_URL = os.environ.get("API_URL", "http://liionsden.rcs.ic.ac.uk:8080")
 PLOT_URL = os.environ.get("PLOT_URL", "http://liionsden.rcs.ic.ac.uk:8050")
 
@@ -23,7 +22,10 @@ INIT_SECTIONS = [
         "w": 1440,
         "h": 808,
         "space": "Tablet",
-        "app": {"url": APP_URL, "states": {"load": {"url": f"{PLOT_URL}"}}},
+        "app": {
+            "url": f"{API_URL}/app/html",
+            "states": {"load": {"url": f"{PLOT_URL}"}},
+        },
     },
     {
         "x": 0,
@@ -31,7 +33,7 @@ INIT_SECTIONS = [
         "w": 1920,
         "h": 1080,
         "space": "PC01-Top",
-        "app": {"url": APP_URL, "states": {"load": {"url": f"{PLOT_URL}/plot1"}}},
+        "app": {"url": f"{API_URL}/app/webrtc", "states": {"load": "ScreenShare"}},
     },
     {
         "x": 0,
@@ -39,7 +41,10 @@ INIT_SECTIONS = [
         "w": 1920,
         "h": 1080,
         "space": "PC01-Left",
-        "app": {"url": APP_URL, "states": {"load": {"url": f"{PLOT_URL}/plot2"}}},
+        "app": {
+            "url": f"{API_URL}/app/html",
+            "states": {"load": {"url": f"{PLOT_URL}/plot2"}},
+        },
     },
     {
         "x": 0,
@@ -47,7 +52,10 @@ INIT_SECTIONS = [
         "w": 1920,
         "h": 1080,
         "space": "PC01-Right",
-        "app": {"url": APP_URL, "states": {"load": {"url": f"{PLOT_URL}/plot3"}}},
+        "app": {
+            "url": f"{API_URL}/app/html",
+            "states": {"load": {"url": f"{PLOT_URL}/plot3"}},
+        },
     },
     {
         "x": 0,
@@ -55,7 +63,7 @@ INIT_SECTIONS = [
         "w": 1920,
         "h": 1080,
         "space": "PC02-Top",
-        "app": {"url": APP_URL, "states": {"load": {"url": f"{PLOT_URL}/plot4"}}},
+        "app": {"url": f"{API_URL}/app/webrtc", "states": {"load": "ScreenShare"}},
     },
     {
         "x": 0,
@@ -63,7 +71,7 @@ INIT_SECTIONS = [
         "w": 1920,
         "h": 1080,
         "space": "PC02-Left",
-        "app": {"url": APP_URL, "states": {"load": {"url": f"{PLOT_URL}/plot5"}}},
+        "app": {"url": f"{API_URL}/app/webrtc", "states": {"load": "ScreenShare"}},
     },
     {
         "x": 0,
@@ -71,7 +79,7 @@ INIT_SECTIONS = [
         "w": 1920,
         "h": 1080,
         "space": "PC02-Right",
-        "app": {"url": APP_URL, "states": {"load": {"url": f"{PLOT_URL}/plot6"}}},
+        "app": {"url": f"{API_URL}/app/webrtc", "states": {"load": "ScreenShare"}},
     },
     {
         "x": 0,
@@ -79,7 +87,10 @@ INIT_SECTIONS = [
         "w": 3840,
         "h": 2160,
         "space": "Hub01",
-        "app": {"url": APP_URL, "states": {"load": {"url": f"{PLOT_URL}/plot7"}}},
+        "app": {
+            "url": f"{API_URL}/app/html",
+            "states": {"load": {"url": f"{PLOT_URL}/plot7"}},
+        },
     },
     {
         "x": 0,
@@ -87,7 +98,10 @@ INIT_SECTIONS = [
         "w": 3840,
         "h": 2160,
         "space": "Hub02",
-        "app": {"url": APP_URL, "states": {"load": {"url": f"{PLOT_URL}/plot8"}}},
+        "app": {
+            "url": f"{API_URL}/app/html",
+            "states": {"load": {"url": f"{PLOT_URL}/plot8"}},
+        },
     },
 ]
 

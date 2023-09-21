@@ -70,7 +70,6 @@ def generate_docker_compose(template_file: str, ip: str, develop: bool = False) 
         "ports": ["8050:8050"],
         "volumes": ["./app:/app"],
         "environment": {
-            "APP_URL": f"http://{lines_to_replace['OVE_HOST']}/app/html",
             "API_URL": f"http://{lines_to_replace['OVE_HOST']}",
             "PLOT_URL": f"http://{lines_to_replace['PLOT_URL']}",
         },
