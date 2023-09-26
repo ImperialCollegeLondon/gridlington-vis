@@ -8,7 +8,9 @@ Constant for API URLs.
 DH_URL = "http://127.0.0.1:8000"
 
 
-def get_opal_data(start: int = None, end: int = None) -> dict[str, dict]:  # type: ignore[type-arg]
+def get_opal_data(
+    start: int | None = None, end: int | None = None
+) -> dict[str, dict]:  # type: ignore[type-arg]
     """Function for making a GET request for Opal data.
 
     Args:
@@ -25,7 +27,7 @@ def get_opal_data(start: int = None, end: int = None) -> dict[str, dict]:  # typ
             query = query + f"start={start}&"
         if end:
             query = query + f"end={end}&"
-    
+
     req = requests.get(f"{DH_URL}/opal{query.rstrip('&')}")
 
     if "data" in req.json().keys():
@@ -35,7 +37,9 @@ def get_opal_data(start: int = None, end: int = None) -> dict[str, dict]:  # typ
         raise Exception("Opal data was not found")
 
 
-def get_dsr_data(start: int = None, end: int = None, col: list[str] = None) -> dict[str, dict]:  # type: ignore[type-arg]
+def get_dsr_data(
+    start: int | None = None, end: int | None = None, col: list[str] | None = None
+) -> dict[str, dict]:  # type: ignore[type-arg]
     """Function for making a GET request for Opal data.
 
     Args:
@@ -68,7 +72,6 @@ def get_dsr_data(start: int = None, end: int = None, col: list[str] = None) -> d
 
 def get_wesim_data() -> dict[str, dict]:  # type: ignore[type-arg]
     """Function for making a GET request for Wesim data."""
-
     req = requests.get(f"{DH_URL}/wesim")
     if "data" in req.json().keys():
         data = req.json()["data"]
