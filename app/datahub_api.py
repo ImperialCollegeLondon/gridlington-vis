@@ -1,11 +1,12 @@
 """Interacts with the DataHub API."""
+import os
 
 import requests
 
 """
 Constant for API URLs.
 """
-DH_URL = "http://127.0.0.1:8000"
+DH_URL = os.environ.get("DH_URL", "http://liionsden.rcs.ic.ac.uk")
 
 
 def get_opal_data(

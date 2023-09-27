@@ -46,6 +46,7 @@ def generate_docker_compose(template_file: str, ip: str, develop: bool = False) 
         # TODO: Point to the on-prem openvidu (keep as port 4443)
         "OPENVIDU_HOST": "https://146.179.34.13:4443",
         "PLOT_URL": f"{ip}:8050",
+        "DH_URL": f"{ip}:80",
     }
 
     # Read the template file
@@ -72,6 +73,7 @@ def generate_docker_compose(template_file: str, ip: str, develop: bool = False) 
         "environment": {
             "API_URL": f"http://{lines_to_replace['OVE_HOST']}",
             "PLOT_URL": f"http://{lines_to_replace['PLOT_URL']}",
+            "DH_URL": f"http://{lines_to_replace['DH_URL']}",
         },
     }
     if develop:
