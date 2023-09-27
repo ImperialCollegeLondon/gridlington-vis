@@ -2,11 +2,12 @@
 
 
 import dash  # type: ignore
-import datahub_api as datahub
 import pandas as pd
 import plotly.express as px  # type: ignore
 from dash import Input, Output, callback, dcc, html  # type: ignore
 from dash.exceptions import PreventUpdate  # type: ignore
+
+from .. import datahub_api as datahub
 
 dash.register_page(__name__)
 
