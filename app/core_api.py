@@ -43,7 +43,7 @@ INIT_SECTIONS = [
         "space": "PC01-Left",
         "app": {
             "url": f"{API_URL}/app/html",
-            "states": {"load": {"url": f"{PLOT_URL}/plot2"}},
+            "states": {"load": {"url": f"{PLOT_URL}/supplydemand"}},
         },
     },
     {
