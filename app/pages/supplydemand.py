@@ -133,9 +133,14 @@ total_dem_fig = generate_total_dem_fig(df)
 system_freq_fig = generate_system_freq_fig(df)
 
 layout = html.Div(
-    className='test-class',
-    style={"display": "flex", "flex-direction": "column", "height": "100%", "backgroundColor": "#F9F9F9"},
-    children = [
+    className="test-class",
+    style={
+        "display": "flex",
+        "flex-direction": "column",
+        "height": "100%",
+        "backgroundColor": "#F9F9F9",
+    },
+    children=[
         html.Div(
             style={"display": "flex", "justify-content": "space-around"},
             children=[
@@ -191,7 +196,7 @@ layout = html.Div(
             ],
         ),
         dcc.Interval(id="interval", interval=interval),
-    ]
+    ],
 )
 
 
