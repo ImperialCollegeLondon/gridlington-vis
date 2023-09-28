@@ -5,7 +5,11 @@ from dash import Dash, html  # type: ignore
 app = Dash(__package__, use_pages=True, update_title=None)
 
 app.layout = html.Div(
-    style={"backgroundColor": "#F9F9F9"},
+    style={
+        "display": "flex",
+        "flex-direction": "column",
+        "height": "100%",
+    },
     children=[
         dash.page_container,
     ],
