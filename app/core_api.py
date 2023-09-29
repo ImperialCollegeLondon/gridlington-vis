@@ -9,8 +9,8 @@ import requests
 """
 Constants for API URLs.
 """
-API_URL = os.environ.get("API_URL", "http://liionsden.rcs.ic.ac.uk:8080")
-PLOT_URL = os.environ.get("PLOT_URL", "http://liionsden.rcs.ic.ac.uk:8050")
+API_URL = os.environ.get("API_URL", "http://127.0.0.1:8080")
+PLOT_URL = os.environ.get("PLOT_URL", "http://127.0.0.1:8050")
 
 """
 Initial config for sections.
@@ -176,3 +176,7 @@ def delete_all() -> None:
     for num in id_nums:
         url = f"{API_URL}/sections/{num}"
         requests.delete(url)
+
+
+if __name__ == "__main__":
+    create_all()

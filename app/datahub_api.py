@@ -6,7 +6,7 @@ import requests
 """
 Constant for API URLs.
 """
-DH_URL = os.environ.get("DH_URL", "http://liionsden.rcs.ic.ac.uk")
+DH_URL = os.environ.get("DH_URL", "http://127.0.0.1:80")
 
 
 def get_opal_data(

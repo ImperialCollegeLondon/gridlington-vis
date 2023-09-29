@@ -78,6 +78,7 @@ def generate_docker_compose(
             "PLOT_URL": f"http://{lines_to_replace['PLOT_URL']}",
             "DH_URL": f"http://{lines_to_replace['DH_URL']}",
         },
+        "depends_on": ["nginx"],
     }
     if develop:
         docker_compose["services"]["dash"]["build"] = "."
