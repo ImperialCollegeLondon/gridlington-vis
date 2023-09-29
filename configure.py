@@ -28,7 +28,9 @@ def get_ip_address() -> str:
     return ip
 
 
-def generate_docker_compose(template_file: str, ip: str, develop: bool = False) -> None:
+def generate_docker_compose(
+    template_file: str, ip: str, develop: bool = False, local: bool = False
+) -> None:
     """Generate the docker-compose.yml file.
 
     Uses a template file and the IP address of the machine.
@@ -36,7 +38,8 @@ def generate_docker_compose(template_file: str, ip: str, develop: bool = False) 
     Args:
         template_file: Path to the template file.
         ip: IP address of the machine.
-        develop: Flag for when running in develop mode
+        develop: Flag for when running in develop mode.
+        local: Flag for when running locally with locally-built docker images.
 
     Returns:
         None
@@ -45,6 +48,8 @@ def generate_docker_compose(template_file: str, ip: str, develop: bool = False) 
         "OVE_HOST": f"{ip}:8080",
         # TODO: Point to the on-prem openvidu (keep as port 4443)
         "OPENVIDU_HOST": "https://146.179.34.13:4443",
+        "PLOT_URL": f"{ip}:8050",
+        "DH_URL": f"{ip}:80",
     }
 
     # Read the template file
@@ -68,16 +73,23 @@ def generate_docker_compose(template_file: str, ip: str, develop: bool = False) 
     docker_compose["services"]["dash"] = {
         "ports": ["8050:8050"],
         "volumes": ["./app:/app"],
+        "environment": {
+            "API_URL": f"http://{lines_to_replace['OVE_HOST']}",
+            "PLOT_URL": f"http://{lines_to_replace['PLOT_URL']}",
+            "DH_URL": f"http://{lines_to_replace['DH_URL']}",
+        },
+        "depends_on": ["nginx"],
     }
     if develop:
         docker_compose["services"]["dash"]["build"] = "."
-        docker_compose["services"]["ovehub-ove-apps"]["image"] = "ove-apps:9.9.9"
-        docker_compose["services"]["ovehub-ove-ove"]["image"] = "ove-ove:9.9.9"
-        docker_compose["services"]["ovehub-ove-ui"]["image"] = "ove-ui:9.9.9"
     else:
         docker_compose["services"]["dash"][
             "image"
         ] = "ghcr.io/imperialcollegelondon/gridlington-vis:main"
+    if local:
+        docker_compose["services"]["ovehub-ove-apps"]["image"] = "ove-apps:9.9.9"
+        docker_compose["services"]["ovehub-ove-ove"]["image"] = "ove-ove:9.9.9"
+        docker_compose["services"]["ovehub-ove-ui"]["image"] = "ove-ui:9.9.9"
 
     # Configure logging for nginx
     logging.info("Adding volume for nginx logs...")
@@ -94,5 +106,8 @@ def generate_docker_compose(template_file: str, ip: str, develop: bool = False) 
 if __name__ == "__main__":
     ip = get_ip_address()
     generate_docker_compose(
-        "docker-compose.setup.ove.yml", ip, develop="develop" in sys.argv
+        "docker-compose.setup.ove.yml",
+        ip,
+        develop="develop" in sys.argv,
+        local="local" in sys.argv,
     )
