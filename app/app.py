@@ -6,8 +6,7 @@ app = Dash(__package__, use_pages=True, update_title=None)
 
 app.layout = html.Div(
     style={
-        "display": "flex",
-        "flex-direction": "column",
+        "backgroundColor": "#F9F9F9",
         "height": "100%",
     },
     children=[
