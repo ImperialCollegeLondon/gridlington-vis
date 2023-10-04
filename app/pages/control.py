@@ -1,7 +1,8 @@
 """Controller Page for Dash app."""
 
 import dash  # type: ignore
-from dash import dcc, html  # type: ignore
+from dash import Input, Output, callback, dcc, html  # type: ignore
+from dash.exceptions import PreventUpdate  # type: ignore
 from dash_iconify import DashIconify  # type: ignore
 
 dash.register_page(__name__)
@@ -225,6 +226,7 @@ layout = html.Div(
                     },
                     children=[
                         html.Div(
+                            id="button_save",
                             style={
                                 "backgroundColor": "gray",
                                 "border-radius": "50%",
@@ -237,6 +239,7 @@ layout = html.Div(
                             ],
                         ),
                         html.Div(
+                            id="button_undo",
                             style={
                                 "backgroundColor": "gray",
                                 "border-radius": "50%",
@@ -256,6 +259,7 @@ layout = html.Div(
                     },
                     children=[
                         html.Div(
+                            id="button_start",
                             style={
                                 "backgroundColor": "gray",
                                 "border-radius": "50%",
@@ -266,6 +270,7 @@ layout = html.Div(
                             children=[DashIconify(icon="ph:play-fill", width=100)],
                         ),
                         html.Div(
+                            id="button_stop",
                             style={
                                 "backgroundColor": "gray",
                                 "border-radius": "50%",
@@ -276,6 +281,7 @@ layout = html.Div(
                             children=[DashIconify(icon="ri:stop-fill", width=100)],
                         ),
                         html.Div(
+                            id="button_refresh",
                             style={
                                 "backgroundColor": "gray",
                                 "border-radius": "50%",
@@ -293,3 +299,60 @@ layout = html.Div(
         ),
     ],
 )
+
+
+@callback(Output("button_save", "className"), [Input("button_save", "n_clicks")])
+def update_data(n_clicks):
+    """Placeholder function for Save Button."""
+    if n_clicks is None:
+        raise PreventUpdate
+    print("Clicked Save Button!")
+    return "clicked"
+
+
+@callback(Output("button_undo", "className"), [Input("button_undo", "n_clicks")])
+def update_data(n_clicks):
+    """Placeholder function for Undo Button."""
+    if n_clicks is None:
+        raise PreventUpdate
+    print("Clicked Undo Button!")
+    return "clicked"
+
+
+@callback(Output("button_start", "className"), [Input("button_start", "n_clicks")])
+def update_data(n_clicks):
+    """Placeholder function for Start Button.
+
+    Will make an API call to start Gridlington simulation and Datahub.
+
+    """
+    if n_clicks is None:
+        raise PreventUpdate
+    print("Clicked Start Button!")
+    return "clicked"
+
+
+@callback(Output("button_stop", "className"), [Input("button_stop", "n_clicks")])
+def update_data(n_clicks):
+    """Placeholder function for Stop Button.
+
+    Will make an API call to stop Gridlington simulation and Datahub.
+
+    """
+    if n_clicks is None:
+        raise PreventUpdate
+    print("Clicked Stop Button!")
+    return "clicked"
+
+
+@callback(Output("button_refresh", "className"), [Input("button_refresh", "n_clicks")])
+def update_data(n_clicks):
+    """Placeholder function for Refresh Button.
+
+    Will make an API call to refresh OVE spaces.
+
+    """
+    if n_clicks is None:
+        raise PreventUpdate
+    print("Clicked Refresh Button!")
+    return "clicked"
