@@ -302,7 +302,7 @@ layout = html.Div(
 
 
 @callback(Output("button_save", "className"), [Input("button_save", "n_clicks")])
-def update_data(n_clicks):
+def save_button_click(n_clicks):  # type: ignore # noqa
     """Placeholder function for Save Button."""
     if n_clicks is None:
         raise PreventUpdate
@@ -311,7 +311,7 @@ def update_data(n_clicks):
 
 
 @callback(Output("button_undo", "className"), [Input("button_undo", "n_clicks")])
-def update_data(n_clicks):
+def undo_button_click(n_clicks):  # type: ignore # noqa
     """Placeholder function for Undo Button."""
     if n_clicks is None:
         raise PreventUpdate
@@ -320,7 +320,7 @@ def update_data(n_clicks):
 
 
 @callback(Output("button_start", "className"), [Input("button_start", "n_clicks")])
-def update_data(n_clicks):
+def start_button_click(n_clicks):  # type: ignore # noqa
     """Placeholder function for Start Button.
 
     Will make an API call to start Gridlington simulation and Datahub.
@@ -333,7 +333,7 @@ def update_data(n_clicks):
 
 
 @callback(Output("button_stop", "className"), [Input("button_stop", "n_clicks")])
-def update_data(n_clicks):
+def stop_button_click(n_clicks):  # type: ignore # noqa
     """Placeholder function for Stop Button.
 
     Will make an API call to stop Gridlington simulation and Datahub.
@@ -346,7 +346,7 @@ def update_data(n_clicks):
 
 
 @callback(Output("button_refresh", "className"), [Input("button_refresh", "n_clicks")])
-def update_data(n_clicks):
+def refresh_button_click(n_clicks):  # type: ignore # noqa
     """Placeholder function for Refresh Button.
 
     Will make an API call to refresh OVE spaces.
