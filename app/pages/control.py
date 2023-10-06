@@ -17,7 +17,14 @@ spaces = [section["space"] for section in sections]
 
 
 def get_default(space: str) -> str:
-    """Function to get default option for dropdown."""
+    """Function to get default option for dropdown.
+
+    Args:
+        space: Name of the space
+
+    Returns:
+        The default section of the space
+    """
     for section in core.INIT_SECTIONS:
         if section["space"] == space:
             default: str = str(section["name"])
@@ -25,7 +32,14 @@ def get_default(space: str) -> str:
 
 
 def get_dropdown(space: str) -> html.Div:
-    """Function to generate dropdown menus."""
+    """Function to generate dropdown menus.
+
+    Args:
+        space: Name of the space
+
+    Returns:
+        Div containing dropdown menu
+    """
     div = html.Div(
         style={"width": "46%"},
         children=[
@@ -45,7 +59,14 @@ def get_dropdown(space: str) -> html.Div:
 
 
 def get_pc_dropdown(pc: str) -> html.Div:
-    """Function to generate dropdown menu group for PC displays."""
+    """Function to generate dropdown menu group for PC displays.
+
+    Args:
+        pc: Name of the PC with a Top, Left and Right space
+
+    Returns:
+        Div containing multiple dropdown menus
+    """
     div = html.Div(
         style={"width": "46%"},
         children=[
@@ -83,7 +104,15 @@ def get_pc_dropdown(pc: str) -> html.Div:
 
 
 def get_button(func: str, icon: str) -> html.Button:
-    """Function to generate buttons."""
+    """Function to generate buttons.
+
+    Args:
+        func: Name of the button function
+        icon: Path of the DashIconify icon
+
+    Returns:
+        Button element with desired id
+    """
     button = html.Button(
         id=f"button_{func}",
         style={
