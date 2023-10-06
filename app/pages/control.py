@@ -18,6 +18,67 @@ options = [
     "Agent",
 ]
 
+
+def get_dropdown(space: str, default: str) -> html.Div:
+    """Function to generate dropdown menus."""
+    div = html.Div(
+        style={"width": "46%"},
+        children=[
+            html.H3(
+                style={"text-align": "center", "margin": "0"},
+                children=space,
+            ),
+            dcc.Dropdown(
+                options,
+                default,
+                id=f"{space}_dropdown",
+                clearable=False,
+            ),
+        ],
+    )
+    return div
+
+
+def get_pc_dropdown(
+    pc: str, default_1: str, default_2: str, default_3: str
+) -> html.Div:
+    """Function to generate dropdown menu group for PC displays."""
+    div = html.Div(
+        style={"width": "46%"},
+        children=[
+            html.Div(
+                children=[
+                    html.H3(
+                        style={
+                            "text-align": "center",
+                            "margin": "0",
+                        },
+                        children=f"{pc}-Top",
+                    ),
+                    dcc.Dropdown(
+                        options,
+                        default_1,
+                        id=f"{pc}-Top_dropdown",
+                        clearable=False,
+                    ),
+                ],
+            ),
+            html.Div(
+                style={
+                    "display": "flex",
+                    "justify-content": "space-between",
+                    "padding": "12px 0",
+                },
+                children=[
+                    get_dropdown(f"{pc}-Left", default_2),
+                    get_dropdown(f"{pc}-Right", default_3),
+                ],
+            ),
+        ],
+    )
+    return div
+
+
 layout = html.Div(
     style={
         "height": "96vh",
@@ -36,36 +97,8 @@ layout = html.Div(
                         "padding": "6px 0",
                     },
                     children=[
-                        html.Div(
-                            style={"width": "46%"},
-                            children=[
-                                html.H3(
-                                    style={"text-align": "center", "margin": "0"},
-                                    children="Hub01",
-                                ),
-                                dcc.Dropdown(
-                                    options,
-                                    "Market",
-                                    id="Hub01_dropdown",
-                                    clearable=False,
-                                ),
-                            ],
-                        ),
-                        html.Div(
-                            style={"width": "46%"},
-                            children=[
-                                html.H3(
-                                    style={"text-align": "center", "margin": "0"},
-                                    children="Hub02",
-                                ),
-                                dcc.Dropdown(
-                                    options,
-                                    "Agent",
-                                    id="Hub02_dropdown",
-                                    clearable=False,
-                                ),
-                            ],
-                        ),
+                        get_dropdown("Hub01", "Market"),
+                        get_dropdown("Hub02", "Agent"),
                     ],
                 ),
                 html.Div(
@@ -75,139 +108,17 @@ layout = html.Div(
                         "padding": "6px 0",
                     },
                     children=[
-                        html.Div(
-                            style={"width": "46%"},
-                            children=[
-                                html.Div(
-                                    children=[
-                                        html.H3(
-                                            style={
-                                                "text-align": "center",
-                                                "margin": "0",
-                                            },
-                                            children="PC01-Top",
-                                        ),
-                                        dcc.Dropdown(
-                                            options,
-                                            "NMX",
-                                            id="PC01-Top_dropdown",
-                                            clearable=False,
-                                        ),
-                                    ],
-                                ),
-                                html.Div(
-                                    style={
-                                        "display": "flex",
-                                        "justify-content": "space-between",
-                                        "padding": "12px 0",
-                                    },
-                                    children=[
-                                        html.Div(
-                                            style={"width": "46%"},
-                                            children=[
-                                                html.H3(
-                                                    style={
-                                                        "text-align": "center",
-                                                        "margin": "0",
-                                                    },
-                                                    children="PC01-Left",
-                                                ),
-                                                dcc.Dropdown(
-                                                    options,
-                                                    "Balance of Supply and Demand",
-                                                    id="PC01-Left_dropdown",
-                                                    clearable=False,
-                                                ),
-                                            ],
-                                        ),
-                                        html.Div(
-                                            style={"width": "46%"},
-                                            children=[
-                                                html.H3(
-                                                    style={
-                                                        "text-align": "center",
-                                                        "margin": "0",
-                                                    },
-                                                    children="PC01-Right",
-                                                ),
-                                                dcc.Dropdown(
-                                                    options,
-                                                    "Markets and Reserve",
-                                                    id="PC01-Right_dropdown",
-                                                    clearable=False,
-                                                ),
-                                            ],
-                                        ),
-                                    ],
-                                ),
-                            ],
+                        get_pc_dropdown(
+                            "PC01",
+                            "NMX",
+                            "Balance of Supply and Demand",
+                            "Markets and Reserve",
                         ),
-                        html.Div(
-                            style={"width": "46%"},
-                            children=[
-                                html.Div(
-                                    children=[
-                                        html.H3(
-                                            style={
-                                                "text-align": "center",
-                                                "margin": "0",
-                                            },
-                                            children="PC02-Top",
-                                        ),
-                                        dcc.Dropdown(
-                                            options,
-                                            "NMX Georgraphic Map",
-                                            id="PC02-Top_dropdown",
-                                            clearable=False,
-                                        ),
-                                    ]
-                                ),
-                                html.Div(
-                                    style={
-                                        "display": "flex",
-                                        "justify-content": "space-between",
-                                        "padding": "12px 0",
-                                    },
-                                    children=[
-                                        html.Div(
-                                            style={"width": "46%"},
-                                            children=[
-                                                html.H3(
-                                                    style={
-                                                        "text-align": "center",
-                                                        "margin": "0",
-                                                    },
-                                                    children="PC02-Left",
-                                                ),
-                                                dcc.Dropdown(
-                                                    options,
-                                                    "NMX 11kV Schematic",
-                                                    id="PC02-Left_dropdown",
-                                                    clearable=False,
-                                                ),
-                                            ],
-                                        ),
-                                        html.Div(
-                                            style={"width": "46%"},
-                                            children=[
-                                                html.H3(
-                                                    style={
-                                                        "text-align": "center",
-                                                        "margin": "0",
-                                                    },
-                                                    children="PC02-Right",
-                                                ),
-                                                dcc.Dropdown(
-                                                    options,
-                                                    "NMX Issues",
-                                                    id="PC02-Right_dropdown",
-                                                    clearable=False,
-                                                ),
-                                            ],
-                                        ),
-                                    ],
-                                ),
-                            ],
+                        get_pc_dropdown(
+                            "PC02",
+                            "NMX Georgraphic Map",
+                            "NMX 11kV Schematic",
+                            "NMX Issues",
                         ),
                     ],
                 ),
