@@ -79,6 +79,20 @@ def get_pc_dropdown(
     return div
 
 
+def get_button(func: str, icon: str) -> html.Button:
+    """Function to generate buttons."""
+    button = html.Button(
+        id=f"button_{func}",
+        style={
+            "padding": "20px",
+            "display": "grid",
+            "justify-content": "center",
+        },
+        children=[DashIconify(icon=icon, width=100)],
+    )
+    return button
+
+
 layout = html.Div(
     style={
         "height": "96vh",
@@ -136,26 +150,8 @@ layout = html.Div(
                         "margin": "auto",
                     },
                     children=[
-                        html.Button(
-                            id="button_update",
-                            style={
-                                "padding": "20px",
-                                "display": "grid",
-                                "justify-content": "center",
-                            },
-                            children=[
-                                DashIconify(icon="solar:upload-outline", width=100)
-                            ],
-                        ),
-                        html.Button(
-                            id="button_default",
-                            style={
-                                "padding": "20px",
-                                "display": "grid",
-                                "justify-content": "center",
-                            },
-                            children=[DashIconify(icon="iconoir:undo", width=100)],
-                        ),
+                        get_button("update", "solar:upload-outline"),
+                        get_button("default", "iconoir:undo"),
                     ],
                 ),
                 html.Div(
@@ -165,35 +161,9 @@ layout = html.Div(
                         "padding": "10px",
                     },
                     children=[
-                        html.Button(
-                            id="button_start",
-                            style={
-                                "padding": "20px",
-                                "display": "grid",
-                                "justify-content": "center",
-                            },
-                            children=[DashIconify(icon="ph:play-fill", width=100)],
-                        ),
-                        html.Button(
-                            id="button_stop",
-                            style={
-                                "padding": "20px",
-                                "display": "grid",
-                                "justify-content": "center",
-                            },
-                            children=[DashIconify(icon="ri:stop-fill", width=100)],
-                        ),
-                        html.Button(
-                            id="button_restart",
-                            style={
-                                "padding": "20px",
-                                "display": "grid",
-                                "justify-content": "center",
-                            },
-                            children=[
-                                DashIconify(icon="solar:refresh-bold", width=100)
-                            ],
-                        ),
+                        get_button("start", "ph:play-fill"),
+                        get_button("stop", "ri:stop-fill"),
+                        get_button("restart", "solar:refresh-bold"),
                     ],
                 ),
             ],
