@@ -226,7 +226,7 @@ layout = html.Div(
                     },
                     children=[
                         html.Div(
-                            id="button_save",
+                            id="button_update",
                             style={
                                 "backgroundColor": "gray",
                                 "border-radius": "50%",
@@ -239,7 +239,7 @@ layout = html.Div(
                             ],
                         ),
                         html.Div(
-                            id="button_undo",
+                            id="button_default",
                             style={
                                 "backgroundColor": "gray",
                                 "border-radius": "50%",
@@ -281,7 +281,7 @@ layout = html.Div(
                             children=[DashIconify(icon="ri:stop-fill", width=100)],
                         ),
                         html.Div(
-                            id="button_refresh",
+                            id="button_restart",
                             style={
                                 "backgroundColor": "gray",
                                 "border-radius": "50%",
@@ -301,21 +301,29 @@ layout = html.Div(
 )
 
 
-@callback(Output("button_save", "className"), [Input("button_save", "n_clicks")])
-def save_button_click(n_clicks):  # type: ignore # noqa
-    """Placeholder function for Save Button."""
+@callback(Output("button_update", "className"), [Input("button_update", "n_clicks")])
+def update_button_click(n_clicks):  # type: ignore # noqa
+    """Placeholder function for Update Button.
+
+    Will make an API call to set up OVE sections accoding to dropdowns.
+
+    """
     if n_clicks is None:
         raise PreventUpdate
-    print("Clicked Save Button!")
+    print("Clicked Update Button!")
     return "clicked"
 
 
-@callback(Output("button_undo", "className"), [Input("button_undo", "n_clicks")])
-def undo_button_click(n_clicks):  # type: ignore # noqa
-    """Placeholder function for Undo Button."""
+@callback(Output("button_default", "className"), [Input("button_default", "n_clicks")])
+def default_button_click(n_clicks):  # type: ignore # noqa
+    """Placeholder function for Update Button.
+
+    Will make an API call to set up OVE sections accoding to default configuration.
+
+    """
     if n_clicks is None:
         raise PreventUpdate
-    print("Clicked Undo Button!")
+    print("Clicked Default Button!")
     return "clicked"
 
 
@@ -323,7 +331,7 @@ def undo_button_click(n_clicks):  # type: ignore # noqa
 def start_button_click(n_clicks):  # type: ignore # noqa
     """Placeholder function for Start Button.
 
-    Will make an API call to start Gridlington simulation and Datahub.
+    Will make an API call to start the Gridlington simulation and Datahub.
 
     """
     if n_clicks is None:
@@ -336,7 +344,7 @@ def start_button_click(n_clicks):  # type: ignore # noqa
 def stop_button_click(n_clicks):  # type: ignore # noqa
     """Placeholder function for Stop Button.
 
-    Will make an API call to stop Gridlington simulation and Datahub.
+    Will make an API call to stop the Gridlington simulation and Datahub.
 
     """
     if n_clicks is None:
@@ -345,14 +353,14 @@ def stop_button_click(n_clicks):  # type: ignore # noqa
     return "clicked"
 
 
-@callback(Output("button_refresh", "className"), [Input("button_refresh", "n_clicks")])
-def refresh_button_click(n_clicks):  # type: ignore # noqa
-    """Placeholder function for Refresh Button.
+@callback(Output("button_restart", "className"), [Input("button_restart", "n_clicks")])
+def restart_button_click(n_clicks):  # type: ignore # noqa
+    """Placeholder function for Restart Button.
 
-    Will make an API call to refresh OVE spaces.
+    Will make an API call to restart the Gridlington simulation and Datahub.
 
     """
     if n_clicks is None:
         raise PreventUpdate
-    print("Clicked Refresh Button!")
+    print("Clicked Restart Button!")
     return "clicked"
