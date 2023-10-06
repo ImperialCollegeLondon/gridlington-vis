@@ -1,7 +1,7 @@
 """Controller Page for Dash app."""
 
 import dash  # type: ignore
-from dash import Input, Output, callback, ctx, dcc, html  # type: ignore
+from dash import Input, Output, State, callback, ctx, dcc, html  # type: ignore
 from dash.exceptions import PreventUpdate  # type: ignore
 from dash_iconify import DashIconify  # type: ignore
 
@@ -9,9 +9,11 @@ from .. import core_api as core
 
 dash.register_page(__name__)
 
+sections = core.INIT_SECTIONS.copy()
+sections.pop(0)
 
-options = [section["name"] for section in core.INIT_SECTIONS]
-options.pop(0)
+options = [section["name"] for section in sections]
+spaces = [section["space"] for section in sections]
 
 
 def get_default(space: str) -> str:
@@ -177,13 +179,31 @@ layout = html.Div(
         Input("button_stop", "n_clicks"),
         Input("button_restart", "n_clicks"),
     ],
+    [
+        State("Hub01_dropdown", "value"),
+        State("Hub02_dropdown", "value"),
+        State("PC01-Top_dropdown", "value"),
+        State("PC01-Left_dropdown", "value"),
+        State("PC01-Right_dropdown", "value"),
+        State("PC02-Top_dropdown", "value"),
+        State("PC02-Left_dropdown", "value"),
+        State("PC02-Right_dropdown", "value"),
+    ],
 )
 def update_button_click(
-    button_update: str,
-    button_default: str,
-    button_start: str,
-    button_stop: str,
-    button_restart: str,
+    button_update: int | None,
+    button_default: int | None,
+    button_start: int | None,
+    button_stop: int | None,
+    button_restart: int | None,
+    Hub01_dropdown: str,
+    Hub02_dropdown: str,
+    PC01_Top_dropdown: str,
+    PC01_Left_dropdown: str,
+    PC01_Right_dropdown: str,
+    PC02_Top_dropdown: str,
+    PC02_Left_dropdown: str,
+    PC02_Right_dropdown: str,
 ) -> list[str]:
     """Placeholder function for buttons."""
     button_id = ctx.triggered_id
@@ -193,13 +213,18 @@ def update_button_click(
     button_id = ctx.triggered_id[7:]
 
     if button_id == "update":
-        """Will make an API call to set up OVE sections accoding to dropdowns."""
+        """Will make an API call to set up OVE sections accoding to dropdowns.
+
+        Args: Value inputs for the 8 dropdown menus
+        """
         print("Clicked Update Button!")
         return ["Clicked Update Button!"]
 
     elif button_id == "default":
         """Will make an API call to set up OVE sections accoding to
         default configuration.
+
+        Args: INIT_SECTIONS list from core_api.py
         """
         print("Clicked Default Button!")
         return ["Clicked Default Button!"]
