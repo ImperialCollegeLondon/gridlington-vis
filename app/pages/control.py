@@ -5,21 +5,24 @@ from dash import Input, Output, callback, dcc, html  # type: ignore
 from dash.exceptions import PreventUpdate  # type: ignore
 from dash_iconify import DashIconify  # type: ignore
 
+from .. import core_api as core
+
 dash.register_page(__name__)
 
-options = [
-    "NMX",
-    "Balance of Supply and Demand",
-    "Markets and Reserve",
-    "NMX Georgraphic Map",
-    "NMX 11kV Schematic",
-    "NMX Issues",
-    "Market",
-    "Agent",
-]
+
+options = [section["name"] for section in core.INIT_SECTIONS]
+options.pop(0)
 
 
-def get_dropdown(space: str, default: str) -> html.Div:
+def get_default(space: str) -> str:
+    """Function to get default option for dropdown."""
+    for section in core.INIT_SECTIONS:
+        if section["space"] == space:
+            default: str = str(section["name"])
+    return default
+
+
+def get_dropdown(space: str) -> html.Div:
     """Function to generate dropdown menus."""
     div = html.Div(
         style={"width": "46%"},
@@ -30,7 +33,7 @@ def get_dropdown(space: str, default: str) -> html.Div:
             ),
             dcc.Dropdown(
                 options,
-                default,
+                get_default(space),
                 id=f"{space}_dropdown",
                 clearable=False,
             ),
@@ -39,9 +42,7 @@ def get_dropdown(space: str, default: str) -> html.Div:
     return div
 
 
-def get_pc_dropdown(
-    pc: str, default_1: str, default_2: str, default_3: str
-) -> html.Div:
+def get_pc_dropdown(pc: str) -> html.Div:
     """Function to generate dropdown menu group for PC displays."""
     div = html.Div(
         style={"width": "46%"},
@@ -57,7 +58,7 @@ def get_pc_dropdown(
                     ),
                     dcc.Dropdown(
                         options,
-                        default_1,
+                        get_default(f"{pc}-Top"),
                         id=f"{pc}-Top_dropdown",
                         clearable=False,
                     ),
@@ -70,8 +71,8 @@ def get_pc_dropdown(
                     "padding": "12px 0",
                 },
                 children=[
-                    get_dropdown(f"{pc}-Left", default_2),
-                    get_dropdown(f"{pc}-Right", default_3),
+                    get_dropdown(f"{pc}-Left"),
+                    get_dropdown(f"{pc}-Right"),
                 ],
             ),
         ],
@@ -111,8 +112,8 @@ layout = html.Div(
                         "padding": "6px 0",
                     },
                     children=[
-                        get_dropdown("Hub01", "Market"),
-                        get_dropdown("Hub02", "Agent"),
+                        get_dropdown("Hub01"),
+                        get_dropdown("Hub02"),
                     ],
                 ),
                 html.Div(
@@ -122,18 +123,8 @@ layout = html.Div(
                         "padding": "6px 0",
                     },
                     children=[
-                        get_pc_dropdown(
-                            "PC01",
-                            "NMX",
-                            "Balance of Supply and Demand",
-                            "Markets and Reserve",
-                        ),
-                        get_pc_dropdown(
-                            "PC02",
-                            "NMX Georgraphic Map",
-                            "NMX 11kV Schematic",
-                            "NMX Issues",
-                        ),
+                        get_pc_dropdown("PC01"),
+                        get_pc_dropdown("PC02"),
                     ],
                 ),
             ],

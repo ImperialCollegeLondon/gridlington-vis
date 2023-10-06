@@ -17,6 +17,7 @@ Initial config for sections.
 """
 INIT_SECTIONS = [
     {
+        "name": "Control",
         "x": 0,
         "y": 0,
         "w": 1440,
@@ -28,6 +29,7 @@ INIT_SECTIONS = [
         },
     },
     {
+        "name": "NMX",
         "x": 0,
         "y": 0,
         "w": 1920,
@@ -36,6 +38,7 @@ INIT_SECTIONS = [
         "app": {"url": f"{API_URL}/app/webrtc", "states": {"load": "ScreenShare"}},
     },
     {
+        "name": "Balance of Supply and Demand",
         "x": 0,
         "y": 0,
         "w": 1920,
@@ -47,6 +50,7 @@ INIT_SECTIONS = [
         },
     },
     {
+        "name": "Markets and Reserve",
         "x": 0,
         "y": 0,
         "w": 1920,
@@ -58,6 +62,7 @@ INIT_SECTIONS = [
         },
     },
     {
+        "name": "NMX Georgraphic Map",
         "x": 0,
         "y": 0,
         "w": 1920,
@@ -66,6 +71,7 @@ INIT_SECTIONS = [
         "app": {"url": f"{API_URL}/app/webrtc", "states": {"load": "ScreenShare"}},
     },
     {
+        "name": "NMX 11kV Schematic",
         "x": 0,
         "y": 0,
         "w": 1920,
@@ -74,6 +80,7 @@ INIT_SECTIONS = [
         "app": {"url": f"{API_URL}/app/webrtc", "states": {"load": "ScreenShare"}},
     },
     {
+        "name": "NMX Issues",
         "x": 0,
         "y": 0,
         "w": 1920,
@@ -82,6 +89,7 @@ INIT_SECTIONS = [
         "app": {"url": f"{API_URL}/app/webrtc", "states": {"load": "ScreenShare"}},
     },
     {
+        "name": "Market",
         "x": 0,
         "y": 0,
         "w": 3840,
@@ -93,6 +101,7 @@ INIT_SECTIONS = [
         },
     },
     {
+        "name": "Agent",
         "x": 0,
         "y": 0,
         "w": 3840,
@@ -106,6 +115,12 @@ INIT_SECTIONS = [
 ]
 
 
+section_data = [
+    {key: val for key, val in section.items() if key != "name"}
+    for section in INIT_SECTIONS
+]
+
+
 def wait_for_ove() -> None:
     """Function to wait for the OVE Core API to be available after startup."""
     while requests.get(API_URL).status_code != 200:
@@ -115,7 +130,7 @@ def wait_for_ove() -> None:
 def create_all() -> None:
     """Function for creating all initial sections."""
     wait_for_ove()
-    for section in INIT_SECTIONS:
+    for section in section_data:
         response = requests.post(f"{API_URL}/section", json=section)
         logging.info(response.text)
 
