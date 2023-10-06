@@ -225,11 +225,9 @@ layout = html.Div(
                         "margin": "auto",
                     },
                     children=[
-                        html.Div(
+                        html.Button(
                             id="button_update",
                             style={
-                                "backgroundColor": "gray",
-                                "border-radius": "50%",
                                 "padding": "20px",
                                 "display": "grid",
                                 "justify-content": "center",
@@ -238,11 +236,9 @@ layout = html.Div(
                                 DashIconify(icon="solar:upload-outline", width=100)
                             ],
                         ),
-                        html.Div(
+                        html.Button(
                             id="button_default",
                             style={
-                                "backgroundColor": "gray",
-                                "border-radius": "50%",
                                 "padding": "20px",
                                 "display": "grid",
                                 "justify-content": "center",
@@ -258,33 +254,27 @@ layout = html.Div(
                         "padding": "10px",
                     },
                     children=[
-                        html.Div(
+                        html.Button(
                             id="button_start",
                             style={
-                                "backgroundColor": "gray",
-                                "border-radius": "50%",
                                 "padding": "20px",
                                 "display": "grid",
                                 "justify-content": "center",
                             },
                             children=[DashIconify(icon="ph:play-fill", width=100)],
                         ),
-                        html.Div(
+                        html.Button(
                             id="button_stop",
                             style={
-                                "backgroundColor": "gray",
-                                "border-radius": "50%",
                                 "padding": "20px",
                                 "display": "grid",
                                 "justify-content": "center",
                             },
                             children=[DashIconify(icon="ri:stop-fill", width=100)],
                         ),
-                        html.Div(
+                        html.Button(
                             id="button_restart",
                             style={
-                                "backgroundColor": "gray",
-                                "border-radius": "50%",
                                 "padding": "20px",
                                 "display": "grid",
                                 "justify-content": "center",
