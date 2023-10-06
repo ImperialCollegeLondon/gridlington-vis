@@ -1,7 +1,7 @@
 """Controller Page for Dash app."""
 
 import dash  # type: ignore
-from dash import Input, Output, callback, dcc, html  # type: ignore
+from dash import Input, Output, callback, ctx, dcc, html  # type: ignore
 from dash.exceptions import PreventUpdate  # type: ignore
 from dash_iconify import DashIconify  # type: ignore
 
@@ -130,6 +130,11 @@ layout = html.Div(
             ],
         ),
         html.Div(
+            id="message",
+            style={"text-align": "center"},
+            children=["No buttons pressed yet..."],
+        ),
+        html.Div(
             style={"padding": "20px 0", "flex": "1"},
             children=[
                 html.Div(
@@ -163,66 +168,56 @@ layout = html.Div(
 )
 
 
-@callback(Output("button_update", "className"), [Input("button_update", "n_clicks")])
-def update_button_click(n_clicks):  # type: ignore # noqa
-    """Placeholder function for Update Button.
-
-    Will make an API call to set up OVE sections accoding to dropdowns.
-
-    """
-    if n_clicks is None:
+@callback(
+    Output("message", "children"),
+    [
+        Input("button_update", "n_clicks"),
+        Input("button_default", "n_clicks"),
+        Input("button_start", "n_clicks"),
+        Input("button_stop", "n_clicks"),
+        Input("button_restart", "n_clicks"),
+    ],
+)
+def update_button_click(
+    button_update: str,
+    button_default: str,
+    button_start: str,
+    button_stop: str,
+    button_restart: str,
+) -> list[str]:
+    """Placeholder function for buttons."""
+    button_id = ctx.triggered_id
+    if ctx.triggered_id is None:
         raise PreventUpdate
-    print("Clicked Update Button!")
-    return "clicked"
 
+    button_id = ctx.triggered_id[7:]
 
-@callback(Output("button_default", "className"), [Input("button_default", "n_clicks")])
-def default_button_click(n_clicks):  # type: ignore # noqa
-    """Placeholder function for Update Button.
+    if button_id == "update":
+        """Will make an API call to set up OVE sections accoding to dropdowns."""
+        print("Clicked Update Button!")
+        return ["Clicked Update Button!"]
 
-    Will make an API call to set up OVE sections accoding to default configuration.
+    elif button_id == "default":
+        """Will make an API call to set up OVE sections accoding to
+        default configuration.
+        """
+        print("Clicked Default Button!")
+        return ["Clicked Default Button!"]
 
-    """
-    if n_clicks is None:
-        raise PreventUpdate
-    print("Clicked Default Button!")
-    return "clicked"
+    elif button_id == "start":
+        """Will make an API call to start the Gridlington simulation and Datahub."""
+        print("Clicked Start Button!")
+        return ["Clicked Start Button!"]
 
+    elif button_id == "stop":
+        """Will make an API call to stop the Gridlington simulation and Datahub."""
+        print("Clicked Stop Button!")
+        return ["Clicked Stop Button!"]
 
-@callback(Output("button_start", "className"), [Input("button_start", "n_clicks")])
-def start_button_click(n_clicks):  # type: ignore # noqa
-    """Placeholder function for Start Button.
+    elif button_id == "restart":
+        """Will make an API call to restart the Gridlington simulation and Datahub."""
+        print("Clicked Restart Button!")
+        return ["Clicked Restart Button!"]
 
-    Will make an API call to start the Gridlington simulation and Datahub.
-
-    """
-    if n_clicks is None:
-        raise PreventUpdate
-    print("Clicked Start Button!")
-    return "clicked"
-
-
-@callback(Output("button_stop", "className"), [Input("button_stop", "n_clicks")])
-def stop_button_click(n_clicks):  # type: ignore # noqa
-    """Placeholder function for Stop Button.
-
-    Will make an API call to stop the Gridlington simulation and Datahub.
-
-    """
-    if n_clicks is None:
-        raise PreventUpdate
-    print("Clicked Stop Button!")
-    return "clicked"
-
-
-@callback(Output("button_restart", "className"), [Input("button_restart", "n_clicks")])
-def restart_button_click(n_clicks):  # type: ignore # noqa
-    """Placeholder function for Restart Button.
-
-    Will make an API call to restart the Gridlington simulation and Datahub.
-
-    """
-    if n_clicks is None:
-        raise PreventUpdate
-    print("Clicked Restart Button!")
-    return "clicked"
+    else:
+        return [""]
