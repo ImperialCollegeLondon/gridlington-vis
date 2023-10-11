@@ -15,8 +15,8 @@ PLOT_URL = os.environ.get("PLOT_URL", "http://127.0.0.1:8050")
 """
 Initial config for sections.
 """
-INIT_SECTIONS = [
-    {
+INIT_SECTIONS = {
+    "Control": {
         "x": 0,
         "y": 0,
         "w": 1440,
@@ -27,7 +27,7 @@ INIT_SECTIONS = [
             "states": {"load": {"url": f"{PLOT_URL}"}},
         },
     },
-    {
+    "NMX": {
         "x": 0,
         "y": 0,
         "w": 1920,
@@ -35,7 +35,7 @@ INIT_SECTIONS = [
         "space": "PC01-Top",
         "app": {"url": f"{API_URL}/app/webrtc", "states": {"load": "ScreenShare"}},
     },
-    {
+    "Balance of Supply and Demand": {
         "x": 0,
         "y": 0,
         "w": 1920,
@@ -46,7 +46,7 @@ INIT_SECTIONS = [
             "states": {"load": {"url": f"{PLOT_URL}/supplydemand"}},
         },
     },
-    {
+    "Markets and Reserve": {
         "x": 0,
         "y": 0,
         "w": 1920,
@@ -57,7 +57,7 @@ INIT_SECTIONS = [
             "states": {"load": {"url": f"{PLOT_URL}/plot3"}},
         },
     },
-    {
+    "NMX Georgraphic Map": {
         "x": 0,
         "y": 0,
         "w": 1920,
@@ -65,7 +65,7 @@ INIT_SECTIONS = [
         "space": "PC02-Top",
         "app": {"url": f"{API_URL}/app/webrtc", "states": {"load": "ScreenShare"}},
     },
-    {
+    "NMX 11kV Schematic": {
         "x": 0,
         "y": 0,
         "w": 1920,
@@ -73,7 +73,7 @@ INIT_SECTIONS = [
         "space": "PC02-Left",
         "app": {"url": f"{API_URL}/app/webrtc", "states": {"load": "ScreenShare"}},
     },
-    {
+    "NMX Issues": {
         "x": 0,
         "y": 0,
         "w": 1920,
@@ -81,7 +81,7 @@ INIT_SECTIONS = [
         "space": "PC02-Right",
         "app": {"url": f"{API_URL}/app/webrtc", "states": {"load": "ScreenShare"}},
     },
-    {
+    "Market": {
         "x": 0,
         "y": 0,
         "w": 3840,
@@ -92,7 +92,7 @@ INIT_SECTIONS = [
             "states": {"load": {"url": f"{PLOT_URL}/plot7"}},
         },
     },
-    {
+    "Agent": {
         "x": 0,
         "y": 0,
         "w": 3840,
@@ -103,7 +103,7 @@ INIT_SECTIONS = [
             "states": {"load": {"url": f"{PLOT_URL}/plot8"}},
         },
     },
-]
+}
 
 
 def wait_for_ove() -> None:
@@ -115,7 +115,7 @@ def wait_for_ove() -> None:
 def create_all() -> None:
     """Function for creating all initial sections."""
     wait_for_ove()
-    for section in INIT_SECTIONS:
+    for section in INIT_SECTIONS.values():
         response = requests.post(f"{API_URL}/section", json=section)
         logging.info(response.text)
 

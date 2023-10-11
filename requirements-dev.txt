@@ -33,6 +33,8 @@ dash-html-components==2.0.0
     # via dash
 dash-table==5.0.0
     # via dash
+dash-iconify==0.1.2
+    # via dash
 distlib==0.3.7
     # via virtualenv
 exceptiongroup==1.1.2
