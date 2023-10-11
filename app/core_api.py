@@ -15,9 +15,8 @@ PLOT_URL = os.environ.get("PLOT_URL", "http://127.0.0.1:8050")
 """
 Initial config for sections.
 """
-INIT_SECTIONS = [
-    {
-        "name": "Control",
+INIT_SECTIONS = {
+    "Control": {
         "x": 0,
         "y": 0,
         "w": 1440,
@@ -28,8 +27,7 @@ INIT_SECTIONS = [
             "states": {"load": {"url": f"{PLOT_URL}"}},
         },
     },
-    {
-        "name": "NMX",
+    "NMX": {
         "x": 0,
         "y": 0,
         "w": 1920,
@@ -37,8 +35,7 @@ INIT_SECTIONS = [
         "space": "PC01-Top",
         "app": {"url": f"{API_URL}/app/webrtc", "states": {"load": "ScreenShare"}},
     },
-    {
-        "name": "Balance of Supply and Demand",
+    "Balance of Supply and Demand": {
         "x": 0,
         "y": 0,
         "w": 1920,
@@ -49,8 +46,7 @@ INIT_SECTIONS = [
             "states": {"load": {"url": f"{PLOT_URL}/supplydemand"}},
         },
     },
-    {
-        "name": "Markets and Reserve",
+    "Markets and Reserve": {
         "x": 0,
         "y": 0,
         "w": 1920,
@@ -61,8 +57,7 @@ INIT_SECTIONS = [
             "states": {"load": {"url": f"{PLOT_URL}/plot3"}},
         },
     },
-    {
-        "name": "NMX Georgraphic Map",
+    "NMX Georgraphic Map": {
         "x": 0,
         "y": 0,
         "w": 1920,
@@ -70,8 +65,7 @@ INIT_SECTIONS = [
         "space": "PC02-Top",
         "app": {"url": f"{API_URL}/app/webrtc", "states": {"load": "ScreenShare"}},
     },
-    {
-        "name": "NMX 11kV Schematic",
+    "NMX 11kV Schematic": {
         "x": 0,
         "y": 0,
         "w": 1920,
@@ -79,8 +73,7 @@ INIT_SECTIONS = [
         "space": "PC02-Left",
         "app": {"url": f"{API_URL}/app/webrtc", "states": {"load": "ScreenShare"}},
     },
-    {
-        "name": "NMX Issues",
+    "NMX Issues": {
         "x": 0,
         "y": 0,
         "w": 1920,
@@ -88,8 +81,7 @@ INIT_SECTIONS = [
         "space": "PC02-Right",
         "app": {"url": f"{API_URL}/app/webrtc", "states": {"load": "ScreenShare"}},
     },
-    {
-        "name": "Market",
+    "Market": {
         "x": 0,
         "y": 0,
         "w": 3840,
@@ -100,8 +92,7 @@ INIT_SECTIONS = [
             "states": {"load": {"url": f"{PLOT_URL}/plot7"}},
         },
     },
-    {
-        "name": "Agent",
+    "Agent": {
         "x": 0,
         "y": 0,
         "w": 3840,
@@ -112,13 +103,7 @@ INIT_SECTIONS = [
             "states": {"load": {"url": f"{PLOT_URL}/plot8"}},
         },
     },
-]
-
-
-section_data = [
-    {key: val for key, val in section.items() if key != "name"}
-    for section in INIT_SECTIONS
-]
+}
 
 
 def wait_for_ove() -> None:
@@ -130,7 +115,7 @@ def wait_for_ove() -> None:
 def create_all() -> None:
     """Function for creating all initial sections."""
     wait_for_ove()
-    for section in section_data:
+    for section in INIT_SECTIONS.values():
         response = requests.post(f"{API_URL}/section", json=section)
         logging.info(response.text)
 

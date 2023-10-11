@@ -9,11 +9,8 @@ from .. import core_api as core
 
 dash.register_page(__name__)
 
-sections = core.INIT_SECTIONS.copy()
-sections.pop(0)
 
-options = [section["name"] for section in sections]
-spaces = [section["space"] for section in sections]
+options = [key for key in core.INIT_SECTIONS.keys() if key != "Control"]
 
 
 def get_default(space: str) -> str:
@@ -25,9 +22,9 @@ def get_default(space: str) -> str:
     Returns:
         The default section of the space
     """
-    for section in core.INIT_SECTIONS:
-        if section["space"] == space:
-            default: str = str(section["name"])
+    for key, val in core.INIT_SECTIONS.items():
+        if val["space"] == space:
+            default = key
     return default
 
 
