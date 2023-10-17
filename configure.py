@@ -5,8 +5,6 @@ docker-compose.setup.ove.yml file and the IP address of the machine
 Finds the line in docker-compose.setup.ove.yml that contain the host IP
 address and replaces the value with the IP address of the machine in the new
 file.
-
-Does the same for config/credentials.json file.
 """
 
 import logging
