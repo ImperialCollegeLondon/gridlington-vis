@@ -70,7 +70,6 @@ def generate_docker_compose(
     logging.info("Adding dash app to docker-compose.yml...")
     docker_compose["services"]["dash"] = {
         "ports": ["8050:8050"],
-        "volumes": ["./app:/app"],
         "environment": {
             "API_URL": f"http://{lines_to_replace['OVE_HOST']}",
             "PLOT_URL": f"http://{lines_to_replace['PLOT_URL']}",
@@ -80,10 +79,11 @@ def generate_docker_compose(
     }
     if develop:
         docker_compose["services"]["dash"]["build"] = "."
+        docker_compose["services"]["dash"]["volumes"] = ["./app:/app"]
     else:
         docker_compose["services"]["dash"][
             "image"
-        ] = "ghcr.io/imperialcollegelondon/gridlington-vis:main"
+        ] = "ghcr.io/imperialcollegelondon/gridlington-vis:latest"
     if local:
         docker_compose["services"]["ovehub-ove-apps"]["image"] = "ove-apps:9.9.9"
         docker_compose["services"]["ovehub-ove-ove"]["image"] = "ove-ove:9.9.9"
