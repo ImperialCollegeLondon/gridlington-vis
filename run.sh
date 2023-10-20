@@ -1,2 +1,2 @@
-python configure.py local
+python configure.py
 docker-compose up -d
