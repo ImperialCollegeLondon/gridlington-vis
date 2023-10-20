@@ -18,6 +18,17 @@ N.B. The `configure.py` setup process is required because the actual IP address 
 
 A test version of the app is deployed at http://liionsden.rcs.ic.ac.uk:8080/ (internal access only). <!-- markdownlint-disable-line MD034 -->
 
+This service is mostly automated with a few steps required to be run outside of the docker container causing som limitations. To run a production version of this, the required files and directories are:
+
+- `docker-compose.setup.ove.yml`
+- `configure.py`
+- `run.sh`
+- `config/`
+- `logs/` - this can be empty
+- A `.env` file to define `MY_SECRET` for the OpenVidu login
+
+To run the production version should be as simple as running `bash run.sh` with the above files alongside any override for watchtower etc.
+
 Utimately, we will want to automate this setup as much as possible so the environment (local testing vs. deployment) is autodetected. For now, the configuration files differ from those generated in the above setup in the following ways:
 
 **config/default.conf:**
@@ -31,7 +42,7 @@ Utimately, we will want to automate this setup as much as possible so the enviro
 
 1. Make sure nothing's running
 2. Run `bash run_develop.sh` for vis system to run config script and `docker-compose.yml`
-   * For production, use `run.sh`
+   - For production, use `run.sh`
 3. Go to OVE Core at the IP address defined in the `API_URL` environment variable you will now find in `docker-compose.yml`
 4. Go to OpenVidu IP address and manually trust website (OPENVIDU_HOST in the `docker-compose.yml`)
 5. Log in with username: admin, password: (OPENVIDU_SECRET from docker-compose.yml)
