@@ -26,9 +26,7 @@ def get_ip_address() -> str:
     return ip
 
 
-def generate_docker_compose(
-    template_file: str, ip: str, develop: bool = False, local: bool = False
-) -> None:
+def generate_docker_compose(template_file: str, ip: str, develop: bool = False) -> None:
     """Generate the docker-compose.yml file.
 
     Uses a template file and the IP address of the machine.
@@ -37,7 +35,6 @@ def generate_docker_compose(
         template_file: Path to the template file.
         ip: IP address of the machine.
         develop: Flag for when running in develop mode.
-        local: Flag for when running locally with locally-built docker images.
 
     Returns:
         None
@@ -80,14 +77,11 @@ def generate_docker_compose(
     if develop:
         docker_compose["services"]["dash"]["build"] = "."
         docker_compose["services"]["dash"]["volumes"] = ["./app:/app"]
+        docker_compose["services"]["dash"]["environment"]["DH_URL"] = "http://127.0.0.1"
     else:
         docker_compose["services"]["dash"][
             "image"
         ] = "ghcr.io/imperialcollegelondon/gridlington-vis:latest"
-    if local:
-        docker_compose["services"]["ovehub-ove-apps"]["image"] = "ove-apps:9.9.9"
-        docker_compose["services"]["ovehub-ove-ove"]["image"] = "ove-ove:9.9.9"
-        docker_compose["services"]["ovehub-ove-ui"]["image"] = "ove-ui:9.9.9"
 
     # Configure logging for nginx
     logging.info("Adding volume for nginx logs...")
@@ -107,5 +101,4 @@ if __name__ == "__main__":
         "docker-compose.setup.ove.yml",
         ip,
         develop="develop" in sys.argv,
-        local="local" in sys.argv,
     )
