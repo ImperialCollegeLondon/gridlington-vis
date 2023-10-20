@@ -38,6 +38,8 @@ Utimately, we will want to automate this setup as much as possible so the enviro
 +   server_name liionsden.rcs.ic.ac.uk;
 ```
 
+There is also a requirements to have the OpenVidu server running - see [Deploying OpenVidu CE on premises](https://docs.openvidu.io/en/stable/deployment/ce/on-premises/)
+
 ## Current steps for Running a WebRTC app and sharing an application window
 
 1. Make sure nothing's running
