@@ -18,6 +18,17 @@ N.B. The `configure.py` setup process is required because the actual IP address 
 
 A test version of the app is deployed at http://liionsden.rcs.ic.ac.uk:8080/ (internal access only). <!-- markdownlint-disable-line MD034 -->
 
+This service is mostly automated with a few steps required to be run outside of the docker container causing some limitations. To run a production version of this, the required files and directories are:
+
+- `docker-compose.setup.ove.yml`
+- `configure.py`
+- `run.sh`
+- `config/`
+- `logs/` - this can be empty
+- A `.env` file to define `MY_SECRET` for the OpenVidu login
+
+To run the production version should be as simple as running `bash run.sh` with the above files alongside any override for watchtower etc.
+
 Utimately, we will want to automate this setup as much as possible so the environment (local testing vs. deployment) is autodetected. For now, the configuration files differ from those generated in the above setup in the following ways:
 
 **config/default.conf:**
@@ -27,24 +38,22 @@ Utimately, we will want to automate this setup as much as possible so the enviro
 +   server_name liionsden.rcs.ic.ac.uk;
 ```
 
+There is also a requirements to have the OpenVidu server running - see [Deploying OpenVidu CE on premises](https://docs.openvidu.io/en/stable/deployment/ce/on-premises/)
+
 ## Current steps for Running a WebRTC app and sharing an application window
 
-1. Make sure nothings running
-2. Run `run.sh`` for vis system to run config script and docker-compose
-   * For local/develop versions, use locally built images (the run.sh should cover the config for this). Images must be named:
-     * ove-apps:9.9.9
-     * ove-ove:9.9.9
-     * ove-ui:9.9.9
-   * Check get_ip_address is correct
-   * Check ip address from configure.py is running OVE
-3. Go to OVE Core at http://localhost:8080  <!-- markdownlint-disable-line MD034 -->
-4. Select "Launch new OVE Application instances"
-5. Select WebRTC application, fill in settings and launch instance
-6. Start call button on controller and get session ID
-   * Note: closing controller ends the session
-7. Go to openvidu ip address and manually trust website (OPENVIDU_HOST in the docker-compose.yml)
-8. Log in with username: admin, password: (OPENVIDU_SECRET from docker-compose.yml)
-9. Enter session ID (from controller window) as room name and join the call
-10. Share a window and check it can be viewed from other windows
+1. Make sure nothing's running
+2. Run `bash run_develop.sh` for vis system to run config script and `docker-compose.yml`
+   - For production, use `run.sh`
+3. Go to OVE Core at the IP address defined in the `API_URL` environment variable you will now find in `docker-compose.yml`
+4. Go to OpenVidu IP address and manually trust website (OPENVIDU_HOST in the `docker-compose.yml`)
+5. Log in with username: admin, password: (OPENVIDU_SECRET from docker-compose.yml)
+6. Return to OVE Core, open the View for the desired WebRTC space - link under Space Layouts, will be something like `IP`/view.html?oveViewId=PC01-Top-0
+7. Open the Controller - link is ID Number under Sections
+8. Start the call from the Controller - will generate and display a Session ID
+9. Copy the Session ID into the OpenVidu textbox to join the call (there should be three users connected to the call)
+10. Share the application (NMX) window into the video call
+11. Go to the Controller and select the desired screen to share. It should have a yellow box around it once selected.
+12. Confirm the view is displaying the screen.
 
 **Note:** Only one screen can be shared from one browser, so multiple screens will require multiple computers/browsers/incognito windows etc.

@@ -1,13 +1,13 @@
 version: '3.1'
 services:
   ovehub-ove-ove:
-    image: ovehub/ove:0.5.0
+    image: ovehub/ove:0.6.3
     restart: unless-stopped
     volumes:
       - ./config/Spaces.json:/usr/src/app/packages/ove-core/dist/client/Spaces.json:ro
 
   ovehub-ove-apps:
-    image: ovehub/ove-apps:0.5.0
+    image: ovehub/ove-apps:0.6.4
     restart: unless-stopped
     depends_on:
       - ovehub-ove-ove
@@ -17,7 +17,7 @@ services:
       OPENVIDU_SECRET: "MY_SECRET"
 
   ovehub-ove-ui:
-    image: ovehub/ove-ui:0.2.0
+    image: ovehub/ove-ui:0.2.1
     restart: unless-stopped
     depends_on:
       - ovehub-ove-ove
