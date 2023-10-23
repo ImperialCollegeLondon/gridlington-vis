@@ -18,7 +18,7 @@ N.B. The `configure.py` setup process is required because the actual IP address 
 
 A test version of the app is deployed at http://liionsden.rcs.ic.ac.uk:8080/ (internal access only). <!-- markdownlint-disable-line MD034 -->
 
-This service is mostly automated with a few steps required to be run outside of the docker container causing som limitations. To run a production version of this, the required files and directories are:
+This service is mostly automated with a few steps required to be run outside of the docker container causing some limitations. To run a production version of this, the required files and directories are:
 
 - `docker-compose.setup.ove.yml`
 - `configure.py`
@@ -48,8 +48,8 @@ There is also a requirements to have the OpenVidu server running - see [Deployin
 3. Go to OVE Core at the IP address defined in the `API_URL` environment variable you will now find in `docker-compose.yml`
 4. Go to OpenVidu IP address and manually trust website (OPENVIDU_HOST in the `docker-compose.yml`)
 5. Log in with username: admin, password: (OPENVIDU_SECRET from docker-compose.yml)
-6. Open the View - link under Space Layouts, will be something like `IP`/view.html?oveViewId=PC01-Top-0
-7. Open the Controller - link is ID Number under sections
+6. Return to OVE Core, open the View for the desired WebRTC space - link under Space Layouts, will be something like `IP`/view.html?oveViewId=PC01-Top-0
+7. Open the Controller - link is ID Number under Sections
 8. Start the call from the Controller - will generate and display a Session ID
 9. Copy the Session ID into the OpenVidu textbox to join the call (there should be three users connected to the call)
 10. Share the application (NMX) window into the video call
