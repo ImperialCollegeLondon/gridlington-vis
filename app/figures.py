@@ -132,9 +132,9 @@ def generate_intraday_market_sys_fig(df: pd.DataFrame) -> go:
         df,
         x="Time",
         y=[
-            "Intra-day Market Generation",
-            "Intra-day Market Storage",
-            "Intra-day Market Demand",
+            "Intra-Day Market Generation",
+            "Intra-Day Market Storage",
+            "Intra-Day Market Demand",
         ],
     ).update_layout(yaxis_title="Power")
 
@@ -143,7 +143,7 @@ def generate_intraday_market_sys_fig(df: pd.DataFrame) -> go:
             df,
             x="Time",
             y=[
-                "Intra-day Market Value",
+                "Intra-Day Market Value",
             ],
         )
         .update_layout(yaxis_title="Cost")
@@ -177,7 +177,7 @@ def generate_balancing_market_fig(df: pd.DataFrame) -> go:
         y=[
             "Balancing Mechanism Generation",
             "Balancing Mechanism Storage",
-            "Balancing Mechanism Deman",
+            "Balancing Mechanism Demand",
         ],
     ).update_layout(yaxis_title="Power")
 
@@ -213,7 +213,9 @@ def generate_energy_deficit_fig(df: pd.DataFrame) -> px.line:
         energy_deficit_fig = px.line()
     else:
         energy_deficit_fig = px.line(
-            df, x="Time", y=df.offwind_exp - df.offwind_real
+            df,
+            x="Time",
+            y=df["Exp. Offshore Wind Generation"] - df["Real Offshore Wind Generation"],
         ).update_layout(yaxis_title="GW")
 
     return energy_deficit_fig
@@ -235,8 +237,13 @@ def generate_intraday_market_bids_fig(df: pd.DataFrame) -> go.Figure:
         intraday_market_bids_fig = go.Figure(
             data=[
                 go.Table(
-                    header=dict(values=list(df.columns), align="left"),
-                    cells=dict(values=[df.total_gen, df.total_dem], align="left"),
+                    header=dict(
+                        values=["Total Generation", "Total Demand"], align="left"
+                    ),
+                    cells=dict(
+                        values=[df["Total Generation"], df["Total Demand"]],
+                        align="left",
+                    ),
                 )
             ]
         )
@@ -260,8 +267,13 @@ def generate_dsr_bids_fig(df: pd.DataFrame) -> go.Figure:
         dsr_bids_fig = go.Figure(
             data=[
                 go.Table(
-                    header=dict(values=list(df.columns), align="left"),
-                    cells=dict(values=[df.total_gen, df.total_dem], align="left"),
+                    header=dict(
+                        values=["Total Generation", "Total Demand"], align="left"
+                    ),
+                    cells=dict(
+                        values=[df["Total Generation"], df["Total Demand"]],
+                        align="left",
+                    ),
                 )
             ]
         )
@@ -285,8 +297,10 @@ def generate_dsr_commands_fig(df: pd.DataFrame) -> px.line:
             df,
             x="Time",
             y=[
-                df.real_dem - df.exp_dem + (df.real_ev - df.exp_ev),
-                df.real_ev - df.exp_ev,
+                df["Real Gridlington Demand"]
+                - df["Expected Gridlington Demand"]
+                + (df["Real Ev Charging Power"] - df["Expected Ev Charging Power"]),
+                df["Real Ev Charging Power"] - df["Expected Ev Charging Power"],
             ],
         ).update_layout(yaxis_title="XXXXXXX")
 
