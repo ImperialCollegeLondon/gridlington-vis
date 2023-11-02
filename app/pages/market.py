@@ -8,12 +8,12 @@ from dash.exceptions import PreventUpdate  # type: ignore
 
 from .. import datahub_api as datahub
 from ..figures import (
-    generate_intraday_market_sys_fig,
     generate_balancing_market_fig,
-    generate_energy_deficit_fig,
-    generate_intraday_market_bids_fig,
     generate_dsr_bids_fig,
     generate_dsr_commands_fig,
+    generate_energy_deficit_fig,
+    generate_intraday_market_bids_fig,
+    generate_intraday_market_sys_fig,
 )
 
 dash.register_page(__name__)
@@ -144,5 +144,11 @@ def update_data(n_intervals):  # type: ignore # noqa
     intraday_market_bids_fig = generate_intraday_market_bids_fig(new_df)
     dsr_bids_fig = generate_dsr_bids_fig(new_df)
     dsr_commands_fig = generate_dsr_commands_fig(new_df)
-    return (intraday_market_sys_fig, balancing_market_fig, energy_deficit_fig,
-            intraday_market_bids_fig, dsr_bids_fig, dsr_commands_fig)
+    return (
+        intraday_market_sys_fig,
+        balancing_market_fig,
+        energy_deficit_fig,
+        intraday_market_bids_fig,
+        dsr_bids_fig,
+        dsr_commands_fig,
+    )
