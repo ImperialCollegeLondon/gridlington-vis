@@ -3,7 +3,7 @@
 import logging
 import logging.config
 
-from .core.log_config import logging_dict_config
+from .log_config import logging_dict_config
 
 logging.config.dictConfig(logging_dict_config)
 
