@@ -9,4 +9,4 @@ logging.config.dictConfig(logging_dict_config)
 
 log = logging.getLogger("api_logger")
 log.debug("Logging is configured.")
-log.info("Datahub API is running...")
+log.info("Gridlington Visualisation System is running...")
