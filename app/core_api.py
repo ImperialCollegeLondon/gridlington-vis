@@ -108,7 +108,7 @@ INIT_SECTIONS = {
 
 def wait_for_ove() -> None:
     """Function to wait for the OVE Core API to be available after startup."""
-    while requests.get(API_URL).status_code != 200:
+    while requests.get(f"{API_URL}/app/html").status_code != 200:
         time.sleep(5)
 
 
