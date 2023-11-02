@@ -1,3 +1,4 @@
+"""Functions for generating plotly express figures."""
 import pandas as pd
 import plotly.express as px  # type: ignore
 
