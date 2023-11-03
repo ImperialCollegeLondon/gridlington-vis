@@ -46,17 +46,6 @@ INIT_SECTIONS = {
             "states": {"load": {"url": f"{PLOT_URL}/supplydemand"}},
         },
     },
-    "Market IN PROGRESS": {
-        "x": 0,
-        "y": 0,
-        "w": 1920,
-        "h": 1080,
-        "space": "PC01-Left",
-        "app": {
-            "url": f"{API_URL}/app/html",
-            "states": {"load": {"url": f"{PLOT_URL}/market"}},
-        },
-    },
     "Markets and Reserve": {
         "x": 0,
         "y": 0,
@@ -100,7 +89,7 @@ INIT_SECTIONS = {
         "space": "Hub01",
         "app": {
             "url": f"{API_URL}/app/html",
-            "states": {"load": {"url": f"{PLOT_URL}/plot7"}},
+            "states": {"load": {"url": f"{PLOT_URL}/market"}},
         },
     },
     "Agent": {
