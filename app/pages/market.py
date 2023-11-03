@@ -134,16 +134,18 @@ def update_data(n_intervals):  # type: ignore # noqa
     if n_intervals is None:
         raise PreventUpdate
 
-    data = datahub.get_opal_data()
+    data_opal = datahub.get_opal_data()
+    new_df_opal = pd.DataFrame(**data_opal)
 
-    new_df = pd.DataFrame(**data)
+    data_dsr = datahub.get_dsr_data()
+    new_df_dsr = pd.DataFrame(**data_dsr)
 
-    intraday_market_sys_fig = generate_intraday_market_sys_fig(new_df)
-    balancing_market_fig = generate_balancing_market_fig(new_df)
-    energy_deficit_fig = generate_energy_deficit_fig(new_df)
-    intraday_market_bids_fig = generate_intraday_market_bids_fig(new_df)
-    dsr_bids_fig = generate_dsr_bids_fig(new_df)
-    dsr_commands_fig = generate_dsr_commands_fig(new_df)
+    intraday_market_sys_fig = generate_intraday_market_sys_fig(new_df_opal)
+    balancing_market_fig = generate_balancing_market_fig(new_df_opal)
+    energy_deficit_fig = generate_energy_deficit_fig(new_df_opal)
+    intraday_market_bids_fig = generate_intraday_market_bids_fig(new_df_opal)
+    dsr_bids_fig = generate_dsr_bids_fig(new_df_dsr)
+    dsr_commands_fig = generate_dsr_commands_fig(new_df_dsr)
     return (
         intraday_market_sys_fig,
         balancing_market_fig,
