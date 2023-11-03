@@ -6,15 +6,14 @@ import pandas as pd
 from dash import Input, Output, callback, dcc, html  # type: ignore
 from dash.exceptions import PreventUpdate  # type: ignore
 
-from .. import datahub_api as datahub
 from ..figures import (
+    generate_agent_activity_breakdown_fig,
     generate_agent_location_fig,
     generate_agent_location_sld_fig,
-    generate_agent_activity_breakdown_fig,
+    generate_dsr_commands_fig,
+    generate_ev_charging_breakdown_fig,
     generate_ev_location_fig,
     generate_ev_location_sld_fig,
-    generate_ev_charging_breakdown_fig,
-    generate_dsr_commands_fig
 )
 
 dash.register_page(__name__)
@@ -145,7 +144,7 @@ layout = html.Div(
         Output("ev_location_fig", "figure"),
         Output("ev_location_sld_fig", "figure"),
         Output("ev_charging_breakdown_fig", "figure"),
-        Output("dsr_commands_fig", "figure")
+        Output("dsr_commands_fig", "figure"),
     ],
     [Input("interval", "n_intervals")],
 )
@@ -173,5 +172,5 @@ def update_data(n_intervals):  # type: ignore # noqa
         ev_location_fig,
         ev_location_sld_fig,
         ev_charging_breakdown_fig,
-        dsr_commands_fig
+        dsr_commands_fig,
     )
