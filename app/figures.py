@@ -303,3 +303,75 @@ def generate_dsr_commands_fig(df: pd.DataFrame) -> px.line:
         ).update_layout(yaxis_title="MW")
 
     return dsr_commands_fig
+
+
+def generate_agent_location_fig(df: pd.DataFrame) -> None:
+    """XXX.
+
+    Args:
+        df: XXX
+
+    Returns:
+        XXX
+    """
+    return None
+
+
+def generate_agent_location_sld_fig(df: pd.DataFrame) -> None:
+    """XXX.
+
+    Args:
+        df: XXX
+
+    Returns:
+        XXX
+    """
+    return None
+
+
+def generate_agent_activity_breakdown_fig(df: pd.DataFrame) -> None:
+    """XXX.
+
+    Args:
+        df: XXX
+
+    Returns:
+        XXX
+    """
+    return None
+
+
+def generate_ev_location_fig(df: pd.DataFrame) -> None:
+    """XXX.
+
+    Args:
+        df: XXX
+
+    Returns:
+        XXX
+    """
+    return None
+
+
+def generate_ev_location_sld_fig(df: pd.DataFrame) -> None:
+    """XXX.
+
+    Args:
+        df: XXX
+
+    Returns:
+        XXX
+    """
+    return None
+
+
+def generate_ev_charging_breakdown_fig(df: pd.DataFrame) -> None:
+    """XXX.
+
+    Args:
+        df: XXX
+
+    Returns:
+        XXX
+    """
+    return None
