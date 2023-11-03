@@ -153,19 +153,19 @@ def update_data(n_intervals):  # type: ignore # noqa
     if n_intervals is None:
         raise PreventUpdate
 
-    data_opal = datahub.get_opal_data()
-    new_df_opal = pd.DataFrame(**data_opal)
+    # data_opal = datahub.get_opal_data()
+    # new_df_opal = pd.DataFrame(**data_opal)
 
-    data_dsr = datahub.get_dsr_data()
-    new_df_dsr = pd.DataFrame(**data_dsr)
+    # data_dsr = datahub.get_dsr_data()
+    # new_df_dsr = pd.DataFrame(**data_dsr)
 
-    agent_location_fig = generate_agent_location_fig(...)
-    agent_location_sld_fig = generate_agent_location_sld_fig(...)
-    agent_activity_breakdown_fig = generate_agent_activity_breakdown_fig(...)
-    ev_location_fig = generate_ev_location_fig(...)
-    ev_location_sld_fig = generate_ev_location_sld_fig(...)
-    ev_charging_breakdown_fig = generate_ev_charging_breakdown_fig(...)
-    dsr_commands_fig = generate_dsr_commands_fig(...)
+    agent_location_fig = generate_agent_location_fig(df)
+    agent_location_sld_fig = generate_agent_location_sld_fig(df)
+    agent_activity_breakdown_fig = generate_agent_activity_breakdown_fig(df)
+    ev_location_fig = generate_ev_location_fig(df)
+    ev_location_sld_fig = generate_ev_location_sld_fig(df)
+    ev_charging_breakdown_fig = generate_ev_charging_breakdown_fig(df)
+    dsr_commands_fig = generate_dsr_commands_fig(df)
     return (
         agent_location_fig,
         agent_location_sld_fig,

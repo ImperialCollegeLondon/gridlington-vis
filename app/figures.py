@@ -305,7 +305,7 @@ def generate_dsr_commands_fig(df: pd.DataFrame) -> px.line:
     return dsr_commands_fig
 
 
-def generate_agent_location_fig(df: pd.DataFrame) -> None:
+def generate_agent_location_fig(df: pd.DataFrame) -> px.line:
     """XXX.
 
     Args:
@@ -314,10 +314,10 @@ def generate_agent_location_fig(df: pd.DataFrame) -> None:
     Returns:
         XXX
     """
-    return None
+    return px.line()
 
 
-def generate_agent_location_sld_fig(df: pd.DataFrame) -> None:
+def generate_agent_location_sld_fig(df: pd.DataFrame) -> px.line:
     """XXX.
 
     Args:
@@ -326,10 +326,10 @@ def generate_agent_location_sld_fig(df: pd.DataFrame) -> None:
     Returns:
         XXX
     """
-    return None
+    return px.line()
 
 
-def generate_agent_activity_breakdown_fig(df: pd.DataFrame) -> None:
+def generate_agent_activity_breakdown_fig(df: pd.DataFrame) -> px.line:
     """XXX.
 
     Args:
@@ -338,10 +338,10 @@ def generate_agent_activity_breakdown_fig(df: pd.DataFrame) -> None:
     Returns:
         XXX
     """
-    return None
+    return px.line()
 
 
-def generate_ev_location_fig(df: pd.DataFrame) -> None:
+def generate_ev_location_fig(df: pd.DataFrame) -> px.line:
     """XXX.
 
     Args:
@@ -350,10 +350,10 @@ def generate_ev_location_fig(df: pd.DataFrame) -> None:
     Returns:
         XXX
     """
-    return None
+    return px.line()
 
 
-def generate_ev_location_sld_fig(df: pd.DataFrame) -> None:
+def generate_ev_location_sld_fig(df: pd.DataFrame) -> px.line:
     """XXX.
 
     Args:
@@ -362,10 +362,10 @@ def generate_ev_location_sld_fig(df: pd.DataFrame) -> None:
     Returns:
         XXX
     """
-    return None
+    return px.line()
 
 
-def generate_ev_charging_breakdown_fig(df: pd.DataFrame) -> None:
+def generate_ev_charging_breakdown_fig(df: pd.DataFrame) -> px.line:
     """XXX.
 
     Args:
@@ -374,4 +374,4 @@ def generate_ev_charging_breakdown_fig(df: pd.DataFrame) -> None:
     Returns:
         XXX
     """
-    return None
+    return px.line()
