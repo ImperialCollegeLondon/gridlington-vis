@@ -234,7 +234,7 @@ def generate_intraday_market_bids_fig(df: pd.DataFrame) -> go.Figure:
         intraday_market_bids_fig = go.Figure()
 
     else:
-        columns = ["Total Generation", "Total Demand"]
+        columns = ["Total Generation", "Total Demand"]  # dummy data
         intraday_market_bids_fig = go.Figure(
             data=[
                 go.Table(
@@ -263,7 +263,7 @@ def generate_dsr_bids_fig(df: pd.DataFrame) -> go.Figure:
         dsr_bids_fig = go.Figure()
 
     else:
-        columns = ["Total Generation", "Total Demand"]
+        columns = ["Amount", "Cost"]  # dummy data
         dsr_bids_fig = go.Figure(
             data=[
                 go.Table(
