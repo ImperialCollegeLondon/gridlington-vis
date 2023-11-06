@@ -136,6 +136,7 @@ def generate_intraday_market_sys_fig(df: pd.DataFrame) -> go:
             "Intra-Day Market Storage",
             "Intra-Day Market Demand",
         ],
+        range_y=[0, 1],
     ).update_layout(yaxis_title="Power (MW)")
 
     intraday_market_sys_fig_right = (
@@ -145,6 +146,7 @@ def generate_intraday_market_sys_fig(df: pd.DataFrame) -> go:
             y=[
                 "Intra-Day Market Value",
             ],
+            range_y=[0, 1],
         )
         .update_layout(yaxis_title="Cost (£/MW)")
         .update_traces(yaxis="y2")
@@ -179,6 +181,7 @@ def generate_balancing_market_fig(df: pd.DataFrame) -> go:
             "Balancing Mechanism Storage",
             "Balancing Mechanism Demand",
         ],
+        range_y=[0, 1],
     ).update_layout(yaxis_title="Power (MW)")
 
     balancing_market_fig_right = (
@@ -188,6 +191,7 @@ def generate_balancing_market_fig(df: pd.DataFrame) -> go:
             y=[
                 "Balancing Mechanism Value",
             ],
+            range_y=[0, 1],
         )
         .update_layout(yaxis_title="Cost (£/MW)")
         .update_traces(yaxis="y2")
@@ -216,6 +220,7 @@ def generate_energy_deficit_fig(df: pd.DataFrame) -> px.line:
             df,
             x="Time",
             y=df["Exp. Offshore Wind Generation"] - df["Real Offshore Wind Generation"],
+            range_y=[0, 1],
         ).update_layout(yaxis_title="MW")
 
     return energy_deficit_fig
@@ -283,7 +288,7 @@ def generate_dsr_commands_fig(df: pd.DataFrame) -> px.line:
     """Creates Plotly figure for DSR Commands to Agents graph.
 
     Args:
-        df: DSR data DataFrame
+        df: Opal data DataFrame
 
     Returns:
         Plotly express figure
@@ -300,6 +305,7 @@ def generate_dsr_commands_fig(df: pd.DataFrame) -> px.line:
                 + (df["Real Ev Charging Power"] - df["Expected Ev Charging Power"]),
                 df["Real Ev Charging Power"] - df["Expected Ev Charging Power"],
             ],
+            range_y=[0, 1],
         ).update_layout(yaxis_title="MW")
 
     return dsr_commands_fig

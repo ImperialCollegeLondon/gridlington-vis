@@ -145,7 +145,7 @@ def update_data(n_intervals):  # type: ignore # noqa
     energy_deficit_fig = generate_energy_deficit_fig(new_df_opal)
     intraday_market_bids_fig = generate_intraday_market_bids_fig(new_df_opal)
     dsr_bids_fig = generate_dsr_bids_fig(new_df_dsr)
-    dsr_commands_fig = generate_dsr_commands_fig(new_df_dsr)
+    dsr_commands_fig = generate_dsr_commands_fig(new_df_opal)
     return (
         intraday_market_sys_fig,
         balancing_market_fig,
