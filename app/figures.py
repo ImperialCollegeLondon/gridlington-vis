@@ -255,7 +255,7 @@ def generate_intraday_market_bids_fig(df: pd.DataFrame) -> go.Figure:
     return intraday_market_bids_fig
 
 
-def generate_dsr_bids_fig(df: pd.DataFrame) -> go.Figure:
+def generate_dsr_fig(df: pd.DataFrame) -> go.Figure:
     """Creates plotly Figure object for DSR Bids and Offers table.
 
     Args:
