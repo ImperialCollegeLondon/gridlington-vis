@@ -290,9 +290,7 @@ def generate_dsr_fig(df: pd.DataFrame) -> go.Figure:
         .update_traces(yaxis="y2")
     )
 
-    dsr_fig.add_traces(
-        dsr_fig_left.data + dsr_fig_right.data
-    )
+    dsr_fig.add_traces(dsr_fig_left.data + dsr_fig_right.data)
 
     return dsr_fig
 
@@ -309,15 +307,25 @@ def generate_dsr_commands_fig(df: pd.DataFrame) -> px.line:
     if len(df.columns) == 1:
         dsr_commands_fig = px.line()
     else:
+        figure_data = df[
+            [
+                "Time",
+            ]
+        ].copy()
+        figure_data["Name"] = (  # Give this column an appropriate name XXX
+            (df["Real Gridlington Demand"] - df["Expected Gridlington Demand"])
+            + (df["Real Ev Charging Power"] - df["Expected Ev Charging Power"]),
+        )
+        figure_data["Name2"] = (  # Give this column an appropriate name XXX
+            df["Real Ev Charging Power"] - df["Expected Ev Charging Power"]
+        )
         dsr_commands_fig = px.line(
-            df,
+            figure_data,
             x="Time",
             y=[
-                df["Real Gridlington Demand"]
-                - df["Expected Gridlington Demand"]
-                + (df["Real Ev Charging Power"] - df["Expected Ev Charging Power"]),
-                df["Real Ev Charging Power"] - df["Expected Ev Charging Power"],
-            ],  # Will need to give these lines a label for the legend XXX
+                "Name",
+                "Name2",
+            ],
             range_y=[0, 1],  # Check range XXX
         ).update_layout(yaxis_title="MW")
 
