@@ -125,7 +125,7 @@ layout = html.Div(
         Output("graph-balancing-market", "figure"),
         Output("graph-energy-deficit", "figure"),
         Output("table-intraday-market-bids", "figure"),
-        Output("table-dsr-bids", "figure"),
+        Output("graph-dsr", "figure"),
         Output("graph-dsr-commands", "figure"),
     ],
     [Input("interval", "n_intervals")],
