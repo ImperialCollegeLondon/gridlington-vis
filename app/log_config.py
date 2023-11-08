@@ -7,12 +7,10 @@ logging_dict_config = {
     "version": 1,
     "formatters": {
         "default": {
-            "()": "uvicorn.logging.DefaultFormatter",
             "fmt": "%(levelprefix)s %(message)s",
             "use_colors": "None",
         },
         "basic": {
-            "()": "uvicorn.logging.DefaultFormatter",
             "format": FORMAT,
         },
     },
@@ -31,12 +29,12 @@ logging_dict_config = {
         "file": {
             "level": LOG_LEVEL,
             "class": "logging.FileHandler",
-            "filename": "./log/logging_file.log",
+            "filename": "./logs/logging_file.log",
             "formatter": "basic",
         },
     },
     "loggers": {
-        "uvicorn": {"handlers": ["default", "file"], "level": "INFO"},
+        "gunicorn": {"handlers": ["default", "file"], "level": "INFO"},
         "api_logger": {
             "handlers": ["console", "file"],
             "level": LOG_LEVEL,

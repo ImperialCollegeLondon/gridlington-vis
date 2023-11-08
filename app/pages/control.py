@@ -6,6 +6,7 @@ from dash.exceptions import PreventUpdate  # type: ignore
 from dash_iconify import DashIconify  # type: ignore
 
 from .. import core_api as core
+from .. import log
 
 dash.register_page(__name__)
 
@@ -243,7 +244,7 @@ def update_button_click(
 
         Args: Value inputs for the 8 dropdown menus
         """
-        print("Clicked Update Button!")
+        log.debug("Clicked Update Button!")
         return ["Clicked Update Button!"]
 
     elif button_id == "default":
@@ -252,22 +253,22 @@ def update_button_click(
 
         Args: INIT_SECTIONS list from core_api.py
         """
-        print("Clicked Default Button!")
+        log.debug("Clicked Default Button!")
         return ["Clicked Default Button!"]
 
     elif button_id == "start":
         """Will make an API call to start the Gridlington simulation and Datahub."""
-        print("Clicked Start Button!")
+        log.debug("Clicked Start Button!")
         return ["Clicked Start Button!"]
 
     elif button_id == "stop":
         """Will make an API call to stop the Gridlington simulation and Datahub."""
-        print("Clicked Stop Button!")
+        log.debug("Clicked Stop Button!")
         return ["Clicked Stop Button!"]
 
     elif button_id == "restart":
         """Will make an API call to restart the Gridlington simulation and Datahub."""
-        print("Clicked Restart Button!")
+        log.debug("Clicked Restart Button!")
         return ["Clicked Restart Button!"]
 
     else:
