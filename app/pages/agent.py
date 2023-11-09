@@ -5,6 +5,8 @@ import dash  # type: ignore
 import pandas as pd
 from dash import Input, Output, callback, dcc, html  # type: ignore
 from dash.exceptions import PreventUpdate  # type: ignore
+import base64
+import os
 
 from ..figures import (
     generate_agent_activity_breakdown_fig,
@@ -32,6 +34,14 @@ ev_location_sld_fig = generate_ev_location_sld_fig(df)
 ev_charging_breakdown_fig = generate_ev_charging_breakdown_fig(df)
 dsr_commands_fig = generate_dsr_commands_fig(df)
 
+# Load SVGs
+p = os.path.dirname(os.path.abspath(__file__))
+map_encoded = base64.b64encode(open(p + '/../map.svg', 'rb').read()) 
+map_svg = 'data:image/svg+xml;base64,{}'.format(map_encoded.decode()) 
+sld_encoded = base64.b64encode(open(p + '/../sld.svg', 'rb').read()) 
+sld_svg = 'data:image/svg+xml;base64,{}'.format(sld_encoded.decode()) 
+
+
 layout = html.Div(
     style={
         "display": "flex",
@@ -46,22 +56,14 @@ layout = html.Div(
                     style={"width": "48%"},
                     children=[
                         html.H1("Agent Locations"),
-                        dcc.Graph(
-                            id="agent_location_fig",
-                            figure=agent_location_fig,
-                            style={"height": "40vh"},
-                        ),
+                        html.Img(src=map_svg, width=400, height=400),
                     ],
                 ),
                 html.Div(
                     style={"width": "48%"},
                     children=[
                         html.H1("Agent Locations on SLD"),
-                        dcc.Graph(
-                            id="agent_location_sld_fig",
-                            figure=agent_location_sld_fig,
-                            style={"height": "40vh"},
-                        ),
+                        html.Img(src=sld_svg, width=400, height=400),
                     ],
                 ),
                 html.Div(
@@ -84,22 +86,14 @@ layout = html.Div(
                     style={"width": "48%"},
                     children=[
                         html.H1("Electric Vehicle Location"),
-                        dcc.Graph(
-                            id="ev_location_fig",
-                            figure=ev_location_fig,
-                            style={"height": "40vh"},
-                        ),
+                        html.Img(src=map_svg, width=400, height=400),
                     ],
                 ),
                 html.Div(
                     style={"width": "48%"},
                     children=[
                         html.H1("Electric Vehicle Location on SLD"),
-                        dcc.Graph(
-                            id="ev_location_sld_fig",
-                            figure=ev_location_sld_fig,
-                            style={"height": "40vh"},
-                        ),
+                        html.Img(src=sld_svg, width=400, height=400),
                     ],
                 ),
                 html.Div(
