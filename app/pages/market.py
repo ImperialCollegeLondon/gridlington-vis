@@ -9,8 +9,8 @@ from dash.exceptions import PreventUpdate  # type: ignore
 from .. import datahub_api as datahub
 from ..figures import (
     generate_balancing_market_fig,
-    generate_dsr_bids_fig,
     generate_dsr_commands_fig,
+    generate_dsr_fig,
     generate_energy_deficit_fig,
     generate_intraday_market_bids_fig,
     generate_intraday_market_sys_fig,
@@ -28,7 +28,7 @@ intraday_market_sys_fig = generate_intraday_market_sys_fig(df)
 balancing_market_fig = generate_balancing_market_fig(df)
 energy_deficit_fig = generate_energy_deficit_fig(df)
 intraday_market_bids_fig = generate_intraday_market_bids_fig(df)
-dsr_bids_fig = generate_dsr_bids_fig(df)
+dsr_fig = generate_dsr_fig(df)
 dsr_commands_fig = generate_dsr_commands_fig(df)
 
 layout = html.Div(
@@ -93,10 +93,10 @@ layout = html.Div(
                 html.Div(
                     style={"width": "48%"},
                     children=[
-                        html.H1("DSR Bids and Offers"),
+                        html.H1("Demand Side Response"),
                         dcc.Graph(
-                            id="table-dsr-bids",
-                            figure=dsr_bids_fig,
+                            id="graph-dsr",
+                            figure=dsr_fig,
                             style={"height": "40vh"},
                         ),
                     ],
@@ -125,7 +125,7 @@ layout = html.Div(
         Output("graph-balancing-market", "figure"),
         Output("graph-energy-deficit", "figure"),
         Output("table-intraday-market-bids", "figure"),
-        Output("table-dsr-bids", "figure"),
+        Output("graph-dsr", "figure"),
         Output("graph-dsr-commands", "figure"),
     ],
     [Input("interval", "n_intervals")],
@@ -144,13 +144,13 @@ def update_data(n_intervals):  # type: ignore # noqa
     balancing_market_fig = generate_balancing_market_fig(new_df_opal)
     energy_deficit_fig = generate_energy_deficit_fig(new_df_opal)
     intraday_market_bids_fig = generate_intraday_market_bids_fig(new_df_opal)
-    dsr_bids_fig = generate_dsr_bids_fig(new_df_dsr)
-    dsr_commands_fig = generate_dsr_commands_fig(new_df_dsr)
+    dsr_fig = generate_dsr_fig(new_df_dsr)
+    dsr_commands_fig = generate_dsr_commands_fig(new_df_opal)
     return (
         intraday_market_sys_fig,
         balancing_market_fig,
         energy_deficit_fig,
         intraday_market_bids_fig,
-        dsr_bids_fig,
+        dsr_fig,
         dsr_commands_fig,
     )

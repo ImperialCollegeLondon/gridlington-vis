@@ -136,6 +136,7 @@ def generate_intraday_market_sys_fig(df: pd.DataFrame) -> go:
             "Intra-Day Market Storage",
             "Intra-Day Market Demand",
         ],
+        range_y=[0, 1],  # Check range XXX
     ).update_layout(yaxis_title="Power (MW)")
 
     intraday_market_sys_fig_right = (
@@ -145,6 +146,7 @@ def generate_intraday_market_sys_fig(df: pd.DataFrame) -> go:
             y=[
                 "Intra-Day Market Value",
             ],
+            range_y=[0, 1],  # Check range XXX
         )
         .update_layout(yaxis_title="Cost (£/MW)")
         .update_traces(yaxis="y2")
@@ -179,6 +181,7 @@ def generate_balancing_market_fig(df: pd.DataFrame) -> go:
             "Balancing Mechanism Storage",
             "Balancing Mechanism Demand",
         ],
+        range_y=[0, 1],  # Check range XXX
     ).update_layout(yaxis_title="Power (MW)")
 
     balancing_market_fig_right = (
@@ -188,6 +191,7 @@ def generate_balancing_market_fig(df: pd.DataFrame) -> go:
             y=[
                 "Balancing Mechanism Value",
             ],
+            range_y=[0, 1],  # Check range XXX
         )
         .update_layout(yaxis_title="Cost (£/MW)")
         .update_traces(yaxis="y2")
@@ -216,6 +220,7 @@ def generate_energy_deficit_fig(df: pd.DataFrame) -> px.line:
             df,
             x="Time",
             y=df["Exp. Offshore Wind Generation"] - df["Real Offshore Wind Generation"],
+            range_y=[0, 1],  # Check range XXX
         ).update_layout(yaxis_title="MW")
 
     return energy_deficit_fig
@@ -234,15 +239,13 @@ def generate_intraday_market_bids_fig(df: pd.DataFrame) -> go.Figure:
         intraday_market_bids_fig = go.Figure()
 
     else:
-        columns = ["Total Generation", "Total Demand"]  # dummy data
+        columns = ["Power", "Cost"]  # Units? XXX
+        data = [[0, 0, 0, 0, 0], [0, 0, 0, 0, 0]]  # Dummy data XXX
         intraday_market_bids_fig = go.Figure(
             data=[
                 go.Table(
                     header=dict(values=columns, align="left"),
-                    cells=dict(
-                        values=[df[c] for c in columns],
-                        align="left",
-                    ),
+                    cells=dict(values=data, align="left"),
                 )
             ]
         )
@@ -250,40 +253,53 @@ def generate_intraday_market_bids_fig(df: pd.DataFrame) -> go.Figure:
     return intraday_market_bids_fig
 
 
-def generate_dsr_bids_fig(df: pd.DataFrame) -> go.Figure:
-    """Creates plotly Figure object for DSR Bids and Offers table.
+def generate_dsr_fig(df: pd.DataFrame) -> go.Figure:
+    """Creates plotly figure for Demand Side Response graph.
 
     Args:
-        df: DSR data DataFrame
+        df: DSR data DataFrame. Will this be DSR, Opal or both? XXX
 
     Returns:
-        Plotly graph_objects figure
+        Plotly express figure
     """
+    dsr_fig = make_subplots(specs=[[{"secondary_y": True}]])
+
     if len(df.columns) == 1:
-        dsr_bids_fig = go.Figure()
+        return dsr_fig
 
-    else:
-        columns = ["Amount", "Cost"]  # dummy data
-        dsr_bids_fig = go.Figure(
-            data=[
-                go.Table(
-                    header=dict(values=columns, align="left"),
-                    cells=dict(
-                        values=[df[c] for c in columns],
-                        align="left",
-                    ),
-                )
-            ]
+    dsr_fig_left = px.line(
+        df,
+        x="Time",
+        y=[
+            "Cost",  # This will need to be changed when data is available XXX
+            "Cost",  # As above XXX
+        ],
+        range_y=[0, 1],  # Check range XXX
+    ).update_layout(yaxis_title="Power (kW)")
+
+    dsr_fig_right = (
+        px.line(
+            df,
+            x="Time",
+            y=[
+                "Cost",
+            ],
+            range_y=[0, 1],  # Check range XXX
         )
+        .update_layout(yaxis_title="Cost (£)")
+        .update_traces(yaxis="y2")
+    )
 
-    return dsr_bids_fig
+    dsr_fig.add_traces(dsr_fig_left.data + dsr_fig_right.data)
+
+    return dsr_fig
 
 
 def generate_dsr_commands_fig(df: pd.DataFrame) -> px.line:
     """Creates Plotly figure for DSR Commands to Agents graph.
 
     Args:
-        df: DSR data DataFrame
+        df: Opal data DataFrame
 
     Returns:
         Plotly express figure
@@ -291,15 +307,26 @@ def generate_dsr_commands_fig(df: pd.DataFrame) -> px.line:
     if len(df.columns) == 1:
         dsr_commands_fig = px.line()
     else:
+        figure_data = df[
+            [
+                "Time",
+            ]
+        ].copy()
+        figure_data["Name"] = (  # Give this column an appropriate name XXX
+            (df["Real Gridlington Demand"] - df["Expected Gridlington Demand"])
+            + (df["Real Ev Charging Power"] - df["Expected Ev Charging Power"]),
+        )
+        figure_data["Name2"] = (  # Give this column an appropriate name XXX
+            df["Real Ev Charging Power"] - df["Expected Ev Charging Power"]
+        )
         dsr_commands_fig = px.line(
-            df,
+            figure_data,
             x="Time",
             y=[
-                df["Real Gridlington Demand"]
-                - df["Expected Gridlington Demand"]
-                + (df["Real Ev Charging Power"] - df["Expected Ev Charging Power"]),
-                df["Real Ev Charging Power"] - df["Expected Ev Charging Power"],
+                "Name",
+                "Name2",
             ],
+            range_y=[0, 1],  # Check range XXX
         ).update_layout(yaxis_title="MW")
 
     return dsr_commands_fig
