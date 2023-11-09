@@ -53,21 +53,21 @@ layout = html.Div(
             style={"display": "flex", "justify-content": "space-around"},
             children=[
                 html.Div(
-                    style={"width": "48%"},
+                    style={"width": "32%"},
                     children=[
                         html.H1("Agent Locations"),
-                        html.Img(src=map_svg, width=400, height=400),
+                        html.Img(src=map_svg, width="90%"),
                     ],
                 ),
                 html.Div(
-                    style={"width": "48%"},
+                    style={"width": "32%"},
                     children=[
                         html.H1("Agent Locations on SLD"),
-                        html.Img(src=sld_svg, width=400, height=400),
+                        html.Img(src=sld_svg, width="90%"),
                     ],
                 ),
                 html.Div(
-                    style={"width": "48%"},
+                    style={"width": "32%"},
                     children=[
                         html.H1("Agent Activity Breakdown"),
                         dcc.Graph(
@@ -83,21 +83,21 @@ layout = html.Div(
             style={"display": "flex", "justify-content": "space-around"},
             children=[
                 html.Div(
-                    style={"width": "48%"},
+                    style={"width": "32%"},
                     children=[
                         html.H1("Electric Vehicle Location"),
-                        html.Img(src=map_svg, width=400, height=400),
+                        html.Img(src=map_svg, width="90%"),
                     ],
                 ),
                 html.Div(
-                    style={"width": "48%"},
+                    style={"width": "32%"},
                     children=[
                         html.H1("Electric Vehicle Location on SLD"),
-                        html.Img(src=sld_svg, width=400, height=400),
+                        html.Img(src=sld_svg, width="90%"),
                     ],
                 ),
                 html.Div(
-                    style={"width": "48%"},
+                    style={"width": "32%"},
                     children=[
                         html.H1("Electric Vehicle Charging Breakdown"),
                         dcc.Graph(
