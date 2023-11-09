@@ -58,6 +58,11 @@ layout = html.Div(
                     children=[
                         html.H1("Agent Locations"),
                         html.Img(src=map_svg, width="90%"),
+                        dcc.Graph(
+                            id="agent_location_fig",
+                            figure=agent_location_fig,
+                            style={"height": "40vh"},
+                        ),
                     ],
                 ),
                 html.Div(
@@ -65,6 +70,11 @@ layout = html.Div(
                     children=[
                         html.H1("Agent Locations on SLD"),
                         html.Img(src=sld_svg, width="90%"),
+                        dcc.Graph(
+                            id="agent_location_sld_fig",
+                            figure=agent_location_sld_fig,
+                            style={"height": "40vh"},
+                        ),
                     ],
                 ),
                 html.Div(
@@ -88,6 +98,11 @@ layout = html.Div(
                     children=[
                         html.H1("Electric Vehicle Location"),
                         html.Img(src=map_svg, width="90%"),
+                        dcc.Graph(
+                            id="ev_location_fig",
+                            figure=ev_location_fig,
+                            style={"height": "40vh"},
+                        ),
                     ],
                 ),
                 html.Div(
@@ -95,6 +110,11 @@ layout = html.Div(
                     children=[
                         html.H1("Electric Vehicle Location on SLD"),
                         html.Img(src=sld_svg, width="90%"),
+                        dcc.Graph(
+                            id="ev_location_sld_fig",
+                            figure=ev_location_sld_fig,
+                            style={"height": "40vh"},
+                        ),
                     ],
                 ),
                 html.Div(
