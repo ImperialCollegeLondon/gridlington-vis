@@ -12,97 +12,35 @@ Constants for API URLs.
 API_URL = os.environ.get("API_URL", "http://127.0.0.1:8080")
 PLOT_URL = os.environ.get("PLOT_URL", "http://127.0.0.1:8050")
 
-"""
-Initial config for sections.
-"""
+
+def html(page: str) -> dict[str, str | dict[str, str | dict[str, str]]]:
+    """App specification for a html app.
+
+    Args:
+        page: The name of the dash page to link to the OVE section.
+
+    Returns:
+        dict: JSON for app specification in OVE section API call.
+    """
+    return {
+        "url": f"{API_URL}/app/html",
+        "states": {"load": {"url": f"{PLOT_URL}/{page}"}},
+    }
+
+
+webrtc = {"url": f"{API_URL}/app/webrtc", "states": {"load": "ScreenShare"}}
+
+"""Initial config for sections."""
 INIT_SECTIONS = {
-    "Control": {
-        "x": 0,
-        "y": 0,
-        "w": 1440,
-        "h": 808,
-        "space": "Tablet",
-        "app": {
-            "url": f"{API_URL}/app/html",
-            "states": {"load": {"url": f"{PLOT_URL}"}},
-        },
-    },
-    "NMX": {
-        "x": 0,
-        "y": 0,
-        "w": 1920,
-        "h": 1080,
-        "space": "PC01-Top",
-        "app": {"url": f"{API_URL}/app/webrtc", "states": {"load": "ScreenShare"}},
-    },
-    "Balance of Supply and Demand": {
-        "x": 0,
-        "y": 0,
-        "w": 1920,
-        "h": 1080,
-        "space": "PC01-Left",
-        "app": {
-            "url": f"{API_URL}/app/html",
-            "states": {"load": {"url": f"{PLOT_URL}/supplydemand"}},
-        },
-    },
-    "Markets and Reserve": {
-        "x": 0,
-        "y": 0,
-        "w": 1920,
-        "h": 1080,
-        "space": "PC01-Right",
-        "app": {
-            "url": f"{API_URL}/app/html",
-            "states": {"load": {"url": f"{PLOT_URL}/plot3"}},
-        },
-    },
-    "NMX Georgraphic Map": {
-        "x": 0,
-        "y": 0,
-        "w": 1920,
-        "h": 1080,
-        "space": "PC02-Top",
-        "app": {"url": f"{API_URL}/app/webrtc", "states": {"load": "ScreenShare"}},
-    },
-    "NMX 11kV Schematic": {
-        "x": 0,
-        "y": 0,
-        "w": 1920,
-        "h": 1080,
-        "space": "PC02-Left",
-        "app": {"url": f"{API_URL}/app/webrtc", "states": {"load": "ScreenShare"}},
-    },
-    "NMX Issues": {
-        "x": 0,
-        "y": 0,
-        "w": 1920,
-        "h": 1080,
-        "space": "PC02-Right",
-        "app": {"url": f"{API_URL}/app/webrtc", "states": {"load": "ScreenShare"}},
-    },
-    "Market": {
-        "x": 0,
-        "y": 0,
-        "w": 3840,
-        "h": 2160,
-        "space": "Hub01",
-        "app": {
-            "url": f"{API_URL}/app/html",
-            "states": {"load": {"url": f"{PLOT_URL}/market"}},
-        },
-    },
-    "Agent": {
-        "x": 0,
-        "y": 0,
-        "w": 3840,
-        "h": 2160,
-        "space": "Hub02",
-        "app": {
-            "url": f"{API_URL}/app/html",
-            "states": {"load": {"url": f"{PLOT_URL}/agent"}},
-        },
-    },
+    "Control": {"space": "Tablet", "app": html("control")},
+    "NMX": {"space": "PC01-Top", "app": webrtc},
+    "Balance of Supply and Demand": {"space": "PC01-Left", "app": html("supplydemand")},
+    "Markets and Reserve": {"space": "PC01-Right", "app": html("plot3")},
+    "NMX Georgraphic Map": {"space": "PC02-Top", "app": webrtc},
+    "NMX 11kV Schematic": {"space": "PC02-Left", "app": webrtc},
+    "NMX Issues": {"space": "PC02-Right", "app": webrtc},
+    "Market": {"space": "Hub01", "app": html("market")},
+    "Agent": {"space": "Hub02", "app": html("plot8")},
 }
 
 
@@ -115,8 +53,10 @@ def wait_for_ove() -> None:
 def create_all() -> None:
     """Function for creating all initial sections."""
     wait_for_ove()
+    spaces = json.loads(requests.get(f"{API_URL}/spaces").text)
     for section in INIT_SECTIONS.values():
-        response = requests.post(f"{API_URL}/section", json=section)
+        data = spaces[section["space"]][0] | section
+        response = requests.post(f"{API_URL}/section", json=data)
         logging.info(response.text)
 
 
