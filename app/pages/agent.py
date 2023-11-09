@@ -1,12 +1,13 @@
 """Page in dash app."""
 
 
+import base64
+import os
+
 import dash  # type: ignore
 import pandas as pd
 from dash import Input, Output, callback, dcc, html  # type: ignore
 from dash.exceptions import PreventUpdate  # type: ignore
-import base64
-import os
 
 from ..figures import (
     generate_agent_activity_breakdown_fig,
@@ -36,10 +37,10 @@ dsr_commands_fig = generate_dsr_commands_fig(df)
 
 # Load SVGs
 p = os.path.dirname(os.path.abspath(__file__))
-map_encoded = base64.b64encode(open(p + '/../map.svg', 'rb').read()) 
-map_svg = 'data:image/svg+xml;base64,{}'.format(map_encoded.decode()) 
-sld_encoded = base64.b64encode(open(p + '/../sld.svg', 'rb').read()) 
-sld_svg = 'data:image/svg+xml;base64,{}'.format(sld_encoded.decode()) 
+map_encoded = base64.b64encode(open(p + "/../map.svg", "rb").read())
+map_svg = "data:image/svg+xml;base64,{}".format(map_encoded.decode())
+sld_encoded = base64.b64encode(open(p + "/../sld.svg", "rb").read())
+sld_svg = "data:image/svg+xml;base64,{}".format(sld_encoded.decode())
 
 
 layout = html.Div(
