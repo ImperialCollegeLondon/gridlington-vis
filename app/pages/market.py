@@ -42,7 +42,7 @@ layout = html.Div(
             style={"display": "flex", "justify-content": "space-around"},
             children=[
                 html.Div(
-                    style={"width": "48%"},
+                    style={"width": "32%"},
                     children=[
                         html.H1("Intra-day Market System"),
                         dcc.Graph(
@@ -53,7 +53,7 @@ layout = html.Div(
                     ],
                 ),
                 html.Div(
-                    style={"width": "48%"},
+                    style={"width": "32%"},
                     children=[
                         html.H1("Balancing Market"),
                         dcc.Graph(
@@ -64,7 +64,7 @@ layout = html.Div(
                     ],
                 ),
                 html.Div(
-                    style={"width": "48%"},
+                    style={"width": "32%"},
                     children=[
                         html.H1("Energy Deficit"),
                         dcc.Graph(
@@ -80,7 +80,7 @@ layout = html.Div(
             style={"display": "flex", "justify-content": "space-around"},
             children=[
                 html.Div(
-                    style={"width": "48%"},
+                    style={"width": "32%"},
                     children=[
                         html.H1("Intraday Market Bids and Offers"),
                         dcc.Graph(
@@ -91,7 +91,7 @@ layout = html.Div(
                     ],
                 ),
                 html.Div(
-                    style={"width": "48%"},
+                    style={"width": "32%"},
                     children=[
                         html.H1("Demand Side Response"),
                         dcc.Graph(
@@ -102,7 +102,7 @@ layout = html.Div(
                     ],
                 ),
                 html.Div(
-                    style={"width": "48%"},
+                    style={"width": "32%"},
                     children=[
                         html.H1("DSR Commands to Agents"),
                         dcc.Graph(
