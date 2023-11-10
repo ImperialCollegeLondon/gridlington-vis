@@ -437,6 +437,7 @@ def generate_agent_activity_breakdown_fig(df: pd.DataFrame) -> px.pie:
             names=[h.split("(")[1].split(")")[0] for h in household_activities],
             values=[df[h].iloc[-1] for h in household_activities],
         ).update_layout(legend_title_text="Household Activity")
+        # TODO: check I'm plotting the right thing here
 
     return agent_activity_breakdown_fig
 
