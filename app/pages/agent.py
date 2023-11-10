@@ -90,6 +90,7 @@ layout = html.Div(
                                         "top": 0,
                                         "left": 0,
                                         "width": "90%",
+                                        "aspect-ratio": str(map_ar),
                                     },
                                 ),
                             ],
@@ -100,11 +101,22 @@ layout = html.Div(
                     style={"width": "32%"},
                     children=[
                         html.H1("Agent Locations on SLD"),
-                        html.Img(src=sld_svg, width="90%"),
-                        dcc.Graph(
-                            id="agent_location_sld_fig",
-                            figure=agent_location_sld_fig,
-                            style={"height": "40vh"},
+                        html.Div(
+                            style={"position": "relative"},
+                            children=[
+                                html.Img(src=sld_svg, width="90%"),
+                                dcc.Graph(
+                                    id="agent_location_sld_fig",
+                                    figure=agent_location_sld_fig,
+                                    style={
+                                        "position": "absolute",
+                                        "top": 0,
+                                        "left": 0,
+                                        "width": "90%",
+                                        "aspect-ratio": str(sld_ar),
+                                    },
+                                ),
+                            ],
                         ),
                     ],
                 ),
@@ -128,11 +140,22 @@ layout = html.Div(
                     style={"width": "32%"},
                     children=[
                         html.H1("Electric Vehicle Location"),
-                        html.Img(src=map_svg, width="90%"),
-                        dcc.Graph(
-                            id="ev_location_fig",
-                            figure=ev_location_fig,
-                            style={"height": "40vh"},
+                        html.Div(
+                            style={"position": "relative"},
+                            children=[
+                                html.Img(src=map_svg, width="90%"),
+                                dcc.Graph(
+                                    id="ev_location_fig",
+                                    figure=ev_location_fig,
+                                    style={
+                                        "position": "absolute",
+                                        "top": 0,
+                                        "left": 0,
+                                        "width": "90%",
+                                        "aspect-ratio": str(map_ar),
+                                    },
+                                ),
+                            ],
                         ),
                     ],
                 ),
@@ -140,11 +163,22 @@ layout = html.Div(
                     style={"width": "32%"},
                     children=[
                         html.H1("Electric Vehicle Location on SLD"),
-                        html.Img(src=sld_svg, width="90%"),
-                        dcc.Graph(
-                            id="ev_location_sld_fig",
-                            figure=ev_location_sld_fig,
-                            style={"height": "40vh"},
+                        html.Div(
+                            style={"position": "relative"},
+                            children=[
+                                html.Img(src=sld_svg, width="90%"),
+                                dcc.Graph(
+                                    id="ev_location_sld_fig",
+                                    figure=ev_location_sld_fig,
+                                    style={
+                                        "position": "absolute",
+                                        "top": 0,
+                                        "left": 0,
+                                        "width": "90%",
+                                        "aspect-ratio": str(sld_ar),
+                                    },
+                                ),
+                            ],
                         ),
                     ],
                 ),
