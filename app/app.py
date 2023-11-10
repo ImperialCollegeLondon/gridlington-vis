@@ -2,6 +2,8 @@
 import dash  # type: ignore
 from dash import Dash, html  # type: ignore
 
+from . import log
+
 app = Dash(__package__, use_pages=True, update_title=None)
 
 app.layout = html.Div(
@@ -15,6 +17,7 @@ app.layout = html.Div(
 )
 
 server = app.server
+log.info("Gridlington Visualisation System is running...")
 
 
 if __name__ == "__main__":
