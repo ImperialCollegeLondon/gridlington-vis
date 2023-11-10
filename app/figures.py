@@ -332,7 +332,7 @@ def generate_dsr_commands_fig(df: pd.DataFrame) -> px.line:
     return dsr_commands_fig
 
 
-def generate_agent_location_fig(df: pd.DataFrame) -> px.line:
+def generate_agent_location_fig(df: pd.DataFrame) -> px.scatter:
     """XXX.
 
     Args:
@@ -341,18 +341,21 @@ def generate_agent_location_fig(df: pd.DataFrame) -> px.line:
     Returns:
         XXX
     """
-    x_coordinates = np.random.uniform(0, 1, 1000)  # TODO: replace with actual data
-    y_coordinates = np.random.uniform(0, 1, 1000)  # TODO: replace with actual data
+    if len(df.columns) == 1:
+        agent_location_fig = px.scatter()
+    else:
+        x_coordinates = np.random.uniform(0, 1, 1000)  # TODO: replace with actual data
+        y_coordinates = np.random.uniform(0, 1, 1000)  # TODO: replace with actual data
 
-    fig = px.scatter(
-        x=x_coordinates,
-        y=y_coordinates,
-        range_x=[0, 1],
-        range_y=[0, 1],
-    )
-    fig.update_xaxes(visible=False)
-    fig.update_yaxes(visible=False)
-    fig.update_layout(
+        agent_location_fig = px.scatter(
+            x=x_coordinates,
+            y=y_coordinates,
+            range_x=[0, 1],
+            range_y=[0, 1],
+        )
+    agent_location_fig.update_xaxes(visible=False)
+    agent_location_fig.update_yaxes(visible=False)
+    agent_location_fig.update_layout(
         {
             "plot_bgcolor": "rgba(0, 0, 0, 0)",
             "paper_bgcolor": "rgba(0, 0, 0, 0)",
@@ -360,7 +363,7 @@ def generate_agent_location_fig(df: pd.DataFrame) -> px.line:
         }
     )
 
-    return fig
+    return agent_location_fig
 
 
 def generate_agent_location_sld_fig(df: pd.DataFrame) -> px.line:
@@ -372,18 +375,21 @@ def generate_agent_location_sld_fig(df: pd.DataFrame) -> px.line:
     Returns:
         XXX
     """
-    x_coordinates = np.random.uniform(0, 1, 1000)  # TODO: replace with actual data
-    y_coordinates = np.random.uniform(0, 1, 1000)  # TODO: replace with actual data
+    if len(df.columns) == 1:
+        agent_location_sld_fig = px.scatter()
+    else:
+        x_coordinates = np.random.uniform(0, 1, 1000)  # TODO: replace with actual data
+        y_coordinates = np.random.uniform(0, 1, 1000)  # TODO: replace with actual data
 
-    fig = px.scatter(
-        x=x_coordinates,
-        y=y_coordinates,
-        range_x=[0, 1],
-        range_y=[0, 1],
-    )
-    fig.update_xaxes(visible=False)
-    fig.update_yaxes(visible=False)
-    fig.update_layout(
+        agent_location_sld_fig = px.scatter(
+            x=x_coordinates,
+            y=y_coordinates,
+            range_x=[0, 1],
+            range_y=[0, 1],
+        )
+    agent_location_sld_fig.update_xaxes(visible=False)
+    agent_location_sld_fig.update_yaxes(visible=False)
+    agent_location_sld_fig.update_layout(
         {
             "plot_bgcolor": "rgba(0, 0, 0, 0)",
             "paper_bgcolor": "rgba(0, 0, 0, 0)",
@@ -391,7 +397,7 @@ def generate_agent_location_sld_fig(df: pd.DataFrame) -> px.line:
         }
     )
 
-    return fig
+    return agent_location_sld_fig
 
 
 def generate_agent_activity_breakdown_fig(df: pd.DataFrame) -> px.line:
@@ -415,18 +421,21 @@ def generate_ev_location_fig(df: pd.DataFrame) -> px.line:
     Returns:
         XXX
     """
-    x_coordinates = np.random.uniform(0, 1, 1000)  # TODO: replace with actual data
-    y_coordinates = np.random.uniform(0, 1, 1000)  # TODO: replace with actual data
+    if len(df.columns) == 1:
+        ev_location_fig = px.scatter()
+    else:
+        x_coordinates = np.random.uniform(0, 1, 1000)  # TODO: replace with actual data
+        y_coordinates = np.random.uniform(0, 1, 1000)  # TODO: replace with actual data
 
-    fig = px.scatter(
-        x=x_coordinates,
-        y=y_coordinates,
-        range_x=[0, 1],
-        range_y=[0, 1],
-    )
-    fig.update_xaxes(visible=False)
-    fig.update_yaxes(visible=False)
-    fig.update_layout(
+        ev_location_fig = px.scatter(
+            x=x_coordinates,
+            y=y_coordinates,
+            range_x=[0, 1],
+            range_y=[0, 1],
+        )
+    ev_location_fig.update_xaxes(visible=False)
+    ev_location_fig.update_yaxes(visible=False)
+    ev_location_fig.update_layout(
         {
             "plot_bgcolor": "rgba(0, 0, 0, 0)",
             "paper_bgcolor": "rgba(0, 0, 0, 0)",
@@ -434,7 +443,7 @@ def generate_ev_location_fig(df: pd.DataFrame) -> px.line:
         }
     )
 
-    return fig
+    return ev_location_fig
 
 
 def generate_ev_location_sld_fig(df: pd.DataFrame) -> px.line:
@@ -446,18 +455,21 @@ def generate_ev_location_sld_fig(df: pd.DataFrame) -> px.line:
     Returns:
         XXX
     """
-    x_coordinates = np.random.uniform(0, 1, 1000)  # TODO: replace with actual data
-    y_coordinates = np.random.uniform(0, 1, 1000)  # TODO: replace with actual data
+    if len(df.columns) == 1:
+        ev_location_sld_fig = px.scatter()
+    else:
+        x_coordinates = np.random.uniform(0, 1, 1000)  # TODO: replace with actual data
+        y_coordinates = np.random.uniform(0, 1, 1000)  # TODO: replace with actual data
 
-    fig = px.scatter(
-        x=x_coordinates,
-        y=y_coordinates,
-        range_x=[0, 1],
-        range_y=[0, 1],
-    )
-    fig.update_xaxes(visible=False)
-    fig.update_yaxes(visible=False)
-    fig.update_layout(
+        ev_location_sld_fig = px.scatter(
+            x=x_coordinates,
+            y=y_coordinates,
+            range_x=[0, 1],
+            range_y=[0, 1],
+        )
+    ev_location_sld_fig.update_xaxes(visible=False)
+    ev_location_sld_fig.update_yaxes(visible=False)
+    ev_location_sld_fig.update_layout(
         {
             "plot_bgcolor": "rgba(0, 0, 0, 0)",
             "paper_bgcolor": "rgba(0, 0, 0, 0)",
@@ -465,7 +477,7 @@ def generate_ev_location_sld_fig(df: pd.DataFrame) -> px.line:
         }
     )
 
-    return fig
+    return ev_location_sld_fig
 
 
 def generate_ev_charging_breakdown_fig(df: pd.DataFrame) -> px.line:
