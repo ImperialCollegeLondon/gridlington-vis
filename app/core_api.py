@@ -1,10 +1,11 @@
 """Interacts with the OVE Core API."""
 import json
-import logging
 import os
 import time
 
 import requests
+
+from . import log
 
 """
 Constants for API URLs.
@@ -57,7 +58,7 @@ def create_all() -> None:
     for section in INIT_SECTIONS.values():
         data = spaces[section["space"]][0] | section
         response = requests.post(f"{API_URL}/section", json=data)
-        logging.info(response.text)
+        log.info(response.text)
 
 
 def move_section(id_num: int, space: str) -> None:

@@ -1,4 +1,4 @@
-"""Functions for generating plotly express figures."""
+"""Functions for generating plotly figures."""
 import pandas as pd
 import plotly.express as px  # type: ignore
 import plotly.graph_objects as go  # type: ignore
@@ -130,13 +130,13 @@ def generate_intraday_market_sys_fig(df: pd.DataFrame) -> go:
 
     intraday_market_sys_fig_left = px.line(
         df,
-        x="Time",
+        x="Time",  # TODO: Check units
         y=[
             "Intra-Day Market Generation",
             "Intra-Day Market Storage",
             "Intra-Day Market Demand",
         ],
-        range_y=[0, 1],  # Check range XXX
+        range_y=[0, 1],  # TODO: Check range
     ).update_layout(yaxis_title="Power (MW)")
 
     intraday_market_sys_fig_right = (
@@ -146,7 +146,7 @@ def generate_intraday_market_sys_fig(df: pd.DataFrame) -> go:
             y=[
                 "Intra-Day Market Value",
             ],
-            range_y=[0, 1],  # Check range XXX
+            range_y=[0, 1],  # TODO: Check range
         )
         .update_layout(yaxis_title="Cost (£/MW)")
         .update_traces(yaxis="y2")
@@ -181,7 +181,7 @@ def generate_balancing_market_fig(df: pd.DataFrame) -> go:
             "Balancing Mechanism Storage",
             "Balancing Mechanism Demand",
         ],
-        range_y=[0, 1],  # Check range XXX
+        range_y=[0, 1],  # TODO: Check range
     ).update_layout(yaxis_title="Power (MW)")
 
     balancing_market_fig_right = (
@@ -191,7 +191,7 @@ def generate_balancing_market_fig(df: pd.DataFrame) -> go:
             y=[
                 "Balancing Mechanism Value",
             ],
-            range_y=[0, 1],  # Check range XXX
+            range_y=[0, 1],  # TODO: Check range
         )
         .update_layout(yaxis_title="Cost (£/MW)")
         .update_traces(yaxis="y2")
@@ -220,7 +220,7 @@ def generate_energy_deficit_fig(df: pd.DataFrame) -> px.line:
             df,
             x="Time",
             y=df["Exp. Offshore Wind Generation"] - df["Real Offshore Wind Generation"],
-            range_y=[0, 1],  # Check range XXX
+            range_y=[0, 1],  # TODO: Check range
         ).update_layout(yaxis_title="MW")
 
     return energy_deficit_fig
@@ -239,8 +239,8 @@ def generate_intraday_market_bids_fig(df: pd.DataFrame) -> go.Figure:
         intraday_market_bids_fig = go.Figure()
 
     else:
-        columns = ["Power", "Cost"]  # Units? XXX
-        data = [[0, 0, 0, 0, 0], [0, 0, 0, 0, 0]]  # Dummy data XXX
+        columns = ["Power", "Cost"]  # TODO: Units?
+        data = [[0, 0, 0, 0, 0], [0, 0, 0, 0, 0]]  # TODO: Replace with real data
         intraday_market_bids_fig = go.Figure(
             data=[
                 go.Table(
@@ -257,7 +257,7 @@ def generate_dsr_fig(df: pd.DataFrame) -> go.Figure:
     """Creates plotly figure for Demand Side Response graph.
 
     Args:
-        df: DSR data DataFrame. Will this be DSR, Opal or both? XXX
+        df: DSR data DataFrame. TODO: Will this be DSR, Opal or both?
 
     Returns:
         Plotly express figure
@@ -271,10 +271,10 @@ def generate_dsr_fig(df: pd.DataFrame) -> go.Figure:
         df,
         x="Time",
         y=[
-            "Cost",  # This will need to be changed when data is available XXX
-            "Cost",  # As above XXX
+            "Cost",  # TODO: This will need to be changed when data is available
+            "Cost",  # TODO: As above
         ],
-        range_y=[0, 1],  # Check range XXX
+        range_y=[0, 1],  # TODO: Check range
     ).update_layout(yaxis_title="Power (kW)")
 
     dsr_fig_right = (
@@ -284,7 +284,7 @@ def generate_dsr_fig(df: pd.DataFrame) -> go.Figure:
             y=[
                 "Cost",
             ],
-            range_y=[0, 1],  # Check range XXX
+            range_y=[0, 1],  # TODO: Check range
         )
         .update_layout(yaxis_title="Cost (£)")
         .update_traces(yaxis="y2")
@@ -312,11 +312,10 @@ def generate_dsr_commands_fig(df: pd.DataFrame) -> px.line:
                 "Time",
             ]
         ].copy()
-        figure_data["Name"] = (  # Give this column an appropriate name XXX
-            (df["Real Gridlington Demand"] - df["Expected Gridlington Demand"])
-            + (df["Real Ev Charging Power"] - df["Expected Ev Charging Power"]),
-        )
-        figure_data["Name2"] = (  # Give this column an appropriate name XXX
+        figure_data["Name"] = (  # TODO: Give this column an appropriate name
+            df["Real Gridlington Demand"] - df["Expected Gridlington Demand"]
+        ) + (df["Real Ev Charging Power"] - df["Expected Ev Charging Power"])
+        figure_data["Name2"] = (  # TODO: Give this column an appropriate name
             df["Real Ev Charging Power"] - df["Expected Ev Charging Power"]
         )
         dsr_commands_fig = px.line(
@@ -326,8 +325,8 @@ def generate_dsr_commands_fig(df: pd.DataFrame) -> px.line:
                 "Name",
                 "Name2",
             ],
-            range_y=[0, 1],  # Check range XXX
-        ).update_layout(yaxis_title="MW")
+            range_y=[0, 1],  # TODO: Check range
+        ).update_layout(yaxis_title="MW", legend_title=None)
 
     return dsr_commands_fig
 

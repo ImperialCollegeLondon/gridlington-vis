@@ -1,4 +1,13 @@
-"""Page in dash app."""
+"""Market view page in dash app.
+
+Six plots (2x3):
+- Intra-day market system
+- Balancing market
+- Energy deficit
+- Intraday market bids and offers
+- Demand side response
+- DSR commands to agents.
+"""
 
 
 import dash  # type: ignore
@@ -42,9 +51,11 @@ layout = html.Div(
             style={"display": "flex", "justify-content": "space-around"},
             children=[
                 html.Div(
-                    style={"width": "48%"},
+                    style={"width": "32%"},
                     children=[
-                        html.H1("Intra-day Market System"),
+                        html.H1(
+                            "Intra-day Market System", style={"textAlign": "center"}
+                        ),
                         dcc.Graph(
                             id="graph-intraday-market-sys",
                             figure=intraday_market_sys_fig,
@@ -53,9 +64,9 @@ layout = html.Div(
                     ],
                 ),
                 html.Div(
-                    style={"width": "48%"},
+                    style={"width": "32%"},
                     children=[
-                        html.H1("Balancing Market"),
+                        html.H1("Balancing Market", style={"textAlign": "center"}),
                         dcc.Graph(
                             id="graph-balancing-market",
                             figure=balancing_market_fig,
@@ -64,9 +75,9 @@ layout = html.Div(
                     ],
                 ),
                 html.Div(
-                    style={"width": "48%"},
+                    style={"width": "32%"},
                     children=[
-                        html.H1("Energy Deficit"),
+                        html.H1("Energy Deficit", style={"textAlign": "center"}),
                         dcc.Graph(
                             id="graph-energy-deficit",
                             figure=energy_deficit_fig,
@@ -80,9 +91,12 @@ layout = html.Div(
             style={"display": "flex", "justify-content": "space-around"},
             children=[
                 html.Div(
-                    style={"width": "48%"},
+                    style={"width": "32%"},
                     children=[
-                        html.H1("Intraday Market Bids and Offers"),
+                        html.H1(
+                            "Intraday Market Bids and Offers",
+                            style={"textAlign": "center"},
+                        ),
                         dcc.Graph(
                             id="table-intraday-market-bids",
                             figure=intraday_market_bids_fig,
@@ -91,9 +105,9 @@ layout = html.Div(
                     ],
                 ),
                 html.Div(
-                    style={"width": "48%"},
+                    style={"width": "32%"},
                     children=[
-                        html.H1("Demand Side Response"),
+                        html.H1("Demand Side Response", style={"textAlign": "center"}),
                         dcc.Graph(
                             id="graph-dsr",
                             figure=dsr_fig,
@@ -102,9 +116,11 @@ layout = html.Div(
                     ],
                 ),
                 html.Div(
-                    style={"width": "48%"},
+                    style={"width": "32%"},
                     children=[
-                        html.H1("DSR Commands to Agents"),
+                        html.H1(
+                            "DSR Commands to Agents", style={"textAlign": "center"}
+                        ),
                         dcc.Graph(
                             id="graph-dsr-commands",
                             figure=dsr_commands_fig,
@@ -137,14 +153,15 @@ def update_data(n_intervals):  # type: ignore # noqa
     data_opal = datahub.get_opal_data()
     new_df_opal = pd.DataFrame(**data_opal)
 
-    data_dsr = datahub.get_dsr_data()
-    new_df_dsr = pd.DataFrame(**data_dsr)
+    # TODO: uncomment when datahub.get_dsr_data() is fixed
+    # data_dsr = datahub.get_dsr_data()
+    # new_df_dsr = pd.DataFrame(**data_dsr)
 
     intraday_market_sys_fig = generate_intraday_market_sys_fig(new_df_opal)
     balancing_market_fig = generate_balancing_market_fig(new_df_opal)
     energy_deficit_fig = generate_energy_deficit_fig(new_df_opal)
     intraday_market_bids_fig = generate_intraday_market_bids_fig(new_df_opal)
-    dsr_fig = generate_dsr_fig(new_df_dsr)
+    dsr_fig = generate_dsr_fig(df)  # TODO: replace with new_df_dsr when available
     dsr_commands_fig = generate_dsr_commands_fig(new_df_opal)
     return (
         intraday_market_sys_fig,
