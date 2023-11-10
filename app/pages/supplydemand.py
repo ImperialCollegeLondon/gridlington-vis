@@ -15,7 +15,6 @@ from ..figures import (
     generate_total_dem_fig,
     generate_total_gen_fig,
 )
-from ..pre_set_data import OPAL_DATA
 
 dash.register_page(__name__)
 
@@ -123,6 +122,8 @@ def update_data(n_intervals: int) -> tuple[px.pie, px.line, px.line, px.line]:
         data = get_opal_data()
         new_df = pd.DataFrame(**data)  # type: ignore[call-overload]
     else:
+        from ..pre_set_data import OPAL_DATA
+
         log.debug("Updating plots with pre-set data")
         new_df = OPAL_DATA.loc[:n_intervals]
 
