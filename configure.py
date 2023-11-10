@@ -74,9 +74,11 @@ def generate_docker_compose(template_file: str, ip: str, develop: bool = False) 
         },
         "depends_on": ["nginx"],
     }
+    docker_compose["services"]["dash"]["volumes"] = ["./logs:/logs"]
+
     if develop:
         docker_compose["services"]["dash"]["build"] = "."
-        docker_compose["services"]["dash"]["volumes"] = ["./app:/app"]
+        docker_compose["services"]["dash"]["volumes"] += ["./app:/app"]
         docker_compose["services"]["dash"]["environment"]["DH_URL"] = "http://127.0.0.1"
     else:
         docker_compose["services"]["dash"][
