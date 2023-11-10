@@ -57,11 +57,21 @@ layout = html.Div(
                     style={"width": "32%"},
                     children=[
                         html.H1("Agent Locations"),
-                        html.Img(src=map_svg, width="90%"),
-                        dcc.Graph(
-                            id="agent_location_fig",
-                            figure=agent_location_fig,
-                            style={"height": "40vh"},
+                        html.Div(
+                            style={"position": "relative"},
+                            children=[
+                                html.Img(src=map_svg, width="90%"),
+                                dcc.Graph(
+                                    id="agent_location_fig",
+                                    figure=agent_location_fig,
+                                    style={
+                                        "position": "absolute",
+                                        "top": 0,
+                                        "left": 0,
+                                        "width": "90%",
+                                    },
+                                ),
+                            ],
                         ),
                     ],
                 ),

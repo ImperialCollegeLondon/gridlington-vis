@@ -341,7 +341,18 @@ def generate_agent_location_fig(df: pd.DataFrame) -> px.line:
     Returns:
         XXX
     """
-    return px.line()
+    fig = px.line(x=[0, 1, 2, 3, 4], y=[0, 1, 2, 3, 4], range_x=[1, 4], range_y=[1, 4])
+    fig.update_xaxes(visible=False)
+    fig.update_yaxes(visible=False)
+    fig.update_layout(
+        {
+            "plot_bgcolor": "rgba(0, 0, 0, 0)",
+            "paper_bgcolor": "rgba(0, 0, 0, 0)",
+            "margin": dict(l=0, r=0, t=0, b=0),
+        }
+    )
+
+    return fig
 
 
 def generate_agent_location_sld_fig(df: pd.DataFrame) -> px.line:
