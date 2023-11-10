@@ -313,9 +313,8 @@ def generate_dsr_commands_fig(df: pd.DataFrame) -> px.line:
             ]
         ].copy()
         figure_data["Name"] = (  # TODO: Give this column an appropriate name
-            (df["Real Gridlington Demand"] - df["Expected Gridlington Demand"])
-            + (df["Real Ev Charging Power"] - df["Expected Ev Charging Power"])
-        )
+            df["Real Gridlington Demand"] - df["Expected Gridlington Demand"]
+        ) + (df["Real Ev Charging Power"] - df["Expected Ev Charging Power"])
         figure_data["Name2"] = (  # TODO: Give this column an appropriate name
             df["Real Ev Charging Power"] - df["Expected Ev Charging Power"]
         )
@@ -327,6 +326,6 @@ def generate_dsr_commands_fig(df: pd.DataFrame) -> px.line:
                 "Name2",
             ],
             range_y=[0, 1],  # TODO: Check range
-        ).update_layout(yaxis_title="MW")
+        ).update_layout(yaxis_title="MW", legend_title=None)
 
     return dsr_commands_fig
