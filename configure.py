@@ -75,7 +75,7 @@ def generate_docker_compose(template_file: str, ip: str, develop: bool = False) 
         },
         "depends_on": ["nginx"],
     }
-    docker_compose["services"]["dash"]["volumes"] = ["./logs:/logs"]
+    docker_compose["services"]["dash"]["volumes"] = ["./data:/data", "./logs:/logs"]
 
     if develop:
         docker_compose["services"]["dash"]["build"] = "."
