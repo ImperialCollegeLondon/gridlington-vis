@@ -1,4 +1,4 @@
-"""Functions for generating plotly express figures."""
+"""Functions for generating plotly figures."""
 import pandas as pd
 import plotly.express as px  # type: ignore
 import plotly.graph_objects as go  # type: ignore
