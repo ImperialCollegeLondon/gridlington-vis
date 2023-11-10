@@ -1,4 +1,13 @@
-"""Page in dash app."""
+"""Market view page in dash app.
+
+Six plots (2x3):
+- Intra-day market system
+- Balancing market
+- Energy deficit
+- Intraday market bids and offers
+- Demand side response
+- DSR commands to agents.
+"""
 
 
 import dash  # type: ignore
