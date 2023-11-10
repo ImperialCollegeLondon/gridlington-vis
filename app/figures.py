@@ -1,4 +1,5 @@
 """Functions for generating plotly figures."""
+import numpy as np
 import pandas as pd
 import plotly.express as px  # type: ignore
 import plotly.graph_objects as go  # type: ignore
@@ -340,9 +341,12 @@ def generate_agent_location_fig(df: pd.DataFrame) -> px.line:
     Returns:
         XXX
     """
+    x_coordinates = np.random.uniform(0, 1, 1000)  # TODO: replace with actual data
+    y_coordinates = np.random.uniform(0, 1, 1000)  # TODO: replace with actual data
+
     fig = px.scatter(
-        x=[0, 0.25, 0.5, 0.75, 1],
-        y=[0, 0.25, 0.5, 0.75, 1],
+        x=x_coordinates,
+        y=y_coordinates,
         range_x=[0, 1],
         range_y=[0, 1],
     )
@@ -368,9 +372,12 @@ def generate_agent_location_sld_fig(df: pd.DataFrame) -> px.line:
     Returns:
         XXX
     """
+    x_coordinates = np.random.uniform(0, 1, 1000)  # TODO: replace with actual data
+    y_coordinates = np.random.uniform(0, 1, 1000)  # TODO: replace with actual data
+
     fig = px.scatter(
-        x=[0, 0.25, 0.5, 0.75, 1],
-        y=[0, 0.25, 0.5, 0.75, 1],
+        x=x_coordinates,
+        y=y_coordinates,
         range_x=[0, 1],
         range_y=[0, 1],
     )
@@ -408,9 +415,12 @@ def generate_ev_location_fig(df: pd.DataFrame) -> px.line:
     Returns:
         XXX
     """
+    x_coordinates = np.random.uniform(0, 1, 1000)  # TODO: replace with actual data
+    y_coordinates = np.random.uniform(0, 1, 1000)  # TODO: replace with actual data
+
     fig = px.scatter(
-        x=[0, 0.25, 0.5, 0.75, 1],
-        y=[0, 0.25, 0.5, 0.75, 1],
+        x=x_coordinates,
+        y=y_coordinates,
         range_x=[0, 1],
         range_y=[0, 1],
     )
@@ -436,9 +446,12 @@ def generate_ev_location_sld_fig(df: pd.DataFrame) -> px.line:
     Returns:
         XXX
     """
+    x_coordinates = np.random.uniform(0, 1, 1000)  # TODO: replace with actual data
+    y_coordinates = np.random.uniform(0, 1, 1000)  # TODO: replace with actual data
+
     fig = px.scatter(
-        x=[0, 0.25, 0.5, 0.75, 1],
-        y=[0, 0.25, 0.5, 0.75, 1],
+        x=x_coordinates,
+        y=y_coordinates,
         range_x=[0, 1],
         range_y=[0, 1],
     )
