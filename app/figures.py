@@ -314,7 +314,7 @@ def generate_dsr_commands_fig(df: pd.DataFrame) -> px.line:
         ].copy()
         figure_data["Name"] = (  # TODO: Give this column an appropriate name
             (df["Real Gridlington Demand"] - df["Expected Gridlington Demand"])
-            + (df["Real Ev Charging Power"] - df["Expected Ev Charging Power"]),
+            + (df["Real Ev Charging Power"] - df["Expected Ev Charging Power"])
         )
         figure_data["Name2"] = (  # TODO: Give this column an appropriate name
             df["Real Ev Charging Power"] - df["Expected Ev Charging Power"]
