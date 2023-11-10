@@ -36,34 +36,33 @@ ev_location_sld_fig = generate_ev_location_sld_fig(df)
 ev_charging_breakdown_fig = generate_ev_charging_breakdown_fig(df)
 dsr_commands_fig = generate_dsr_commands_fig(df)
 
-# Load SVGs
-p = os.path.dirname(os.path.abspath(__file__))
-map_raw = open(p + "/../map.svg", "r").read()
-map_encoded = base64.b64encode(bytes(map_raw, "utf-8"))
-map_svg = "data:image/svg+xml;base64,{}".format(map_encoded.decode())
 
-sld_raw = open(p + "/../sld.svg", "r").read()
-sld_encoded = base64.b64encode(bytes(sld_raw, "utf-8"))
-sld_svg = "data:image/svg+xml;base64,{}".format(sld_encoded.decode())
+class SVG:
+    """Class for loading SVGs and formating for display."""
+
+    def __init__(self, file_path: str) -> None:
+        """Loads SVG file and formats for display using html.Img.
+
+        Example usage:
+        svg = SVG(path)
+        html.Img(src=svg.url)
+
+        Args:
+            file_path (str): Path to svg file
+        """
+        raw = open(file_path, "rt", encoding="utf-8").read()
+        encoded = base64.b64encode(bytes(raw, "utf-8"))
+        self.url = f"data:image/svg+xml;base64,{encoded.decode()}"
+
+        # Image dimensions
+        self.width, self.height = [
+            int(raw.split(x, 1)[1].split(" ", 1)[0][2:-3]) for x in ["width", "height"]
+        ]
+        self.aspect_ratio = self.width / self.height
 
 
-def get_aspect_ratio(svg: str) -> float:
-    """Get aspect ratio of an svg.
-
-    Args:
-        svg (str): String of svg. Result of open(path, "r").read().
-
-    Returns:
-        float: Aspect ratio of the svg.
-    """
-    width, height = [
-        int(svg.split(x, 1)[1].split(" ", 1)[0][2:-3]) for x in ["width", "height"]
-    ]
-    return width / height
-
-
-map_ar = get_aspect_ratio(map_raw)
-sld_ar = get_aspect_ratio(sld_raw)
+svg_map = SVG(os.path.dirname(os.path.abspath(__file__)) + "/../map.svg")
+svg_sld = SVG(os.path.dirname(os.path.abspath(__file__)) + "/../sld.svg")
 
 layout = html.Div(
     style={
@@ -82,7 +81,7 @@ layout = html.Div(
                         html.Div(
                             style={"position": "relative"},
                             children=[
-                                html.Img(src=map_svg, width="90%"),
+                                html.Img(src=svg_map.url, width="90%"),
                                 dcc.Graph(
                                     id="agent_location_fig",
                                     figure=agent_location_fig,
@@ -91,7 +90,7 @@ layout = html.Div(
                                         "top": 0,
                                         "left": 0,
                                         "width": "90%",
-                                        "aspect-ratio": str(map_ar),
+                                        "aspect-ratio": str(svg_map.aspect_ratio),
                                     },
                                 ),
                             ],
@@ -105,7 +104,7 @@ layout = html.Div(
                         html.Div(
                             style={"position": "relative"},
                             children=[
-                                html.Img(src=sld_svg, width="90%"),
+                                html.Img(src=svg_sld.url, width="90%"),
                                 dcc.Graph(
                                     id="agent_location_sld_fig",
                                     figure=agent_location_sld_fig,
@@ -114,7 +113,7 @@ layout = html.Div(
                                         "top": 0,
                                         "left": 0,
                                         "width": "90%",
-                                        "aspect-ratio": str(sld_ar),
+                                        "aspect-ratio": str(svg_sld.aspect_ratio),
                                     },
                                 ),
                             ],
@@ -144,7 +143,7 @@ layout = html.Div(
                         html.Div(
                             style={"position": "relative"},
                             children=[
-                                html.Img(src=map_svg, width="90%"),
+                                html.Img(src=svg_map.url, width="90%"),
                                 dcc.Graph(
                                     id="ev_location_fig",
                                     figure=ev_location_fig,
@@ -153,7 +152,7 @@ layout = html.Div(
                                         "top": 0,
                                         "left": 0,
                                         "width": "90%",
-                                        "aspect-ratio": str(map_ar),
+                                        "aspect-ratio": str(svg_map.aspect_ratio),
                                     },
                                 ),
                             ],
@@ -167,7 +166,7 @@ layout = html.Div(
                         html.Div(
                             style={"position": "relative"},
                             children=[
-                                html.Img(src=sld_svg, width="90%"),
+                                html.Img(src=svg_sld.url, width="90%"),
                                 dcc.Graph(
                                     id="ev_location_sld_fig",
                                     figure=ev_location_sld_fig,
@@ -176,7 +175,7 @@ layout = html.Div(
                                         "top": 0,
                                         "left": 0,
                                         "width": "90%",
-                                        "aspect-ratio": str(sld_ar),
+                                        "aspect-ratio": str(svg_sld.aspect_ratio),
                                     },
                                 ),
                             ],
@@ -200,7 +199,7 @@ layout = html.Div(
             style={"display": "flex", "justify-content": "space-around"},
             children=[
                 html.Div(
-                    style={"width": "48%"},
+                    style={"width": "48%"},  # TODO: how wide?
                     children=[
                         html.H1("DSR Commands to Agents"),
                         dcc.Graph(

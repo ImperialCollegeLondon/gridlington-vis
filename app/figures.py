@@ -366,7 +366,7 @@ def generate_agent_location_fig(df: pd.DataFrame) -> px.scatter:
     return agent_location_fig
 
 
-def generate_agent_location_sld_fig(df: pd.DataFrame) -> px.line:
+def generate_agent_location_sld_fig(df: pd.DataFrame) -> px.scatter:
     """XXX.
 
     Args:
@@ -400,7 +400,7 @@ def generate_agent_location_sld_fig(df: pd.DataFrame) -> px.line:
     return agent_location_sld_fig
 
 
-def generate_agent_activity_breakdown_fig(df: pd.DataFrame) -> px.line:
+def generate_agent_activity_breakdown_fig(df: pd.DataFrame) -> px.pie:
     """XXX.
 
     Args:
@@ -409,7 +409,18 @@ def generate_agent_activity_breakdown_fig(df: pd.DataFrame) -> px.line:
     Returns:
         XXX
     """
-    return px.line()
+    if len(df.columns) == 1:
+        agent_activity_breakdown_fig = px.pie()
+    else:
+        household_activities = [
+            c for c in df.columns.values.tolist() if "Household Activity" in c
+        ]
+        agent_activity_breakdown_fig = px.pie(
+            names=[h.split("(")[1].split(")")[0] for h in household_activities],
+            values=[df[h].iloc[-1] for h in household_activities],
+        ).update_layout(legend_title_text="Household Activity")
+
+    return agent_activity_breakdown_fig
 
 
 def generate_ev_location_fig(df: pd.DataFrame) -> px.line:
@@ -446,7 +457,7 @@ def generate_ev_location_fig(df: pd.DataFrame) -> px.line:
     return ev_location_fig
 
 
-def generate_ev_location_sld_fig(df: pd.DataFrame) -> px.line:
+def generate_ev_location_sld_fig(df: pd.DataFrame) -> px.scatter:
     """XXX.
 
     Args:
@@ -480,7 +491,7 @@ def generate_ev_location_sld_fig(df: pd.DataFrame) -> px.line:
     return ev_location_sld_fig
 
 
-def generate_ev_charging_breakdown_fig(df: pd.DataFrame) -> px.line:
+def generate_ev_charging_breakdown_fig(df: pd.DataFrame) -> px.pie:
     """XXX.
 
     Args:
@@ -489,4 +500,4 @@ def generate_ev_charging_breakdown_fig(df: pd.DataFrame) -> px.line:
     Returns:
         XXX
     """
-    return px.line()
+    return px.pie()
