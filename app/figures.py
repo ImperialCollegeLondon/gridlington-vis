@@ -332,11 +332,15 @@ def generate_dsr_commands_fig(df: pd.DataFrame) -> px.line:
     return dsr_commands_fig
 
 
-def generate_agent_location_fig(df: pd.DataFrame) -> px.scatter:
+def generate_agent_location_fig(
+    df: pd.DataFrame, x_max: int = 1, y_max: int = 1
+) -> px.scatter:
     """Creates plotly scatterplot for agent locations figure.
 
     Args:
         df: TODO
+        x_max: Maximum x coordinate
+        y_max: Maximum y coordinate
 
     Returns:
         Plotly express scatterplot
@@ -344,14 +348,18 @@ def generate_agent_location_fig(df: pd.DataFrame) -> px.scatter:
     if len(df.columns) == 1:
         agent_location_fig = px.scatter()
     else:
-        x_coordinates = np.random.uniform(0, 1, 1000)  # TODO: replace with actual data
-        y_coordinates = np.random.uniform(0, 1, 1000)  # TODO: replace with actual data
+        x_coordinates = np.random.uniform(
+            0, x_max, 1000
+        )  # TODO: replace with actual data
+        y_coordinates = np.random.uniform(
+            0, y_max, 1000
+        )  # TODO: replace with actual data
 
         agent_location_fig = px.scatter(
             x=x_coordinates,
             y=y_coordinates,
-            range_x=[0, 1],
-            range_y=[0, 1],
+            range_x=[0, x_max],
+            range_y=[0, y_max],
         )
     agent_location_fig.update_xaxes(visible=False)
     agent_location_fig.update_yaxes(visible=False)
@@ -366,11 +374,15 @@ def generate_agent_location_fig(df: pd.DataFrame) -> px.scatter:
     return agent_location_fig
 
 
-def generate_agent_location_sld_fig(df: pd.DataFrame) -> px.scatter:
+def generate_agent_location_sld_fig(
+    df: pd.DataFrame, x_max: int = 1, y_max: int = 1
+) -> px.scatter:
     """Creates plotly scatterplot for agent locations on SLD figure.
 
     Args:
         df: TODO
+        x_max: Maximum x coordinate
+        y_max: Maximum y coordinate
 
     Returns:
         Plotly express scatterplot
@@ -378,14 +390,18 @@ def generate_agent_location_sld_fig(df: pd.DataFrame) -> px.scatter:
     if len(df.columns) == 1:
         agent_location_sld_fig = px.scatter()
     else:
-        x_coordinates = np.random.uniform(0, 1, 1000)  # TODO: replace with actual data
-        y_coordinates = np.random.uniform(0, 1, 1000)  # TODO: replace with actual data
+        x_coordinates = np.random.uniform(
+            0, x_max, 1000
+        )  # TODO: replace with actual data
+        y_coordinates = np.random.uniform(
+            0, y_max, 1000
+        )  # TODO: replace with actual data
 
         agent_location_sld_fig = px.scatter(
             x=x_coordinates,
             y=y_coordinates,
-            range_x=[0, 1],
-            range_y=[0, 1],
+            range_x=[0, x_max],
+            range_y=[0, y_max],
         )
     agent_location_sld_fig.update_xaxes(visible=False)
     agent_location_sld_fig.update_yaxes(visible=False)
@@ -425,11 +441,15 @@ def generate_agent_activity_breakdown_fig(df: pd.DataFrame) -> px.pie:
     return agent_activity_breakdown_fig
 
 
-def generate_ev_location_fig(df: pd.DataFrame) -> px.line:
+def generate_ev_location_fig(
+    df: pd.DataFrame, x_max: int = 1, y_max: int = 1
+) -> px.scatter:
     """Creates plotly scatterplot for EV location figure.
 
     Args:
         df: TODO
+        x_max: Maximum x coordinate
+        y_max: Maximum y coordinate
 
     Returns:
         Plotly express scatterplot
@@ -437,14 +457,18 @@ def generate_ev_location_fig(df: pd.DataFrame) -> px.line:
     if len(df.columns) == 1:
         ev_location_fig = px.scatter()
     else:
-        x_coordinates = np.random.uniform(0, 1, 1000)  # TODO: replace with actual data
-        y_coordinates = np.random.uniform(0, 1, 1000)  # TODO: replace with actual data
+        x_coordinates = np.random.uniform(
+            0, x_max, 1000
+        )  # TODO: replace with actual data
+        y_coordinates = np.random.uniform(
+            0, y_max, 1000
+        )  # TODO: replace with actual data
 
         ev_location_fig = px.scatter(
             x=x_coordinates,
             y=y_coordinates,
-            range_x=[0, 1],
-            range_y=[0, 1],
+            range_x=[0, x_max],
+            range_y=[0, y_max],
         )
     ev_location_fig.update_xaxes(visible=False)
     ev_location_fig.update_yaxes(visible=False)
@@ -459,11 +483,15 @@ def generate_ev_location_fig(df: pd.DataFrame) -> px.line:
     return ev_location_fig
 
 
-def generate_ev_location_sld_fig(df: pd.DataFrame) -> px.scatter:
+def generate_ev_location_sld_fig(
+    df: pd.DataFrame, x_max: int = 1, y_max: int = 1
+) -> px.scatter:
     """Creates plotly scatterplot for EV location in SLD figure.
 
     Args:
         df: TODO
+        x_max: Maximum x coordinate
+        y_max: Maximum y coordinate
 
     Returns:
         Plotly express scatterplot
@@ -471,14 +499,18 @@ def generate_ev_location_sld_fig(df: pd.DataFrame) -> px.scatter:
     if len(df.columns) == 1:
         ev_location_sld_fig = px.scatter()
     else:
-        x_coordinates = np.random.uniform(0, 1, 1000)  # TODO: replace with actual data
-        y_coordinates = np.random.uniform(0, 1, 1000)  # TODO: replace with actual data
+        x_coordinates = np.random.uniform(
+            0, x_max, 1000
+        )  # TODO: replace with actual data
+        y_coordinates = np.random.uniform(
+            0, y_max, 1000
+        )  # TODO: replace with actual data
 
         ev_location_sld_fig = px.scatter(
             x=x_coordinates,
             y=y_coordinates,
-            range_x=[0, 1],
-            range_y=[0, 1],
+            range_x=[0, x_max],
+            range_y=[0, y_max],
         )
     ev_location_sld_fig.update_xaxes(visible=False)
     ev_location_sld_fig.update_yaxes(visible=False)

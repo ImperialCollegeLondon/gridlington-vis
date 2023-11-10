@@ -254,11 +254,19 @@ def update_data(n_intervals):  # type: ignore # noqa
     # new_df_dsr = pd.DataFrame(**data_dsr)
 
     # TODO: ensure each figure is using the correct dataframe
-    agent_location_fig = generate_agent_location_fig(new_df_opal)
-    agent_location_sld_fig = generate_agent_location_sld_fig(new_df_opal)
+    agent_location_fig = generate_agent_location_fig(
+        new_df_opal, svg_map.width, svg_map.height
+    )
+    agent_location_sld_fig = generate_agent_location_sld_fig(
+        new_df_opal, svg_sld.width, svg_sld.height
+    )
     agent_activity_breakdown_fig = generate_agent_activity_breakdown_fig(new_df_opal)
-    ev_location_fig = generate_ev_location_fig(new_df_opal)
-    ev_location_sld_fig = generate_ev_location_sld_fig(new_df_opal)
+    ev_location_fig = generate_ev_location_fig(
+        new_df_opal, svg_map.width, svg_map.height
+    )
+    ev_location_sld_fig = generate_ev_location_sld_fig(
+        new_df_opal, svg_sld.width, svg_sld.height
+    )
     ev_charging_breakdown_fig = generate_ev_charging_breakdown_fig(new_df_opal)
     dsr_commands_fig = generate_dsr_commands_fig(new_df_opal)
     return (
