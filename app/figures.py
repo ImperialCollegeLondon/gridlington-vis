@@ -333,13 +333,13 @@ def generate_dsr_commands_fig(df: pd.DataFrame) -> px.line:
 
 
 def generate_agent_location_fig(df: pd.DataFrame) -> px.scatter:
-    """XXX.
+    """Creates plotly scatterplot for agent locations figure.
 
     Args:
-        df: XXX
+        df: TODO
 
     Returns:
-        XXX
+        Plotly express scatterplot
     """
     if len(df.columns) == 1:
         agent_location_fig = px.scatter()
@@ -367,13 +367,13 @@ def generate_agent_location_fig(df: pd.DataFrame) -> px.scatter:
 
 
 def generate_agent_location_sld_fig(df: pd.DataFrame) -> px.scatter:
-    """XXX.
+    """Creates plotly scatterplot for agent locations on SLD figure.
 
     Args:
-        df: XXX
+        df: TODO
 
     Returns:
-        XXX
+        Plotly express scatterplot
     """
     if len(df.columns) == 1:
         agent_location_sld_fig = px.scatter()
@@ -401,13 +401,15 @@ def generate_agent_location_sld_fig(df: pd.DataFrame) -> px.scatter:
 
 
 def generate_agent_activity_breakdown_fig(df: pd.DataFrame) -> px.pie:
-    """XXX.
+    """Creates plotly pie chart for Agent activity breakdown figure.
+
+    TODO: this is just an easy first draft. A waffle plot may be better
 
     Args:
-        df: XXX
+        df: Opal dataframe
 
     Returns:
-        XXX
+        Plotly express pie chart
     """
     if len(df.columns) == 1:
         agent_activity_breakdown_fig = px.pie()
@@ -424,13 +426,13 @@ def generate_agent_activity_breakdown_fig(df: pd.DataFrame) -> px.pie:
 
 
 def generate_ev_location_fig(df: pd.DataFrame) -> px.line:
-    """XXX.
+    """Creates plotly scatterplot for EV location figure.
 
     Args:
-        df: XXX
+        df: TODO
 
     Returns:
-        XXX
+        Plotly express scatterplot
     """
     if len(df.columns) == 1:
         ev_location_fig = px.scatter()
@@ -458,13 +460,13 @@ def generate_ev_location_fig(df: pd.DataFrame) -> px.line:
 
 
 def generate_ev_location_sld_fig(df: pd.DataFrame) -> px.scatter:
-    """XXX.
+    """Creates plotly scatterplot for EV location in SLD figure.
 
     Args:
-        df: XXX
+        df: TODO
 
     Returns:
-        XXX
+        Plotly express scatterplot
     """
     if len(df.columns) == 1:
         ev_location_sld_fig = px.scatter()
@@ -492,12 +494,13 @@ def generate_ev_location_sld_fig(df: pd.DataFrame) -> px.scatter:
 
 
 def generate_ev_charging_breakdown_fig(df: pd.DataFrame) -> px.pie:
-    """XXX.
+    """TODO.
 
     Args:
-        df: XXX
+        df: TODO
 
     Returns:
-        XXX
+        TODO
     """
+    # TODO: populate function
     return px.pie()
