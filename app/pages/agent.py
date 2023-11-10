@@ -37,11 +37,32 @@ dsr_commands_fig = generate_dsr_commands_fig(df)
 
 # Load SVGs
 p = os.path.dirname(os.path.abspath(__file__))
-map_encoded = base64.b64encode(open(p + "/../map.svg", "rb").read())
+map_raw = open(p + "/../map.svg", "r").read()
+map_encoded = base64.b64encode(bytes(map_raw, "utf-8"))
 map_svg = "data:image/svg+xml;base64,{}".format(map_encoded.decode())
-sld_encoded = base64.b64encode(open(p + "/../sld.svg", "rb").read())
+
+sld_raw = open(p + "/../sld.svg", "r").read()
+sld_encoded = base64.b64encode(bytes(sld_raw, "utf-8"))
 sld_svg = "data:image/svg+xml;base64,{}".format(sld_encoded.decode())
 
+
+def get_aspect_ratio(svg: str) -> float:
+    """Get aspect ratio of an svg.
+
+    Args:
+        svg (str): String of svg. Result of open(path, "r").read().
+
+    Returns:
+        float: Aspect ratio of the svg.
+    """
+    width, height = [
+        int(svg.split(x, 1)[1].split(" ", 1)[0][2:-3]) for x in ["width", "height"]
+    ]
+    return width / height
+
+
+map_ar = get_aspect_ratio(map_raw)
+sld_ar = get_aspect_ratio(sld_raw)
 
 layout = html.Div(
     style={
