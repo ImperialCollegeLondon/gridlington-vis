@@ -6,6 +6,8 @@ import pandas as pd
 from . import log
 from .datahub_api import DataHubConnectionError, DataHubRequestError, get_opal_data
 
+OPAL_START_DATE = "2035-01-22 00:00"
+
 
 def read_opal_data() -> pd.DataFrame:
     """Function to get the pre-set opal data.
@@ -34,6 +36,11 @@ def read_opal_data() -> pd.DataFrame:
             "Issue with DataHub connection or request - using default Opal headers."
         )
         df.columns = pd.read_csv("data/opal_headers.csv").columns
+
+    df["Time"] = (
+        pd.Timestamp(OPAL_START_DATE) + pd.to_timedelta(df["Time"], unit="S")
+    ).astype(str)
+
     return df
 
 
