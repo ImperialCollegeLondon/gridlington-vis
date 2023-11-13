@@ -3,10 +3,12 @@
 
 import dash  # type: ignore
 import pandas as pd
+import plotly.express as px  # type: ignore
 from dash import Input, Output, callback, dcc, html  # type: ignore
 from dash.exceptions import PreventUpdate  # type: ignore
 
-from .. import datahub_api as datahub
+from .. import LIVE_MODEL, log
+from ..datahub_api import get_opal_data
 from ..figures import (
     generate_gen_split_fig,
     generate_system_freq_fig,
@@ -102,13 +104,28 @@ layout = html.Div(
     ],
     [Input("interval", "n_intervals")],
 )
-def update_data(n_intervals):  # type: ignore # noqa
+def update_data(n_intervals: int) -> tuple[px.pie, px.line, px.line, px.line]:
+    """Plot to update the plots in this page.
+
+    Args:
+        n_intervals (int): The number of times this page has updated.
+            indexes by 1 every 7 seconds.
+
+    Returns:
+        tuple[px.pie, px.line.px.line, px.line]: The new figures.
+    """
     if n_intervals is None:
         raise PreventUpdate
 
-    data = datahub.get_opal_data()
+    if LIVE_MODEL:
+        log.debug("Updatng plots from live model")
+        data = get_opal_data()
+        new_df = pd.DataFrame(**data)  # type: ignore[call-overload]
+    else:
+        from ..pre_set_data import OPAL_DATA
 
-    new_df = pd.DataFrame(**data)
+        log.debug("Updating plots with pre-set data")
+        new_df = OPAL_DATA.loc[:n_intervals]
 
     gen_split_fig = generate_gen_split_fig(new_df)
     total_gen_fig = generate_total_gen_fig(new_df)
