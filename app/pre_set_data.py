@@ -2,6 +2,7 @@
 from glob import glob
 
 import pandas as pd
+from requests.exceptions import ConnectionError
 
 from . import log
 from .datahub_api import get_opal_data
@@ -18,7 +19,7 @@ def read_opal_data() -> pd.DataFrame:
         pd.DataFrame: Opal data with each row being the data at a certain time.
     """
     df = pd.DataFrame()
-    for index, file in enumerate(glob("data/*")):
+    for index, file in enumerate(glob("data/opal/*.csv")):
         log.debug(f"Reading file: {file}")
         df[index] = pd.read_csv(file, header=0, index_col=0)
     df = (
@@ -27,7 +28,11 @@ def read_opal_data() -> pd.DataFrame:
         .drop(columns=[0, 5, 6, 7])
         .reset_index(drop=True)
     )
-    df.columns = get_opal_data()["columns"]  # type: ignore [assignment]
+    try:
+        df.columns = get_opal_data()["columns"]  # type: ignore [assignment]
+    except ConnectionError:
+        log.warning("Connection to DataHub failed - using default Opal headers.")
+        df.columns = pd.read_csv("data/opal_headers.csv").columns
     return df
 
 
