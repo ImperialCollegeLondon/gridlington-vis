@@ -1,9 +1,5 @@
 """Page in dash app."""
 
-
-import base64
-import os
-
 import dash  # type: ignore
 import pandas as pd
 from dash import Input, Output, callback, dcc, html  # type: ignore
@@ -13,11 +9,15 @@ from .. import datahub_api as datahub
 from ..figures import (
     generate_agent_activity_breakdown_fig,
     generate_agent_location_fig,
-    generate_agent_location_sld_fig,
     generate_dsr_commands_fig,
     generate_ev_charging_breakdown_fig,
     generate_ev_location_fig,
-    generate_ev_location_sld_fig,
+)
+from ..svg import (
+    generate_agent_location_sld_img,
+    generate_ev_location_sld_img,
+    svg_map,
+    svg_sld,
 )
 
 dash.register_page(__name__)
@@ -29,40 +29,12 @@ interval = 7000
 df = pd.DataFrame({"Col": [0]})
 
 agent_location_fig = generate_agent_location_fig(df)
-agent_location_sld_fig = generate_agent_location_sld_fig(df)
+agent_location_sld_img = generate_agent_location_sld_img(df)
 agent_activity_breakdown_fig = generate_agent_activity_breakdown_fig(df)
 ev_location_fig = generate_ev_location_fig(df)
-ev_location_sld_fig = generate_ev_location_sld_fig(df)
+ev_location_sld_img = generate_ev_location_sld_img(df)
 ev_charging_breakdown_fig = generate_ev_charging_breakdown_fig(df)
 dsr_commands_fig = generate_dsr_commands_fig(df)
-
-
-class SVG:
-    """Class for loading SVGs and formating for display."""
-
-    def __init__(self, file_path: str) -> None:
-        """Loads SVG file and formats for display using html.Img.
-
-        Example usage:
-        svg = SVG(path)
-        html.Img(src=svg.url)
-
-        Args:
-            file_path (str): Path to svg file
-        """
-        raw = open(file_path, "rt", encoding="utf-8").read()
-        encoded = base64.b64encode(bytes(raw, "utf-8"))
-        self.url = f"data:image/svg+xml;base64,{encoded.decode()}"
-
-        # Image dimensions
-        self.width, self.height = [
-            int(raw.split(x, 1)[1].split(" ", 1)[0][2:-3]) for x in ["width", "height"]
-        ]
-        self.aspect_ratio = self.width / self.height
-
-
-svg_map = SVG(os.path.dirname(os.path.abspath(__file__)) + "/../map.svg")
-svg_sld = SVG(os.path.dirname(os.path.abspath(__file__)) + "/../sld.svg")
 
 layout = html.Div(
     style={
@@ -107,15 +79,14 @@ layout = html.Div(
                             style={"position": "relative"},
                             children=[
                                 html.Img(src=svg_sld.url, width="90%"),
-                                dcc.Graph(
-                                    id="agent_location_sld_fig",
-                                    figure=agent_location_sld_fig,
+                                html.Img(
+                                    id="agent_location_sld_img",
+                                    src=agent_location_sld_img,
+                                    width="90%",
                                     style={
                                         "position": "absolute",
                                         "top": 0,
                                         "left": 0,
-                                        "width": "90%",
-                                        "aspect-ratio": str(svg_sld.aspect_ratio),
                                     },
                                 ),
                             ],
@@ -176,15 +147,14 @@ layout = html.Div(
                             style={"position": "relative"},
                             children=[
                                 html.Img(src=svg_sld.url, width="90%"),
-                                dcc.Graph(
-                                    id="ev_location_sld_fig",
-                                    figure=ev_location_sld_fig,
+                                html.Img(
+                                    id="ev_location_sld_img",
+                                    src=ev_location_sld_img,
+                                    width="90%",
                                     style={
                                         "position": "absolute",
                                         "top": 0,
                                         "left": 0,
-                                        "width": "90%",
-                                        "aspect-ratio": str(svg_sld.aspect_ratio),
                                     },
                                 ),
                             ],
@@ -233,10 +203,10 @@ layout = html.Div(
 @callback(
     [
         Output("agent_location_fig", "figure"),
-        Output("agent_location_sld_fig", "figure"),
+        Output("agent_location_sld_img", "src"),
         Output("agent_activity_breakdown_fig", "figure"),
         Output("ev_location_fig", "figure"),
-        Output("ev_location_sld_fig", "figure"),
+        Output("ev_location_sld_img", "src"),
         Output("ev_charging_breakdown_fig", "figure"),
         Output("dsr_commands_fig", "figure"),
     ],
@@ -257,24 +227,21 @@ def update_data(n_intervals):  # type: ignore # noqa
     agent_location_fig = generate_agent_location_fig(
         new_df_opal, svg_map.width, svg_map.height
     )
-    agent_location_sld_fig = generate_agent_location_sld_fig(
-        new_df_opal, svg_sld.width, svg_sld.height
-    )
+    agent_location_sld_img = generate_agent_location_sld_img(new_df_opal)
+
     agent_activity_breakdown_fig = generate_agent_activity_breakdown_fig(new_df_opal)
     ev_location_fig = generate_ev_location_fig(
         new_df_opal, svg_map.width, svg_map.height
     )
-    ev_location_sld_fig = generate_ev_location_sld_fig(
-        new_df_opal, svg_sld.width, svg_sld.height
-    )
+    ev_location_sld_img = generate_ev_location_sld_img(new_df_opal)
     ev_charging_breakdown_fig = generate_ev_charging_breakdown_fig(new_df_opal)
     dsr_commands_fig = generate_dsr_commands_fig(new_df_opal)
     return (
         agent_location_fig,
-        agent_location_sld_fig,
+        agent_location_sld_img,
         agent_activity_breakdown_fig,
         ev_location_fig,
-        ev_location_sld_fig,
+        ev_location_sld_img,
         ev_charging_breakdown_fig,
         dsr_commands_fig,
     )
