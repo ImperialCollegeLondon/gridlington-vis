@@ -114,7 +114,7 @@ def generate_system_freq_fig(df: pd.DataFrame) -> px.line:
     return system_freq_fig
 
 
-def generate_intraday_market_sys_fig(df: pd.DataFrame) -> go:
+def generate_intraday_market_sys_fig(df: pd.DataFrame) -> go.Figure:
     """Creates Plotly figure for Intra-day Market System graph.
 
     Args:
@@ -128,41 +128,38 @@ def generate_intraday_market_sys_fig(df: pd.DataFrame) -> go:
     if len(df.columns) == 1:
         return intraday_market_sys_fig
 
-    # Left axis data
-    columns = [
+    left_axis_columns = [
         "Intra-Day Market Generation",
         "Intra-Day Market Storage",
         "Intra-Day Market Demand",
     ]
     intraday_market_sys_fig_left = px.line(
         df,
-        x="Time",
-        y=columns,
+        x="Time",  # TODO: Check units
+        y=left_axis_columns,
     ).for_each_trace(lambda t: t.update(name=t.name + " (MW)"))
 
-    # Right axis data
-    columns = [
+    right_axis_columns = [
         "Intra-Day Market Value",
     ]
     intraday_market_sys_fig_right = (
         px.line(
             df,
             x="Time",
-            y=columns,
+            y=right_axis_columns,
         )
         .update_traces(yaxis="y2")
         .for_each_trace(lambda t: t.update(name=t.name + " (£/MW)"))
     )
 
-    # Combined figure
     intraday_market_sys_fig.add_traces(
         intraday_market_sys_fig_left.data + intraday_market_sys_fig_right.data
     )
-    intraday_market_sys_fig.layout.xaxis.title = "Time"  # TODO: Check units
+    intraday_market_sys_fig.layout.xaxis.title = "Time"
     intraday_market_sys_fig.layout.yaxis.title = "MW"
     intraday_market_sys_fig.layout.yaxis2.title = "£/MW"
     intraday_market_sys_fig.layout.yaxis.range = [-100, 100]
-    intraday_market_sys_fig.layout.yaxis2.range = [-1000, 1000]
+    intraday_market_sys_fig.layout.yaxis2.range = [-10000, 10000]
     intraday_market_sys_fig.for_each_trace(
         lambda t: t.update(line=dict(color=t.marker.color))
     )
@@ -170,7 +167,7 @@ def generate_intraday_market_sys_fig(df: pd.DataFrame) -> go:
     return intraday_market_sys_fig
 
 
-def generate_balancing_market_fig(df: pd.DataFrame) -> go:
+def generate_balancing_market_fig(df: pd.DataFrame) -> go.Figure:
     """Creates Plotly figure for Balancing Market graph.
 
     Args:
@@ -184,8 +181,7 @@ def generate_balancing_market_fig(df: pd.DataFrame) -> go:
     if len(df.columns) == 1:
         return balancing_market_fig
 
-    # Left axis data
-    columns = [
+    left_axis_columns = [
         "Balancing Mechanism Generation",
         "Balancing Mechanism Storage",
         "Balancing Mechanism Demand",
@@ -193,24 +189,22 @@ def generate_balancing_market_fig(df: pd.DataFrame) -> go:
     balancing_market_fig_left = px.line(
         df,
         x="Time",
-        y=columns,
+        y=left_axis_columns,
     ).for_each_trace(lambda t: t.update(name=t.name + " (MW)"))
 
-    # Right axis data
-    columns = [
+    right_axis_columns = [
         "Balancing Mechanism Value",
     ]
     balancing_market_fig_right = (
         px.line(
             df,
             x="Time",
-            y=columns,
+            y=right_axis_columns,
         )
         .update_traces(yaxis="y2")
         .for_each_trace(lambda t: t.update(name=t.name + " (£/MW)"))
     )
 
-    # Combined figure
     balancing_market_fig.add_traces(
         balancing_market_fig_left.data + balancing_market_fig_right.data
     )
@@ -289,32 +283,29 @@ def generate_dsr_fig(df: pd.DataFrame) -> go.Figure:
     if len(df.columns) == 1:
         return dsr_fig
 
-    # Left axis data
-    columns = [
+    left_axis_columns = [
         "Cost",  # TODO: This will need to be changed when data is available
         "Cost",  # TODO: As above
     ]
     dsr_fig_left = px.line(
         df,
         x="Time",
-        y=columns,
+        y=left_axis_columns,
     ).for_each_trace(lambda t: t.update(name=t.name + " (kW)"))
 
-    # Right axis data
-    columns = [
+    right_axis_columns = [
         "Cost",
     ]
     dsr_fig_right = (
         px.line(
             df,
             x="Time",
-            y=columns,
+            y=right_axis_columns,
         )
         .update_traces(yaxis="y2")
         .for_each_trace(lambda t: t.update(name=t.name + " (£/MW)"))
     )
 
-    # Combined figure
     dsr_fig.add_traces(dsr_fig_left.data + dsr_fig_right.data)
     dsr_fig.layout.xaxis.title = "Time"  # TODO: Check units
     dsr_fig.layout.yaxis.title = "kW"
@@ -356,7 +347,7 @@ def generate_dsr_commands_fig(df: pd.DataFrame) -> px.line:
                 "Name",
                 "Name2",
             ],
-            range_y=[-6, 6],
+            range_y=[-8, 8],
         ).update_layout(yaxis_title="MW", legend_title=None)
 
     return dsr_commands_fig

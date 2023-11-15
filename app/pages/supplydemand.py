@@ -105,20 +105,20 @@ layout = html.Div(
     [Input("interval", "n_intervals")],
 )
 def update_data(n_intervals: int) -> tuple[px.pie, px.line, px.line, px.line]:
-    """Plot to update the plots in this page.
+    """Function to update the plots in this page.
 
     Args:
         n_intervals (int): The number of times this page has updated.
             indexes by 1 every 7 seconds.
 
     Returns:
-        tuple[px.pie, px.line.px.line, px.line]: The new figures.
+        tuple[px.pie, px.line, px.line, px.line]: The new figures.
     """
     if n_intervals is None:
         raise PreventUpdate
 
     if LIVE_MODEL:
-        log.debug("Updatng plots from live model")
+        log.debug("Updating plots from live model")
         data = get_opal_data()
         new_df = pd.DataFrame(**data)  # type: ignore[call-overload]
     else:
