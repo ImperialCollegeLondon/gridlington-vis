@@ -40,7 +40,7 @@ INIT_SECTIONS = {
     "NMX Georgraphic Map": {"space": "PC02-Top", "app": webrtc},
     "NMX 11kV Schematic": {"space": "PC02-Left", "app": webrtc},
     "NMX Issues": {"space": "PC02-Right", "app": webrtc},
-    "Market": {"space": "Hub01", "app": html("plot7")},
+    "Market": {"space": "Hub01", "app": html("market")},
     "Agent": {"space": "Hub02", "app": html("plot8")},
 }
 
