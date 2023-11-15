@@ -133,3 +133,6 @@ docker-compose.yml
 
 # ove credentials
 config/credentials.json
+
+# project-specific data
+data/*/IDLES*

@@ -3,6 +3,8 @@ import os
 
 import requests
 
+from . import log
+
 """
 Constant for API URLs.
 """
@@ -29,6 +31,7 @@ def get_opal_data(
         if end:
             query = query + f"end={end}&"
 
+    log.info("Requesting OPAL data from the DataHub")
     req = requests.get(f"{DH_URL}/opal{query.rstrip('&')}")
 
     if "data" in req.json().keys():
@@ -62,6 +65,7 @@ def get_dsr_data(
             cols = ",".join(col).lower()
             query = query + f"col={cols}&"
 
+    log.info("Requesting DSR data from the DataHub")
     req = requests.get(f"{DH_URL}/dsr{query.rstrip('&')}")
 
     if "data" in req.json().keys():
@@ -73,6 +77,7 @@ def get_dsr_data(
 
 def get_wesim_data() -> dict[str, dict]:  # type: ignore[type-arg]
     """Function for making a GET request for Wesim data."""
+    log.info("Requesting WESIM data from the DataHub")
     req = requests.get(f"{DH_URL}/wesim")
     if "data" in req.json().keys():
         data = req.json()["data"]

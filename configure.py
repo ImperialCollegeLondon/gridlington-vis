@@ -71,15 +71,17 @@ def generate_docker_compose(template_file: str, ip: str, develop: bool = False) 
             "API_URL": f"http://{lines_to_replace['OVE_HOST']}",
             "PLOT_URL": f"http://{lines_to_replace['PLOT_URL']}",
             "DH_URL": f"http://{lines_to_replace['DH_URL']}",
+            "LIVE_MODEL": True,
         },
         "depends_on": ["nginx"],
     }
-    docker_compose["services"]["dash"]["volumes"] = ["./logs:/logs"]
+    docker_compose["services"]["dash"]["volumes"] = ["./data:/data", "./logs:/logs"]
 
     if develop:
         docker_compose["services"]["dash"]["build"] = "."
         docker_compose["services"]["dash"]["volumes"] += ["./app:/app"]
         docker_compose["services"]["dash"]["environment"]["DH_URL"] = "http://127.0.0.1"
+        del docker_compose["services"]["dash"]["environment"]["LIVE_MODEL"]
     else:
         docker_compose["services"]["dash"][
             "image"
