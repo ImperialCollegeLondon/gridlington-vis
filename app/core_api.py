@@ -47,6 +47,7 @@ INIT_SECTIONS = {
 
 def wait_for_ove() -> None:
     """Function to wait for the OVE Core API to be available after startup."""
+    log.info("Waiting for OVE Core and Apps to be ready...")
     while requests.get(f"{API_URL}/app/html").status_code != 200:
         time.sleep(5)
 
@@ -54,11 +55,12 @@ def wait_for_ove() -> None:
 def create_all() -> None:
     """Function for creating all initial sections."""
     wait_for_ove()
+    log.info("Creating OVE Sections...")
     spaces = json.loads(requests.get(f"{API_URL}/spaces").text)
     for section in INIT_SECTIONS.values():
         data = spaces[section["space"]][0] | section
         response = requests.post(f"{API_URL}/section", json=data)
-        log.info(response.text)
+        log.info(f"Created section in space '{section['space']}' with: {response.text}")
 
 
 def move_section(id_num: int, space: str) -> None:

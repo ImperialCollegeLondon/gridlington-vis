@@ -115,7 +115,7 @@ def generate_system_freq_fig(df: pd.DataFrame) -> px.line:
     return system_freq_fig
 
 
-def generate_intraday_market_sys_fig(df: pd.DataFrame) -> go:
+def generate_intraday_market_sys_fig(df: pd.DataFrame) -> go.Figure:
     """Creates Plotly figure for Intra-day Market System graph.
 
     Args:
@@ -129,38 +129,46 @@ def generate_intraday_market_sys_fig(df: pd.DataFrame) -> go:
     if len(df.columns) == 1:
         return intraday_market_sys_fig
 
+    left_axis_columns = [
+        "Intra-Day Market Generation",
+        "Intra-Day Market Storage",
+        "Intra-Day Market Demand",
+    ]
     intraday_market_sys_fig_left = px.line(
         df,
         x="Time",  # TODO: Check units
-        y=[
-            "Intra-Day Market Generation",
-            "Intra-Day Market Storage",
-            "Intra-Day Market Demand",
-        ],
-        range_y=[0, 1],  # TODO: Check range
-    ).update_layout(yaxis_title="Power (MW)")
+        y=left_axis_columns,
+    ).for_each_trace(lambda t: t.update(name=t.name + " (MW)"))
 
+    right_axis_columns = [
+        "Intra-Day Market Value",
+    ]
     intraday_market_sys_fig_right = (
         px.line(
             df,
             x="Time",
-            y=[
-                "Intra-Day Market Value",
-            ],
-            range_y=[0, 1],  # TODO: Check range
+            y=right_axis_columns,
         )
-        .update_layout(yaxis_title="Cost (£/MW)")
         .update_traces(yaxis="y2")
+        .for_each_trace(lambda t: t.update(name=t.name + " (£/MW)"))
     )
 
     intraday_market_sys_fig.add_traces(
         intraday_market_sys_fig_left.data + intraday_market_sys_fig_right.data
     )
+    intraday_market_sys_fig.layout.xaxis.title = "Time"
+    intraday_market_sys_fig.layout.yaxis.title = "MW"
+    intraday_market_sys_fig.layout.yaxis2.title = "£/MW"
+    intraday_market_sys_fig.layout.yaxis.range = [-100, 100]
+    intraday_market_sys_fig.layout.yaxis2.range = [-10000, 10000]
+    intraday_market_sys_fig.for_each_trace(
+        lambda t: t.update(line=dict(color=t.marker.color))
+    )
 
     return intraday_market_sys_fig
 
 
-def generate_balancing_market_fig(df: pd.DataFrame) -> go:
+def generate_balancing_market_fig(df: pd.DataFrame) -> go.Figure:
     """Creates Plotly figure for Balancing Market graph.
 
     Args:
@@ -174,32 +182,40 @@ def generate_balancing_market_fig(df: pd.DataFrame) -> go:
     if len(df.columns) == 1:
         return balancing_market_fig
 
+    left_axis_columns = [
+        "Balancing Mechanism Generation",
+        "Balancing Mechanism Storage",
+        "Balancing Mechanism Demand",
+    ]
     balancing_market_fig_left = px.line(
         df,
         x="Time",
-        y=[
-            "Balancing Mechanism Generation",
-            "Balancing Mechanism Storage",
-            "Balancing Mechanism Demand",
-        ],
-        range_y=[0, 1],  # TODO: Check range
-    ).update_layout(yaxis_title="Power (MW)")
+        y=left_axis_columns,
+    ).for_each_trace(lambda t: t.update(name=t.name + " (MW)"))
 
+    right_axis_columns = [
+        "Balancing Mechanism Value",
+    ]
     balancing_market_fig_right = (
         px.line(
             df,
             x="Time",
-            y=[
-                "Balancing Mechanism Value",
-            ],
-            range_y=[0, 1],  # TODO: Check range
+            y=right_axis_columns,
         )
-        .update_layout(yaxis_title="Cost (£/MW)")
         .update_traces(yaxis="y2")
+        .for_each_trace(lambda t: t.update(name=t.name + " (£/MW)"))
     )
 
     balancing_market_fig.add_traces(
         balancing_market_fig_left.data + balancing_market_fig_right.data
+    )
+    balancing_market_fig.layout.xaxis.title = "Time"  # TODO: Check units
+    balancing_market_fig.layout.yaxis.title = "MW"
+    balancing_market_fig.layout.yaxis2.title = "£/MW"
+    balancing_market_fig.layout.yaxis.range = [-250, 250]
+    balancing_market_fig.layout.yaxis2.range = [-50000, 50000]
+    balancing_market_fig.for_each_trace(
+        lambda t: t.update(line=dict(color=t.marker.color))
     )
 
     return balancing_market_fig
@@ -221,7 +237,7 @@ def generate_energy_deficit_fig(df: pd.DataFrame) -> px.line:
             df,
             x="Time",
             y=df["Exp. Offshore Wind Generation"] - df["Real Offshore Wind Generation"],
-            range_y=[0, 1],  # TODO: Check range
+            range_y=[-600, 600],
         ).update_layout(yaxis_title="MW")
 
     return energy_deficit_fig
@@ -268,30 +284,36 @@ def generate_dsr_fig(df: pd.DataFrame) -> go.Figure:
     if len(df.columns) == 1:
         return dsr_fig
 
+    left_axis_columns = [
+        "Cost",  # TODO: This will need to be changed when data is available
+        "Cost",  # TODO: As above
+    ]
     dsr_fig_left = px.line(
         df,
         x="Time",
-        y=[
-            "Cost",  # TODO: This will need to be changed when data is available
-            "Cost",  # TODO: As above
-        ],
-        range_y=[0, 1],  # TODO: Check range
-    ).update_layout(yaxis_title="Power (kW)")
+        y=left_axis_columns,
+    ).for_each_trace(lambda t: t.update(name=t.name + " (kW)"))
 
+    right_axis_columns = [
+        "Cost",
+    ]
     dsr_fig_right = (
         px.line(
             df,
             x="Time",
-            y=[
-                "Cost",
-            ],
-            range_y=[0, 1],  # TODO: Check range
+            y=right_axis_columns,
         )
-        .update_layout(yaxis_title="Cost (£)")
         .update_traces(yaxis="y2")
+        .for_each_trace(lambda t: t.update(name=t.name + " (£/MW)"))
     )
 
     dsr_fig.add_traces(dsr_fig_left.data + dsr_fig_right.data)
+    dsr_fig.layout.xaxis.title = "Time"  # TODO: Check units
+    dsr_fig.layout.yaxis.title = "kW"
+    dsr_fig.layout.yaxis2.title = "£/MW"
+    dsr_fig.layout.yaxis.range = [-1, 1]  # TODO: Check range
+    dsr_fig.layout.yaxis2.range = [-1, 1]
+    dsr_fig.for_each_trace(lambda t: t.update(line=dict(color=t.marker.color)))
 
     return dsr_fig
 
@@ -326,7 +348,7 @@ def generate_dsr_commands_fig(df: pd.DataFrame) -> px.line:
                 "Name",
                 "Name2",
             ],
-            range_y=[0, 1],  # TODO: Check range
+            range_y=[-8, 8],
         ).update_layout(yaxis_title="MW", legend_title=None)
 
     return dsr_commands_fig
