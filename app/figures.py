@@ -378,7 +378,9 @@ def generate_agent_activity_breakdown_fig(df: pd.DataFrame) -> px.pie:
         agent_activity_breakdown_fig = px.pie(
             names=[h.split("(")[1].split(")")[0] for h in household_activities],
             values=[df[h].iloc[-1] for h in household_activities],
-        ).update_layout(legend_title_text="Household Activity")
+        ).update_layout(
+            legend_title_text="Household Activity", title_text=df.iloc[-1]["Time"]
+        )
 
     return agent_activity_breakdown_fig
 
@@ -401,6 +403,6 @@ def generate_ev_charging_breakdown_fig(df: pd.DataFrame) -> px.pie:
         ev_charging_breakdown_fig = px.pie(
             names=[h.split("(")[1].split(")")[0] for h in ev_states],
             values=[df[h].iloc[-1] for h in ev_states],
-        ).update_layout(legend_title_text="EV Status")
+        ).update_layout(legend_title_text="EV Status", title_text=df.iloc[-1]["Time"])
 
     return ev_charging_breakdown_fig
