@@ -11,6 +11,46 @@ Constant for API URLs.
 DH_URL = os.environ.get("DH_URL", "http://127.0.0.1:80")
 
 
+class DataHubConnectionError(requests.exceptions.ConnectionError):
+    """Exception for when a connection with the DataHub cannot be established."""
+
+
+class DataHubRequestError(requests.exceptions.HTTPError):
+    """Exception for when a request to the DataHub does not return the desired data."""
+
+
+def request_datahub(
+    data_source: str,
+    payload: dict[str, int | str | None] = {},
+) -> requests.Response:
+    """Send a GET request to the DataHub.
+
+    Args:
+        data_source (str): The endpoint for the request. Either "opal", "dsr" or "wesim"
+        payload (dict, optional): Dictionary mapping query parameters to values.
+
+    Raises:
+        DataHubConnectionError: Raised when there is a connection error in the request.
+        DataHubRequestError: Raised when there is a bad request
+
+    Returns:
+        requests.Response: The request response, with the requested data.
+    """
+    try:
+        log.info(f"Requesting {data_source.upper()} data from the DataHub")
+        req = requests.get(f"{DH_URL}/{data_source}", params=payload)
+    except requests.exceptions.ConnectionError as err:
+        raise DataHubConnectionError(err)
+
+    try:
+        req.raise_for_status()
+    except requests.exceptions.HTTPError as err:
+        log.error(req.json()["detail"])
+        raise DataHubRequestError(err)
+
+    return req
+
+
 def get_opal_data(
     start: int | None = None, end: int | None = None
 ) -> dict[str, dict]:  # type: ignore[type-arg]
@@ -23,22 +63,9 @@ def get_opal_data(
     Returns:
         A dictionary of the Opal Data received from the Datahub API.
     """
-    query = ""
-    if start or end:
-        query = query + "?"
-        if start:
-            query = query + f"start={start}&"
-        if end:
-            query = query + f"end={end}&"
+    req = request_datahub("opal", dict(start=start, end=end))
 
-    log.info("Requesting OPAL data from the DataHub")
-    req = requests.get(f"{DH_URL}/opal{query.rstrip('&')}")
-
-    if "data" in req.json().keys():
-        data = req.json()["data"]
-        return data
-    else:
-        raise Exception("Opal data was not found")
+    return req.json()["data"]
 
 
 def get_dsr_data(
@@ -54,33 +81,16 @@ def get_dsr_data(
     Returns:
         A dictionary of the DSR Data received from the Datahub API.
     """
-    query = ""
-    if start or end or col:
-        query = query + "?"
-        if start:
-            query = query + f"start={start}&"
-        if end:
-            query = query + f"end={end}&"
-        if col:
-            cols = ",".join(col).lower()
-            query = query + f"col={cols}&"
+    if col:
+        col_string = ",".join(col).lower()
 
-    log.info("Requesting DSR data from the DataHub")
-    req = requests.get(f"{DH_URL}/dsr{query.rstrip('&')}")
+    req = request_datahub("dsr", dict(start=start, end=end, col=col_string))
 
-    if "data" in req.json().keys():
-        data = req.json()["data"]
-        return data
-    else:
-        raise Exception("DSR data was not found")
+    return req.json()["data"]
 
 
 def get_wesim_data() -> dict[str, dict]:  # type: ignore[type-arg]
     """Function for making a GET request for Wesim data."""
-    log.info("Requesting WESIM data from the DataHub")
-    req = requests.get(f"{DH_URL}/wesim")
-    if "data" in req.json().keys():
-        data = req.json()["data"]
-        return data
-    else:
-        raise Exception("Wesim data was not found")
+    req = request_datahub("wesim")
+
+    return req.json()["data"]

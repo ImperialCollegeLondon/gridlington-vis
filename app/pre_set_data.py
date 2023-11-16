@@ -2,10 +2,11 @@
 from glob import glob
 
 import pandas as pd
-from requests.exceptions import ConnectionError
 
 from . import log
-from .datahub_api import get_opal_data
+from .datahub_api import DataHubConnectionError, DataHubRequestError, get_opal_data
+
+OPAL_START_DATE = "2035-01-22 00:00"
 
 
 def read_opal_data() -> pd.DataFrame:
@@ -30,9 +31,16 @@ def read_opal_data() -> pd.DataFrame:
     )
     try:
         df.columns = get_opal_data()["columns"]  # type: ignore [assignment]
-    except ConnectionError:
-        log.warning("Connection to DataHub failed - using default Opal headers.")
+    except (DataHubConnectionError, DataHubRequestError):
+        log.warning(
+            "Issue with DataHub connection or request - using default Opal headers."
+        )
         df.columns = pd.read_csv("data/opal_headers.csv").columns
+
+    df["Time"] = (
+        pd.Timestamp(OPAL_START_DATE) + pd.to_timedelta(df["Time"], unit="S")
+    ).astype(str)
+
     return df
 
 

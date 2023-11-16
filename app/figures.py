@@ -158,6 +158,7 @@ def generate_intraday_market_sys_fig(df: pd.DataFrame) -> go.Figure:
     intraday_market_sys_fig.layout.xaxis.title = "Time"
     intraday_market_sys_fig.layout.yaxis.title = "MW"
     intraday_market_sys_fig.layout.yaxis2.title = "£/MW"
+    intraday_market_sys_fig.layout.xaxis.range = [0, 421.14]
     intraday_market_sys_fig.layout.yaxis.range = [-100, 100]
     intraday_market_sys_fig.layout.yaxis2.range = [-10000, 10000]
     intraday_market_sys_fig.for_each_trace(
@@ -211,6 +212,7 @@ def generate_balancing_market_fig(df: pd.DataFrame) -> go.Figure:
     balancing_market_fig.layout.xaxis.title = "Time"  # TODO: Check units
     balancing_market_fig.layout.yaxis.title = "MW"
     balancing_market_fig.layout.yaxis2.title = "£/MW"
+    balancing_market_fig.layout.xaxis.range = [0, 421.14]
     balancing_market_fig.layout.yaxis.range = [-250, 250]
     balancing_market_fig.layout.yaxis2.range = [-50000, 50000]
     balancing_market_fig.for_each_trace(
@@ -237,6 +239,7 @@ def generate_energy_deficit_fig(df: pd.DataFrame) -> px.line:
             x="Time",
             y=df["Exp. Offshore Wind Generation"] - df["Real Offshore Wind Generation"],
             range_y=[-600, 600],
+            range_x=[0, 421.14],
         ).update_layout(yaxis_title="MW")
 
     return energy_deficit_fig
@@ -310,6 +313,7 @@ def generate_dsr_fig(df: pd.DataFrame) -> go.Figure:
     dsr_fig.layout.xaxis.title = "Time"  # TODO: Check units
     dsr_fig.layout.yaxis.title = "kW"
     dsr_fig.layout.yaxis2.title = "£/MW"
+    dsr_fig.layout.xaxis.range = [0, 421.14]
     dsr_fig.layout.yaxis.range = [-1, 1]  # TODO: Check range
     dsr_fig.layout.yaxis2.range = [-1, 1]
     dsr_fig.for_each_trace(lambda t: t.update(line=dict(color=t.marker.color)))
@@ -348,6 +352,7 @@ def generate_dsr_commands_fig(df: pd.DataFrame) -> px.line:
                 "Name2",
             ],
             range_y=[-8, 8],
+            range_x=[0, 421.14],
         ).update_layout(yaxis_title="MW", legend_title=None)
 
     return dsr_commands_fig
