@@ -1,5 +1,4 @@
 """Functions for generating plotly figures."""
-import numpy as np
 import pandas as pd
 import plotly.express as px  # type: ignore
 import plotly.graph_objects as go  # type: ignore
@@ -354,46 +353,46 @@ def generate_dsr_commands_fig(df: pd.DataFrame) -> px.line:
     return dsr_commands_fig
 
 
-def generate_agent_location_fig(
-    df: pd.DataFrame, x_max: int = 1, y_max: int = 1
-) -> px.scatter:
-    """Creates plotly scatterplot for agent locations figure.
+# def generate_agent_location_fig(
+#     df: pd.DataFrame, x_max: int = 1, y_max: int = 1
+# ) -> px.scatter:
+#     """Creates plotly scatterplot for agent locations figure.
 
-    Args:
-        df: TODO
-        x_max: Maximum x coordinate
-        y_max: Maximum y coordinate
+#     Args:
+#         df: TODO
+#         x_max: Maximum x coordinate
+#         y_max: Maximum y coordinate
 
-    Returns:
-        Plotly express scatterplot
-    """
-    if len(df.columns) == 1:
-        agent_location_fig = px.scatter()
-    else:
-        x_coordinates = np.random.uniform(
-            0, x_max, 1000
-        )  # TODO: replace with actual data
-        y_coordinates = np.random.uniform(
-            0, y_max, 1000
-        )  # TODO: replace with actual data
+#     Returns:
+#         Plotly express scatterplot
+#     """
+#     if len(df.columns) == 1:
+#         agent_location_fig = px.scatter()
+#     else:
+#         x_coordinates = np.random.uniform(
+#             0, x_max, 1000
+#         )  # TODO: replace with actual data
+#         y_coordinates = np.random.uniform(
+#             0, y_max, 1000
+#         )  # TODO: replace with actual data
 
-        agent_location_fig = px.scatter(
-            x=x_coordinates,
-            y=y_coordinates,
-            range_x=[0, x_max],
-            range_y=[0, y_max],
-        )
-    agent_location_fig.update_xaxes(visible=False)
-    agent_location_fig.update_yaxes(visible=False)
-    agent_location_fig.update_layout(
-        {
-            "plot_bgcolor": "rgba(0, 0, 0, 0)",
-            "paper_bgcolor": "rgba(0, 0, 0, 0)",
-            "margin": dict(l=0, r=0, t=0, b=0),
-        }
-    )
+#         agent_location_fig = px.scatter(
+#             x=x_coordinates,
+#             y=y_coordinates,
+#             range_x=[0, x_max],
+#             range_y=[0, y_max],
+#         )
+#     agent_location_fig.update_xaxes(visible=False)
+#     agent_location_fig.update_yaxes(visible=False)
+#     agent_location_fig.update_layout(
+#         {
+#             "plot_bgcolor": "rgba(0, 0, 0, 0)",
+#             "paper_bgcolor": "rgba(0, 0, 0, 0)",
+#             "margin": dict(l=0, r=0, t=0, b=0),
+#         }
+#     )
 
-    return agent_location_fig
+#     return agent_location_fig
 
 
 def generate_agent_activity_breakdown_fig(df: pd.DataFrame) -> px.pie:
@@ -420,48 +419,6 @@ def generate_agent_activity_breakdown_fig(df: pd.DataFrame) -> px.pie:
         # TODO: check I'm plotting the right thing here
 
     return agent_activity_breakdown_fig
-
-
-def generate_ev_location_fig(
-    df: pd.DataFrame, x_max: int = 1, y_max: int = 1
-) -> px.scatter:
-    """Creates plotly scatterplot for EV location figure.
-
-    Args:
-        df: TODO
-        x_max: Maximum x coordinate
-        y_max: Maximum y coordinate
-
-    Returns:
-        Plotly express scatterplot
-    """
-    if len(df.columns) == 1:
-        ev_location_fig = px.scatter()
-    else:
-        x_coordinates = np.random.uniform(
-            0, x_max, 1000
-        )  # TODO: replace with actual data
-        y_coordinates = np.random.uniform(
-            0, y_max, 1000
-        )  # TODO: replace with actual data
-
-        ev_location_fig = px.scatter(
-            x=x_coordinates,
-            y=y_coordinates,
-            range_x=[0, x_max],
-            range_y=[0, y_max],
-        )
-    ev_location_fig.update_xaxes(visible=False)
-    ev_location_fig.update_yaxes(visible=False)
-    ev_location_fig.update_layout(
-        {
-            "plot_bgcolor": "rgba(0, 0, 0, 0)",
-            "paper_bgcolor": "rgba(0, 0, 0, 0)",
-            "margin": dict(l=0, r=0, t=0, b=0),
-        }
-    )
-
-    return ev_location_fig
 
 
 def generate_ev_charging_breakdown_fig(df: pd.DataFrame) -> px.pie:
