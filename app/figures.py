@@ -68,7 +68,7 @@ def generate_total_gen_fig(df: pd.DataFrame) -> px.line:
                 "Gas Generation",
             ],
             range_x=time_range,
-            range_y=[-10, 70],
+            range_y=[-5, 70],
         ).update_layout(yaxis_title="GW")
     return total_gen_fig
 
@@ -92,7 +92,7 @@ def generate_total_dem_fig(df: pd.DataFrame) -> px.line:
                 "Total Demand",
             ],
             range_x=time_range,
-            range_y=[-10, 70],
+            range_y=[-5, 70],
         ).update_layout(yaxis_title="GW")
     return total_dem_fig
 
@@ -117,7 +117,7 @@ def generate_system_freq_fig(df: pd.DataFrame) -> px.line:
                 "Total Demand",
             ],
             range_x=time_range,
-            range_y=[-10, 70],
+            range_y=[-5, 70],
         ).update_layout(yaxis_title="GW")
     return system_freq_fig
 
