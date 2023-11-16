@@ -1,4 +1,14 @@
-"""TODO."""
+"""Agent view page in dash app.
+
+Seven plots:
+- Agent Locations
+- Agent Locations on SLD
+- Agent Activity Breakdown
+- Electric Vehicle Location
+- Electric Vehicle Location on SLD
+- Electric Vehicle Charging Breakdown
+- DSR commands to agents.
+"""
 
 import dash  # type: ignore
 import pandas as pd

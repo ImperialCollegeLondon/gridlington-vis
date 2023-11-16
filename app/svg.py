@@ -15,7 +15,7 @@ class SVG:
         """Initialise class.
 
         Args:
-            txt (str): String of svg.
+            txt (str): String of SVG.
                 e.g. Output of open(path, "rt", encoding="utf-8").read()
         """
         self.raw = txt
@@ -37,7 +37,7 @@ class SVG:
         self.url = f"data:image/svg+xml;base64,{encoded.decode()}"
 
 
-# Load SVGs
+"""Load SVGs"""
 with open(Path(__file__).parent / "map.svg", "rt", encoding="utf-8") as f:
     svg_map = SVG(f.read())
 
@@ -56,7 +56,7 @@ def write_agents_sld(
     dot_size: float = 1.5,
     colour: str = "#6A0DAD",
 ) -> str:
-    """Create string of svg objects representing agents/EVs at a given locus.
+    """Creates an SVG string of circles representing agents/EVs at a given locus.
 
     Args:
         centre_x (float): Centre of node (x coordinate)
@@ -74,7 +74,7 @@ def write_agents_sld(
             Defaults to "#6A0DAD".
 
     Returns:
-        str: A string containing svg objects for each agent/EV
+        str: An SVG string containing circles for each agent/EV
     """
     # Randomly generate angles
     rng = np.random.default_rng()
@@ -108,17 +108,18 @@ def write_agents_sld(
     return agents_svg
 
 
-def generate_sld_location_svg(data: pd.DataFrame) -> SVG:
+def generate_sld_location_svg(location_data: pd.DataFrame) -> SVG:
     """Generates an SVG of agent/EV locations for placement over the SLD image.
 
     Args:
-        data (pd.DataFrame): TODO
+        location_data (pd.DataFrame): A dataframe with columns x, y and count,
+            representing the number of agents/EVs at each node
 
     Returns:
         SVG: SVG of EV/agent locations for placement over SLD
     """
     svg = svg_sld.header
-    for _, row in data.iterrows():
+    for _, row in location_data.iterrows():
         svg += write_agents_sld(row["x"], row["y"], int(row["count"]))
     svg += "</svg>"
     return SVG(svg)
@@ -128,19 +129,22 @@ def generate_agent_location_sld_img(df: pd.DataFrame) -> str:
     """Generates an SVG url of agent locations for placement over the SLD image.
 
     Args:
-        df (pd.DataFrame): TODO
+        df (pd.DataFrame): TODO: Opal or DSR?
 
     Returns:
         str: SVG url for direct use by html.Img
     """
-    # Make up data TODO: use real data
-    circles = svg_sld.raw.split("<circle")[1:]
-    xs = [float(c.split('cx="')[1].split('"')[0]) for c in circles]
-    ys = [float(c.split('cy="')[1].split('"')[0]) for c in circles]
-    data = pd.DataFrame({"x": xs, "y": ys, "count": np.random.randint(0, 100, len(xs))})
+    # Make up data TODO: replace with function that processes real data
+    nodes = svg_sld.raw.split("<circle")[1:]
+    x_coordinates = [float(c.split('cx="')[1].split('"')[0]) for c in nodes]
+    y_coordinates = [float(c.split('cy="')[1].split('"')[0]) for c in nodes]
+    counts = np.random.randint(0, 100, len(x_coordinates))
+    location_data = pd.DataFrame(
+        {"x": x_coordinates, "y": y_coordinates, "count": counts}
+    )
 
     # Create SVG
-    svg = generate_sld_location_svg(data)
+    svg = generate_sld_location_svg(location_data)
     return svg.url
 
 
@@ -148,19 +152,22 @@ def generate_ev_location_sld_img(df: pd.DataFrame) -> str:
     """Generates an SVG url of EV locations for placement over the SLD image.
 
     Args:
-        df (pd.DataFrame): TODO
+        df (pd.DataFrame): TODO: Opal or DSR?
 
     Returns:
         str: SVG url for direct use by html.Img
     """
-    # Make up data TODO: use real data
-    circles = svg_sld.raw.split("<circle")[1:]
-    xs = [float(c.split('cx="')[1].split('"')[0]) for c in circles]
-    ys = [float(c.split('cy="')[1].split('"')[0]) for c in circles]
-    data = pd.DataFrame({"x": xs, "y": ys, "count": np.random.randint(0, 100, len(xs))})
+    # Make up data TODO: replace with function that processes real data
+    nodes = svg_sld.raw.split("<circle")[1:]
+    x_coordinates = [float(c.split('cx="')[1].split('"')[0]) for c in nodes]
+    y_coordinates = [float(c.split('cy="')[1].split('"')[0]) for c in nodes]
+    counts = np.random.randint(0, 100, len(x_coordinates))
+    location_data = pd.DataFrame(
+        {"x": x_coordinates, "y": y_coordinates, "count": counts}
+    )
 
     # Create SVG
-    svg = generate_sld_location_svg(data)
+    svg = generate_sld_location_svg(location_data)
     return svg.url
 
 
@@ -200,12 +207,12 @@ def generate_agent_location_map_img(df: pd.DataFrame) -> str:
     """Generates an SVG url of agent locations for placement over the SLD image.
 
     Args:
-        df (pd.DataFrame): TODO
+        df (pd.DataFrame): TODO: Opal or DSR?
 
     Returns:
         str: SVG url for direct use by html.Img
     """
-    # Make up data TODO: use real data
+    # Make up data TODO: replace with function that processes real data
     x_coordinates = np.random.uniform(0, svg_map.width, 1000).tolist()
     y_coordinates = np.random.uniform(0, svg_map.height, 1000).tolist()
 
@@ -218,12 +225,12 @@ def generate_ev_location_map_img(df: pd.DataFrame) -> str:
     """Generates an SVG url of EV locations for placement over the SLD image.
 
     Args:
-        df (pd.DataFrame): TODO
+        df (pd.DataFrame): TODO: Opal or DSR?
 
     Returns:
         str: SVG url for direct use by html.Img
     """
-    # Make up data TODO: use real data
+    # Make up data TODO: replace with function that processes real data
     x_coordinates = np.random.uniform(0, svg_map.width, 1000).tolist()
     y_coordinates = np.random.uniform(0, svg_map.height, 1000).tolist()
 
