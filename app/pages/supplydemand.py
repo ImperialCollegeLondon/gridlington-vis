@@ -1,4 +1,11 @@
-"""Page in dash app."""
+"""SupplyDemand page in dash app.
+
+Four plots (2x2):
+- Generation Split
+- Generation Total
+- Demand Total
+- System Frequency
+"""
 
 
 import dash  # type: ignore
@@ -42,7 +49,7 @@ layout = html.Div(
                 html.Div(
                     style={"width": "48%"},
                     children=[
-                        html.H1("Generation Split"),
+                        html.H1("Generation Split", style={"textAlign": "center"}),
                         dcc.Graph(
                             id="graph-gen-split",
                             figure=gen_split_fig,
@@ -53,7 +60,7 @@ layout = html.Div(
                 html.Div(
                     style={"width": "48%"},
                     children=[
-                        html.H1("Generation Total"),
+                        html.H1("Generation Total", style={"textAlign": "center"}),
                         dcc.Graph(
                             id="graph-gen-total",
                             figure=total_gen_fig,
@@ -69,7 +76,7 @@ layout = html.Div(
                 html.Div(
                     style={"width": "48%"},
                     children=[
-                        html.H1("Demand Total"),
+                        html.H1("Demand Total", style={"textAlign": "center"}),
                         dcc.Graph(
                             id="graph-demand",
                             figure=total_dem_fig,
@@ -80,7 +87,7 @@ layout = html.Div(
                 html.Div(
                     style={"width": "48%"},
                     children=[
-                        html.H1("System Frequency"),
+                        html.H1("System Frequency", style={"textAlign": "center"}),
                         dcc.Graph(
                             id="graph-freq",
                             figure=system_freq_fig,
