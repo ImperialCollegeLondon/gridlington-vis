@@ -1,7 +1,7 @@
 """Dict configuration for formal logging."""
 import os
 
-LOG_LEVEL: str = os.environ.get("API_LOG_LEVEL", "DEBUG")
+LOG_LEVEL: str = os.environ.get("LOG_LEVEL", "DEBUG")
 FORMAT: str = "[%(levelname)s] %(asctime)s | %(message)s"
 logging_dict_config = {
     "version": 1,

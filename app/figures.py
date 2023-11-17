@@ -4,6 +4,8 @@ import plotly.express as px  # type: ignore
 import plotly.graph_objects as go  # type: ignore
 from plotly.subplots import make_subplots  # type: ignore
 
+time_range = ["2035-01-22 00:00:00", "2035-01-22 00:07:01.140"]
+
 
 def generate_gen_split_fig(df: pd.DataFrame) -> px.pie:
     """Creates Plotly figure for Generation Split graph.
@@ -65,6 +67,8 @@ def generate_total_gen_fig(df: pd.DataFrame) -> px.line:
                 "Hydro Generation",
                 "Gas Generation",
             ],
+            range_x=time_range,
+            range_y=[-5, 70],
         ).update_layout(yaxis_title="GW")
     return total_gen_fig
 
@@ -87,6 +91,8 @@ def generate_total_dem_fig(df: pd.DataFrame) -> px.line:
             y=[
                 "Total Demand",
             ],
+            range_x=time_range,
+            range_y=[-5, 70],
         ).update_layout(yaxis_title="GW")
     return total_dem_fig
 
@@ -110,6 +116,8 @@ def generate_system_freq_fig(df: pd.DataFrame) -> px.line:
                 "Total Generation",
                 "Total Demand",
             ],
+            range_x=time_range,
+            range_y=[-5, 70],
         ).update_layout(yaxis_title="GW")
     return system_freq_fig
 
@@ -135,7 +143,7 @@ def generate_intraday_market_sys_fig(df: pd.DataFrame) -> go.Figure:
     ]
     intraday_market_sys_fig_left = px.line(
         df,
-        x="Time",  # TODO: Check units
+        x="Time",
         y=left_axis_columns,
     ).for_each_trace(lambda t: t.update(name=t.name + " (MW)"))
 
@@ -158,7 +166,7 @@ def generate_intraday_market_sys_fig(df: pd.DataFrame) -> go.Figure:
     intraday_market_sys_fig.layout.xaxis.title = "Time"
     intraday_market_sys_fig.layout.yaxis.title = "MW"
     intraday_market_sys_fig.layout.yaxis2.title = "£/MW"
-    intraday_market_sys_fig.layout.xaxis.range = [0, 421.14]
+    intraday_market_sys_fig.layout.xaxis.range = time_range
     intraday_market_sys_fig.layout.yaxis.range = [-100, 100]
     intraday_market_sys_fig.layout.yaxis2.range = [-10000, 10000]
     intraday_market_sys_fig.for_each_trace(
@@ -209,10 +217,10 @@ def generate_balancing_market_fig(df: pd.DataFrame) -> go.Figure:
     balancing_market_fig.add_traces(
         balancing_market_fig_left.data + balancing_market_fig_right.data
     )
-    balancing_market_fig.layout.xaxis.title = "Time"  # TODO: Check units
+    balancing_market_fig.layout.xaxis.title = "Time"
     balancing_market_fig.layout.yaxis.title = "MW"
     balancing_market_fig.layout.yaxis2.title = "£/MW"
-    balancing_market_fig.layout.xaxis.range = [0, 421.14]
+    balancing_market_fig.layout.xaxis.range = time_range
     balancing_market_fig.layout.yaxis.range = [-250, 250]
     balancing_market_fig.layout.yaxis2.range = [-50000, 50000]
     balancing_market_fig.for_each_trace(
@@ -239,7 +247,7 @@ def generate_energy_deficit_fig(df: pd.DataFrame) -> px.line:
             x="Time",
             y=df["Exp. Offshore Wind Generation"] - df["Real Offshore Wind Generation"],
             range_y=[-600, 600],
-            range_x=[0, 421.14],
+            range_x=time_range,
         ).update_layout(yaxis_title="MW")
 
     return energy_deficit_fig
@@ -313,7 +321,7 @@ def generate_dsr_fig(df: pd.DataFrame) -> go.Figure:
     dsr_fig.layout.xaxis.title = "Time"  # TODO: Check units
     dsr_fig.layout.yaxis.title = "kW"
     dsr_fig.layout.yaxis2.title = "£/MW"
-    dsr_fig.layout.xaxis.range = [0, 421.14]
+    dsr_fig.layout.xaxis.range = time_range
     dsr_fig.layout.yaxis.range = [-1, 1]  # TODO: Check range
     dsr_fig.layout.yaxis2.range = [-1, 1]
     dsr_fig.for_each_trace(lambda t: t.update(line=dict(color=t.marker.color)))
@@ -352,7 +360,7 @@ def generate_dsr_commands_fig(df: pd.DataFrame) -> px.line:
                 "Name2",
             ],
             range_y=[-8, 8],
-            range_x=[0, 421.14],
+            range_x=time_range,
         ).update_layout(yaxis_title="MW", legend_title=None)
 
     return dsr_commands_fig

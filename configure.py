@@ -71,7 +71,7 @@ def generate_docker_compose(template_file: str, ip: str, develop: bool = False) 
             "API_URL": f"http://{lines_to_replace['OVE_HOST']}",
             "PLOT_URL": f"http://{lines_to_replace['PLOT_URL']}",
             "DH_URL": f"http://{lines_to_replace['DH_URL']}",
-            "LIVE_MODEL": True,
+            "LOG_LEVEL": "INFO",
         },
         "depends_on": ["nginx"],
     }
@@ -81,11 +81,12 @@ def generate_docker_compose(template_file: str, ip: str, develop: bool = False) 
         docker_compose["services"]["dash"]["build"] = "."
         docker_compose["services"]["dash"]["volumes"] += ["./app:/app"]
         docker_compose["services"]["dash"]["environment"]["DH_URL"] = "http://127.0.0.1"
-        del docker_compose["services"]["dash"]["environment"]["LIVE_MODEL"]
+        docker_compose["services"]["dash"]["environment"]["LOG_LEVEL"] = "DEBUG"
     else:
         docker_compose["services"]["dash"][
             "image"
         ] = "ghcr.io/imperialcollegelondon/gridlington-vis:latest"
+        docker_compose["services"]["dash"]["environment"]["LIVE_MODEL"] = True
 
     # Configure logging for nginx
     logging.info("Adding volume for nginx logs...")
