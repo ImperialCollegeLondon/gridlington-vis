@@ -108,6 +108,102 @@ def write_agents_sld(
     return agents_svg
 
 
+def get_agent_sld_coordinates(df: pd.DataFrame) -> pd.DataFrame:
+    """Get agent SLD coordinates from Opal/DSR(?) dataframe.
+
+    TODO: We want this function to take polygon data for each agent and
+        convert it to x,y coordinates for location on the SLD (should
+        correspond to the centre of one of the nodes in the diagram).
+        This function will then output a dataframe of x,y coordinates and
+        counts, corresponding to the number of agents at each node.
+
+    For now, this is just making up random data
+
+    Args:
+        df (pd.DataFrame): Opal/DSR dataframe?
+
+    Returns:
+        pd.DataFrame: A dataframe agent counts at each x/y coordinate
+    """
+    nodes = svg_sld.raw.split("<circle")[1:]
+    x_coordinates = [float(c.split('cx="')[1].split('"')[0]) for c in nodes]
+    y_coordinates = [float(c.split('cy="')[1].split('"')[0]) for c in nodes]
+    counts = np.random.randint(0, 100, len(x_coordinates))
+    location_data = pd.DataFrame(
+        {"x": x_coordinates, "y": y_coordinates, "count": counts}
+    )
+    return location_data
+
+
+def get_ev_sld_coordinates(df: pd.DataFrame) -> pd.DataFrame:
+    """Get EV SLD coordinates from Opal/DSR(?) dataframe.
+
+    TODO: We want this function to take polygon data for each EV and
+        convert it to x,y coordinates for location on the SLD (should
+        correspond to the centre of one of the nodes in the diagram).
+        This function will then output a dataframe of x,y coordinates and
+        counts, corresponding to the number of EVs at each node.
+
+    For now, this is just making up random data
+
+    Args:
+        df (pd.DataFrame): Opal/DSR dataframe?
+
+    Returns:
+        pd.DataFrame: A dataframe EV counts at each x/y coordinate
+    """
+    nodes = svg_sld.raw.split("<circle")[1:]
+    x_coordinates = [float(c.split('cx="')[1].split('"')[0]) for c in nodes]
+    y_coordinates = [float(c.split('cy="')[1].split('"')[0]) for c in nodes]
+    counts = np.random.randint(0, 100, len(x_coordinates))
+    location_data = pd.DataFrame(
+        {"x": x_coordinates, "y": y_coordinates, "count": counts}
+    )
+    return location_data
+
+
+def get_agent_map_coordinates(df: pd.DataFrame) -> tuple[list[float], list[float]]:
+    """Get agent map coordinates from Opal/DSR(?) dataframe.
+
+    TODO: We want this function to take polygon data for each agent and
+        convert it to x,y coordinates for location on the map. This function
+        will then output two lists containing the x and y coordinates of each
+        agent
+
+    For now, this is just making up random data
+
+    Args:
+        df (pd.DataFrame): Opal/DSR dataframe?
+
+    Returns:
+        tuple[list[float], list[float]]: lists of x and y coordinates
+    """
+    x_coordinates = np.random.uniform(0, svg_map.width, 1000).tolist()
+    y_coordinates = np.random.uniform(0, svg_map.height, 1000).tolist()
+    return x_coordinates, y_coordinates
+
+
+def get_ev_map_coordinates(df: pd.DataFrame) -> tuple[list[float], list[float]]:
+    """Get agent map coordinates from Opal/DSR(?) dataframe.
+
+    TODO: We want this function to take polygon data for each EV and
+        convert it to x,y coordinates for location on the map. This function
+        will then output two lists containing the x and y coordinates of each
+        EV
+
+    For now, this is just making up random data
+
+    Args:
+        df (pd.DataFrame): Opal/DSR dataframe?
+
+    Returns:
+        tuple[list[float], list[float]]: lists of x and y coordinates
+    """
+    x_coordinates = np.random.uniform(0, svg_map.width, 1000).tolist()
+    y_coordinates = np.random.uniform(0, svg_map.height, 1000).tolist()
+    return x_coordinates, y_coordinates
+
+
 def generate_sld_location_svg(location_data: pd.DataFrame) -> SVG:
     """Generates an SVG of agent/EV locations for placement over the SLD image.
 
@@ -134,16 +230,7 @@ def generate_agent_location_sld_img(df: pd.DataFrame) -> str:
     Returns:
         str: SVG url for direct use by html.Img
     """
-    # Make up data TODO: replace with function that processes real data
-    nodes = svg_sld.raw.split("<circle")[1:]
-    x_coordinates = [float(c.split('cx="')[1].split('"')[0]) for c in nodes]
-    y_coordinates = [float(c.split('cy="')[1].split('"')[0]) for c in nodes]
-    counts = np.random.randint(0, 100, len(x_coordinates))
-    location_data = pd.DataFrame(
-        {"x": x_coordinates, "y": y_coordinates, "count": counts}
-    )
-
-    # Create SVG
+    location_data = get_agent_sld_coordinates(df)
     svg = generate_sld_location_svg(location_data)
     return svg.url
 
@@ -157,16 +244,7 @@ def generate_ev_location_sld_img(df: pd.DataFrame) -> str:
     Returns:
         str: SVG url for direct use by html.Img
     """
-    # Make up data TODO: replace with function that processes real data
-    nodes = svg_sld.raw.split("<circle")[1:]
-    x_coordinates = [float(c.split('cx="')[1].split('"')[0]) for c in nodes]
-    y_coordinates = [float(c.split('cy="')[1].split('"')[0]) for c in nodes]
-    counts = np.random.randint(0, 100, len(x_coordinates))
-    location_data = pd.DataFrame(
-        {"x": x_coordinates, "y": y_coordinates, "count": counts}
-    )
-
-    # Create SVG
+    location_data = get_ev_sld_coordinates(df)
     svg = generate_sld_location_svg(location_data)
     return svg.url
 
@@ -212,11 +290,7 @@ def generate_agent_location_map_img(df: pd.DataFrame) -> str:
     Returns:
         str: SVG url for direct use by html.Img
     """
-    # Make up data TODO: replace with function that processes real data
-    x_coordinates = np.random.uniform(0, svg_map.width, 1000).tolist()
-    y_coordinates = np.random.uniform(0, svg_map.height, 1000).tolist()
-
-    # Create SVG
+    x_coordinates, y_coordinates = get_agent_map_coordinates(df)
     svg = generate_map_location_svg(x_coordinates, y_coordinates)
     return svg.url
 
@@ -230,10 +304,6 @@ def generate_ev_location_map_img(df: pd.DataFrame) -> str:
     Returns:
         str: SVG url for direct use by html.Img
     """
-    # Make up data TODO: replace with function that processes real data
-    x_coordinates = np.random.uniform(0, svg_map.width, 1000).tolist()
-    y_coordinates = np.random.uniform(0, svg_map.height, 1000).tolist()
-
-    # Create SVG
+    x_coordinates, y_coordinates = get_ev_map_coordinates(df)
     svg = generate_map_location_svg(x_coordinates, y_coordinates)
     return svg.url
