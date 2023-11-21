@@ -502,12 +502,29 @@ def generate_weather_fig(df: pd.DataFrame) -> go.Figure:
 
 
 def generate_reserve_generation_fig(df: pd.DataFrame) -> go.Figure:
-    """TODO.
+    """Creates Plotly figure for Reserve/Standby Generation graph.
+
+    TODO: This data isn't in Opal yet - need to modify y when available
+    Just using dummy data for now
+    Will also need to modify y axis range
 
     Args:
-        df: TODO
+        df: Opal dataframe
 
     Returns:
-        TODO
+        Plotly express line graph
     """
-    return go.Figure()
+    if len(df.columns) == 1:
+        reserve_generation_fig = px.line()
+    else:
+        reserve_generation_fig = px.line(
+            df,
+            x="Time",
+            y=df["Exp. Offshore Wind Generation"] - df["Real Offshore Wind Generation"],
+            range_y=[-600, 600],
+            range_x=time_range,
+        ).update_layout(
+            yaxis_title="MW"
+        )  # TODO: check units
+
+    return reserve_generation_fig

@@ -10,6 +10,7 @@ Four plots (2x2):
 
 import dash  # type: ignore
 import pandas as pd
+import plotly.express as px  # type: ignore
 from dash import Input, Output, callback, dcc, html  # type: ignore
 from dash.exceptions import PreventUpdate  # type: ignore
 from plotly import graph_objects as go  # type: ignore
@@ -115,7 +116,7 @@ layout = html.Div(
     ],
     [Input("interval", "n_intervals")],
 )
-def update_data(n_intervals: int) -> tuple[go.Figure, go.Figure, go.Figure, go.Figure]:
+def update_data(n_intervals: int) -> tuple[go.Figure, go.Figure, go.Figure, px.line]:
     """Function to update the plots in this page.
 
     Args:
@@ -123,7 +124,7 @@ def update_data(n_intervals: int) -> tuple[go.Figure, go.Figure, go.Figure, go.F
             indexes by 1 every 7 seconds.
 
     Returns:
-        tuple[go.Figure, go.Figure, go.Figure, go.Figure]: The new figures.
+        tuple[go.Figure, go.Figure, go.Figure, px.line]: The new figures.
     """
     if n_intervals is None:
         raise PreventUpdate
