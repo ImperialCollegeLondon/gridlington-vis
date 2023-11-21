@@ -1,7 +1,9 @@
 """Functions for generating plotly figures."""
+import numpy as np
 import pandas as pd
 import plotly.express as px  # type: ignore
 import plotly.graph_objects as go  # type: ignore
+from plotly.colors import DEFAULT_PLOTLY_COLORS  # type: ignore
 from plotly.subplots import make_subplots  # type: ignore
 
 time_range = ["2035-01-22 00:00:00", "2035-01-22 00:07:01.140"]
@@ -366,16 +368,93 @@ def generate_dsr_commands_fig(df: pd.DataFrame) -> px.line:
     return dsr_commands_fig
 
 
-def generate_agent_activity_breakdown_fig(df: pd.DataFrame) -> px.pie:
-    """Creates plotly pie chart for Agent activity breakdown figure.
-
-    TODO: Possibly switch to a waffle plot if desired?
+def create_waffle_chart(
+    names: list[str],
+    counts: list[int],
+    colors: list[str] | None = None,
+    rows: int | None = None,
+    gap: float = 3.0,
+) -> go.Figure:
+    """Create waffle chart.
 
     Args:
-        df: Opal dataframe
+        names (list[str]): List of names
+        counts (list[int]): List of counts
+        colors (list[str], optional): List of colors. If None, will use plotly
+            default color map. Defaults to None.
+        rows (int, optional): Number of rows in the chart. Number of columns
+            is set automatically. If None, will produce a square chart.
+            Defaults to None.
+        gap (str, optional): Gap between squares (pixel units). Defaults to 0.0.
+
+    Raises:
+        ValueError: Raised if names, counts and colors are not equal length
+        TypeError: Raised if counts are not integers
 
     Returns:
-        Plotly express pie chart
+        go.Figure: Waffle chart
+    """
+    # Set default colors
+    if not colors:
+        colors = [DEFAULT_PLOTLY_COLORS[i] for i in range(len(names))]
+
+    # Check fields, counts, colors are all same length
+    if not len(names) == len(counts) == len(colors):
+        raise ValueError(
+            "names, counts and colors (if specified) arguments must be "
+            "lists of equal length"
+        )
+
+    # Check counts is all integers
+    if not all(isinstance(item, int) for item in counts):
+        raise TypeError("Counts must be integers")
+
+    # Shape
+    total = sum(counts)
+    if not rows:
+        rows = max(int(total**0.5), 1)  # Default to square chart
+    columns = int(np.ceil(total / rows))
+
+    # Create numpy array TODO: more pythonic
+    z_flat = np.ones([columns * rows])
+    v = 0
+    position = 0
+    for c in counts:
+        z_flat[position : position + c] = v / len(names)
+        v += 1
+        position += c
+    z = z_flat.reshape((rows, columns))
+
+    # Create color scale
+    colorscale = [[i / len(names), c] for i, c in enumerate(colors)]
+    colorscale.append([1, "rgb(255, 255, 255)"])
+
+    # Waffle plot
+    waffle = go.Figure(
+        go.Heatmap(
+            z=z,
+            xgap=gap,
+            ygap=gap,
+            colorscale=colorscale,
+            showscale=False,
+            zmin=0,
+            zmax=1,
+        )
+    )
+    waffle.update_layout(yaxis=dict(scaleanchor="x"), plot_bgcolor="rgba(0,0,0,0)")
+    waffle.update_xaxes(visible=False)
+    waffle.update_yaxes(visible=False, autorange="reversed")
+    return waffle
+
+
+def generate_agent_activity_breakdown_fig(df: pd.DataFrame) -> go.Figure:
+    """Creates waffle chart for agent activity breakdown figure.
+
+    Args:
+        df: Opal dataframe TODO: Should we be using DSR instead?
+
+    Returns:
+        Waffle chart
     """
     if len(df.columns) == 1:
         agent_activity_breakdown_fig = px.pie()
@@ -383,34 +462,28 @@ def generate_agent_activity_breakdown_fig(df: pd.DataFrame) -> px.pie:
         household_activities = [
             c for c in df.columns.values.tolist() if "Household Activity" in c
         ]
-        agent_activity_breakdown_fig = px.pie(
-            names=[h.split("(")[1].split(")")[0] for h in household_activities],
-            values=[df[h].iloc[-1] for h in household_activities],
-        ).update_layout(
-            legend_title_text="Household Activity", title_text=df.iloc[-1]["Time"]
-        )
-
+        names = [h.split("(")[1].split(")")[0] for h in household_activities]
+        counts = [int(df[h].iloc[-1]) for h in household_activities]
+        agent_activity_breakdown_fig = create_waffle_chart(names=names, counts=counts)
+        agent_activity_breakdown_fig.update_layout(title_text=df.iloc[-1]["Time"])
     return agent_activity_breakdown_fig
 
 
-def generate_ev_charging_breakdown_fig(df: pd.DataFrame) -> px.pie:
-    """Creates plotly pie chart for EV charging breakdown figure.
-
-    TODO: Possibly switch to a waffle plot if desired?
+def generate_ev_charging_breakdown_fig(df: pd.DataFrame) -> go.Figure:
+    """Creates waffle chart for EV charging breakdown figure.
 
     Args:
         df: Opal dataframe TODO: Should we be using DSR instead?
 
     Returns:
-        Plotly express pie chart
+        Waffle chart
     """
     if len(df.columns) == 1:
         ev_charging_breakdown_fig = px.pie()
     else:
         ev_states = [c for c in df.columns.values.tolist() if "Ev Status" in c]
-        ev_charging_breakdown_fig = px.pie(
-            names=[h.split("(")[1].split(")")[0] for h in ev_states],
-            values=[df[h].iloc[-1] for h in ev_states],
-        ).update_layout(legend_title_text="EV Status", title_text=df.iloc[-1]["Time"])
-
+        names = [h.split("(")[1].split(")")[0] for h in ev_states]
+        counts = [int(df[h].iloc[-1]) for h in ev_states]
+        ev_charging_breakdown_fig = create_waffle_chart(names=names, counts=counts)
+        ev_charging_breakdown_fig.update_layout(title_text=df.iloc[-1]["Time"])
     return ev_charging_breakdown_fig

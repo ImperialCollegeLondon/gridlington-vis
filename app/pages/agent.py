@@ -13,6 +13,7 @@ Seven plots:
 import dash  # type: ignore
 import pandas as pd
 import plotly.express as px  # type: ignore
+import plotly.graph_objects as go  # type: ignore
 from dash import Input, Output, callback, dcc, html  # type: ignore
 from dash.exceptions import PreventUpdate  # type: ignore
 
@@ -238,7 +239,9 @@ layout = html.Div(
     ],
     [Input("interval", "n_intervals")],
 )
-def update_data(n_intervals: int) -> tuple[str, str, px.pie, str, str, px.pie, px.line]:
+def update_data(
+    n_intervals: int,
+) -> tuple[str, str, go.Figure, str, str, go.Figure, px.line]:
     """Function to update the plots in this page.
 
     Args:
