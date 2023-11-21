@@ -470,7 +470,7 @@ def generate_agent_activity_breakdown_fig(df: pd.DataFrame) -> go.Figure:
         Waffle chart
     """
     if len(df.columns) == 1:
-        agent_activity_breakdown_fig = px.pie()
+        agent_activity_breakdown_fig = go.Figure()
     else:
         household_activities = [
             c for c in df.columns.values.tolist() if "Household Activity" in c
@@ -496,7 +496,7 @@ def generate_ev_charging_breakdown_fig(df: pd.DataFrame) -> go.Figure:
         Waffle chart
     """
     if len(df.columns) == 1:
-        ev_charging_breakdown_fig = px.pie()
+        ev_charging_breakdown_fig = go.Figure()
     else:
         ev_states = [c for c in df.columns.values.tolist() if "Ev Status" in c]
         categories = [h.split("(")[1].split(")")[0] for h in ev_states]
