@@ -1,4 +1,4 @@
-"""ESO view – Markets and Reserve.
+"""ESO view - Markets and Reserve.
 
 Four plots (2x2):
 - Weather
