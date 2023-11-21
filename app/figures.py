@@ -490,15 +490,46 @@ def generate_ev_charging_breakdown_fig(df: pd.DataFrame) -> go.Figure:
 
 
 def generate_weather_fig(df: pd.DataFrame) -> go.Figure:
-    """TODO.
+    """Creates plotly figure for Weather table.
+
+    TODO: This data isn't available yet. For now I'm just making up data
+    Will also need to modify bins and labels
 
     Args:
-        df: TODO
+        df: Wesim dataframe?
 
     Returns:
-        TODO
+        Plotly figure
     """
-    return go.Figure()
+    sun_bins = [0, 0.33, 0.67]
+    sun_labels = ["☀️", "☀️☀️", "☀️☀️☀️"]
+    wind_bins = [0, 0.33, 0.67]
+    wind_labels = ["💨", "💨💨", "💨💨💨"]
+
+    if len(df.columns) == 1:
+        weather_fig = go.Figure()
+
+    else:
+        # Make up data TODO: replace with real data
+        columns = ["Time1", "Time2", "Time3", "Time4", "Time5", "Time6"]
+        sun_data = np.random.uniform(0, 1, 6)
+        sun_data_labels = [sun_labels[i - 1] for i in np.digitize(sun_data, sun_bins)]
+        wind_data = np.random.uniform(0, 1, 6)
+        wind_data_labels = [
+            wind_labels[i - 1] for i in np.digitize(wind_data, wind_bins)
+        ]
+        data = [[sun_data_labels[i], wind_data_labels[i]] for i in range(len(columns))]
+
+        weather_fig = go.Figure(
+            data=[
+                go.Table(
+                    header=dict(values=columns, align="left"),
+                    cells=dict(values=data, align="left"),
+                )
+            ]
+        )
+
+    return weather_fig
 
 
 def generate_reserve_generation_fig(df: pd.DataFrame) -> go.Figure:
