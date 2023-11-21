@@ -369,16 +369,16 @@ def generate_dsr_commands_fig(df: pd.DataFrame) -> px.line:
 
 
 def create_waffle_chart(
-    names: list[str],
+    categories: list[str],
     counts: list[int],
     colors: list[str] | None = None,
     rows: int | None = None,
-    gap: float = 3.0,
+    gap: float = 0.0,
 ) -> go.Figure:
     """Create waffle chart.
 
     Args:
-        names (list[str]): List of names
+        categories (list[str]): List of categories
         counts (list[int]): List of counts
         colors (list[str], optional): List of colors. If None, will use plotly
             default color map. Defaults to None.
@@ -388,7 +388,7 @@ def create_waffle_chart(
         gap (str, optional): Gap between squares (pixel units). Defaults to 0.0.
 
     Raises:
-        ValueError: Raised if names, counts and colors are not equal length
+        ValueError: Raised if categories, counts and colors are not equal length
         TypeError: Raised if counts are not integers
 
     Returns:
@@ -396,12 +396,12 @@ def create_waffle_chart(
     """
     # Set default colors
     if not colors:
-        colors = [DEFAULT_PLOTLY_COLORS[i] for i in range(len(names))]
+        colors = [DEFAULT_PLOTLY_COLORS[i] for i in range(len(categories))]
 
     # Check fields, counts, colors are all same length
-    if not len(names) == len(counts) == len(colors):
+    if not len(categories) == len(counts) == len(colors):
         raise ValueError(
-            "names, counts and colors (if specified) arguments must be "
+            "categories, counts and colors (if specified) must be "
             "lists of equal length"
         )
 
@@ -415,35 +415,48 @@ def create_waffle_chart(
         rows = max(int(total**0.5), 1)  # Default to square chart
     columns = int(np.ceil(total / rows))
 
-    # Create numpy array TODO: more pythonic
+    # Create numpy array
     z_flat = np.ones([columns * rows])
-    v = 0
-    position = 0
-    for c in counts:
-        z_flat[position : position + c] = v / len(names)
-        v += 1
-        position += c
+    z_flat[: sum(counts)] = [
+        i / len(categories) for i, c in enumerate(counts) for _ in range(c)
+    ]
     z = z_flat.reshape((rows, columns))
 
     # Create color scale
-    colorscale = [[i / len(names), c] for i, c in enumerate(colors)]
+    colorscale = [[i / len(categories), c] for i, c in enumerate(colors)]
     colorscale.append([1, "rgb(255, 255, 255)"])
+
+    # Legend
+    legend_traces = [
+        go.Scatter(
+            x=[None],
+            y=[None],
+            mode="markers",
+            name=cat,
+            marker=dict(size=7, color=col, symbol="square"),
+        )
+        for cat, col in zip(categories, colors)
+    ]
 
     # Waffle plot
     waffle = go.Figure(
-        go.Heatmap(
-            z=z,
-            xgap=gap,
-            ygap=gap,
-            colorscale=colorscale,
-            showscale=False,
-            zmin=0,
-            zmax=1,
-        )
+        legend_traces
+        + [
+            go.Heatmap(
+                z=z,
+                xgap=gap,
+                ygap=gap,
+                colorscale=colorscale,
+                showscale=False,
+                zmin=0,
+                zmax=1,
+            )
+        ]
     )
     waffle.update_layout(yaxis=dict(scaleanchor="x"), plot_bgcolor="rgba(0,0,0,0)")
     waffle.update_xaxes(visible=False)
     waffle.update_yaxes(visible=False, autorange="reversed")
+
     return waffle
 
 
@@ -462,10 +475,14 @@ def generate_agent_activity_breakdown_fig(df: pd.DataFrame) -> go.Figure:
         household_activities = [
             c for c in df.columns.values.tolist() if "Household Activity" in c
         ]
-        names = [h.split("(")[1].split(")")[0] for h in household_activities]
+        categories = [h.split("(")[1].split(")")[0] for h in household_activities]
         counts = [int(df[h].iloc[-1]) for h in household_activities]
-        agent_activity_breakdown_fig = create_waffle_chart(names=names, counts=counts)
-        agent_activity_breakdown_fig.update_layout(title_text=df.iloc[-1]["Time"])
+        agent_activity_breakdown_fig = create_waffle_chart(
+            categories=categories, counts=counts, gap=1
+        )
+        agent_activity_breakdown_fig.update_layout(
+            legend_title_text="Household Activity", title_text=df.iloc[-1]["Time"]
+        )
     return agent_activity_breakdown_fig
 
 
@@ -482,8 +499,12 @@ def generate_ev_charging_breakdown_fig(df: pd.DataFrame) -> go.Figure:
         ev_charging_breakdown_fig = px.pie()
     else:
         ev_states = [c for c in df.columns.values.tolist() if "Ev Status" in c]
-        names = [h.split("(")[1].split(")")[0] for h in ev_states]
+        categories = [h.split("(")[1].split(")")[0] for h in ev_states]
         counts = [int(df[h].iloc[-1]) for h in ev_states]
-        ev_charging_breakdown_fig = create_waffle_chart(names=names, counts=counts)
-        ev_charging_breakdown_fig.update_layout(title_text=df.iloc[-1]["Time"])
+        ev_charging_breakdown_fig = create_waffle_chart(
+            categories=categories, counts=counts, gap=1
+        )
+        ev_charging_breakdown_fig.update_layout(
+            legend_title_text="EV Status", title_text=df.iloc[-1]["Time"]
+        )
     return ev_charging_breakdown_fig
