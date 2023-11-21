@@ -487,3 +487,27 @@ def generate_ev_charging_breakdown_fig(df: pd.DataFrame) -> go.Figure:
         ev_charging_breakdown_fig = create_waffle_chart(names=names, counts=counts)
         ev_charging_breakdown_fig.update_layout(title_text=df.iloc[-1]["Time"])
     return ev_charging_breakdown_fig
+
+
+def generate_weather_fig(df: pd.DataFrame) -> go.Figure:
+    """TODO.
+
+    Args:
+        df: TODO
+
+    Returns:
+        TODO
+    """
+    return go.Figure()
+
+
+def generate_reserve_generation_fig(df: pd.DataFrame) -> go.Figure:
+    """TODO.
+
+    Args:
+        df: TODO
+
+    Returns:
+        TODO
+    """
+    return go.Figure()
