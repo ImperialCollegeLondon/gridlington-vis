@@ -41,7 +41,7 @@ INIT_SECTIONS = {
     "NMX 11kV Schematic": {"space": "PC02-Left", "app": webrtc},
     "NMX Issues": {"space": "PC02-Right", "app": webrtc},
     "Market": {"space": "Hub01", "app": html("market")},
-    "Agent": {"space": "Hub02", "app": html("plot8")},
+    "Agent": {"space": "Hub02", "app": html("agent")},
 }
 
 
