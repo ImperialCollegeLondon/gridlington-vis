@@ -3,6 +3,7 @@ import dash  # type: ignore
 from dash import Dash, html  # type: ignore
 
 from . import log
+from .data import data_div
 
 app = Dash(__package__, use_pages=True, update_title=None)
 
@@ -13,6 +14,7 @@ app.layout = html.Div(
     },
     children=[
         dash.page_container,
+        data_div,
     ],
 )
 

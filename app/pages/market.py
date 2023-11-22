@@ -14,11 +14,8 @@ import dash  # type: ignore
 import pandas as pd
 import plotly.express as px  # type: ignore
 from dash import Input, Output, callback, dcc, html  # type: ignore
-from dash.exceptions import PreventUpdate  # type: ignore
 from plotly import graph_objects as go  # type: ignore
 
-from .. import LIVE_MODEL, log
-from ..datahub_api import get_opal_data  # , get_dsr_data
 from ..figures import (
     generate_balancing_market_fig,
     generate_dsr_commands_fig,
@@ -29,10 +26,6 @@ from ..figures import (
 )
 
 dash.register_page(__name__)
-
-##################
-interval = 7000
-##################
 
 df = pd.DataFrame({"Col": [0]})
 
@@ -133,7 +126,6 @@ layout = html.Div(
                 ),
             ],
         ),
-        dcc.Interval(id="interval", interval=interval),
     ],
 )
 
@@ -147,43 +139,28 @@ layout = html.Div(
         Output("graph-dsr", "figure"),
         Output("graph-dsr-commands", "figure"),
     ],
-    [Input("interval", "n_intervals")],
+    [Input("data_opal", "data")],
 )
-def update_data(
-    n_intervals: int,
+def update_figures(
+    data_opal: list[dict[str, object]],
 ) -> tuple[go.Figure, go.Figure, px.line, go.Figure, go.Figure, px.line]:
     """Function to update the plots in this page.
 
     Args:
-        n_intervals (int): The number of times this page has updated.
-            indexes by 1 every 7 seconds.
+        data_opal (list): Opal data
 
     Returns:
         tuple[go.Figure, go.Figure, px.line, go.Figure, go.Figure, px.line]:
             The new figures.
     """
-    if n_intervals is None:
-        raise PreventUpdate
+    df_opal = pd.DataFrame(data_opal)
 
-    if LIVE_MODEL:
-        log.debug("Updating plots from live model")
-        data_opal = get_opal_data()
-        new_df_opal = pd.DataFrame(**data_opal)  # type: ignore[call-overload]
-        # data_dsr = get_dsr_data() TODO
-        # new_df_dsr = pd.DataFrame(**data_dsr)
-    else:
-        from ..pre_set_data import OPAL_DATA
-
-        log.debug("Updating plots with pre-set data")
-        new_df_opal = OPAL_DATA.loc[:n_intervals]
-        # new_df_dsr = ... TODO
-
-    intraday_market_sys_fig = generate_intraday_market_sys_fig(new_df_opal)
-    balancing_market_fig = generate_balancing_market_fig(new_df_opal)
-    energy_deficit_fig = generate_energy_deficit_fig(new_df_opal)
-    intraday_market_bids_fig = generate_intraday_market_bids_fig(new_df_opal)
-    dsr_fig = generate_dsr_fig(df)  # TODO: replace with new_df_dsr when available
-    dsr_commands_fig = generate_dsr_commands_fig(new_df_opal)
+    intraday_market_sys_fig = generate_intraday_market_sys_fig(df_opal)
+    balancing_market_fig = generate_balancing_market_fig(df_opal)
+    energy_deficit_fig = generate_energy_deficit_fig(df_opal)
+    intraday_market_bids_fig = generate_intraday_market_bids_fig(df_opal)
+    dsr_fig = generate_dsr_fig(df)  # TODO: replace with df_dsr when available
+    dsr_commands_fig = generate_dsr_commands_fig(df_opal)
     return (
         intraday_market_sys_fig,
         balancing_market_fig,
