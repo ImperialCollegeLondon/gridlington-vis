@@ -101,23 +101,24 @@ layout = html.Div(
         Output("graph-demand", "figure"),
         Output("graph-freq", "figure"),
     ],
-    [Input("data_opal", "data")],
+    [Input("figure_interval", "n_intervals")],
 )
 def update_figures(
-    data_opal: list[dict[str, object]],
+    n_intervals: int,
 ) -> tuple[px.pie, px.line, px.line, px.line]:
     """Function to update the plots in this page.
 
     Args:
-        data_opal (list): Opal data
+        n_intervals (int): The number of times this page has updated.
+            indexes by 1 every 7 seconds.
 
     Returns:
         tuple[px.pie, px.line, px.line, px.line]: The new figures.
     """
-    df_opal = pd.DataFrame(data_opal)
+    from ..data import DF_OPAL
 
-    gen_split_fig = generate_gen_split_fig(df_opal)
-    total_gen_fig = generate_total_gen_fig(df_opal)
-    total_dem_fig = generate_total_dem_fig(df_opal)
-    system_freq_fig = generate_system_freq_fig(df_opal)
+    gen_split_fig = generate_gen_split_fig(DF_OPAL)
+    total_gen_fig = generate_total_gen_fig(DF_OPAL)
+    total_dem_fig = generate_total_dem_fig(DF_OPAL)
+    system_freq_fig = generate_system_freq_fig(DF_OPAL)
     return gen_split_fig, total_gen_fig, total_dem_fig, system_freq_fig

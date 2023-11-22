@@ -229,30 +229,31 @@ layout = html.Div(
         Output("ev_charging_breakdown_fig", "figure"),
         Output("dsr_commands_fig", "figure"),
     ],
-    [Input("data_opal", "data")],
+    [Input("figure_interval", "n_intervals")],
 )
 def update_figures(
-    data_opal: list[dict[str, object]],
+    n_intervals: int,
 ) -> tuple[str, str, go.Figure, str, str, go.Figure, px.line]:
     """Function to update the plots in this page.
 
     Args:
-        data_opal (list): Opal data
+        n_intervals (int): The number of times this page has updated.
+            indexes by 1 every 7 seconds.
 
     Returns:
         tuple[str, str, px.pie, str, str, px.pie, px.line]:
             The new figures.
     """
-    df_opal = pd.DataFrame(data_opal)
+    from ..data import DF_OPAL
 
     # TODO: ensure each figure is using the correct dataframe
-    agent_location_fig = generate_agent_location_map_img(df_opal)
-    agent_location_sld_img = generate_agent_location_sld_img(df_opal)
-    agent_activity_breakdown_fig = generate_agent_activity_breakdown_fig(df_opal)
-    ev_location_fig = generate_ev_location_map_img(df_opal)
-    ev_location_sld_img = generate_ev_location_sld_img(df_opal)
-    ev_charging_breakdown_fig = generate_ev_charging_breakdown_fig(df_opal)
-    dsr_commands_fig = generate_dsr_commands_fig(df_opal)
+    agent_location_fig = generate_agent_location_map_img(DF_OPAL)
+    agent_location_sld_img = generate_agent_location_sld_img(DF_OPAL)
+    agent_activity_breakdown_fig = generate_agent_activity_breakdown_fig(DF_OPAL)
+    ev_location_fig = generate_ev_location_map_img(DF_OPAL)
+    ev_location_sld_img = generate_ev_location_sld_img(DF_OPAL)
+    ev_charging_breakdown_fig = generate_ev_charging_breakdown_fig(DF_OPAL)
+    dsr_commands_fig = generate_dsr_commands_fig(DF_OPAL)
     return (
         agent_location_fig,
         agent_location_sld_img,

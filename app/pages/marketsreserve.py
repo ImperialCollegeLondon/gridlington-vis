@@ -106,25 +106,26 @@ layout = html.Div(
         Output("intraday_market_sys_fig", "figure"),
         Output("reserve_generation_fig", "figure"),
     ],
-    [Input("data_opal", "data")],
+    [Input("figure_interval", "n_intervals")],
 )
 def update_figures(
-    data_opal: list[dict[str, object]],
+    n_intervals: int,
 ) -> tuple[go.Figure, go.Figure, go.Figure, px.line]:
     """Function to update the plots in this page.
 
     Args:
-        data_opal (list): Opal data
+        n_intervals (int): The number of times this page has updated.
+            indexes by 1 every 7 seconds.
 
     Returns:
         tuple[go.Figure, go.Figure, go.Figure, px.line]: The new figures.
     """
-    df_opal = pd.DataFrame(data_opal)
+    from ..data import DF_OPAL
 
-    weather_fig = generate_weather_fig(df_opal)
-    balancing_market_fig = generate_balancing_market_fig(df_opal)
-    intraday_market_sys_fig = generate_intraday_market_sys_fig(df_opal)
-    reserve_generation_fig = generate_reserve_generation_fig(df_opal)
+    weather_fig = generate_weather_fig(DF_OPAL)
+    balancing_market_fig = generate_balancing_market_fig(DF_OPAL)
+    intraday_market_sys_fig = generate_intraday_market_sys_fig(DF_OPAL)
+    reserve_generation_fig = generate_reserve_generation_fig(DF_OPAL)
     return (
         weather_fig,
         balancing_market_fig,

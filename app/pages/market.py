@@ -139,28 +139,29 @@ layout = html.Div(
         Output("graph-dsr", "figure"),
         Output("graph-dsr-commands", "figure"),
     ],
-    [Input("data_opal", "data")],
+    [Input("figure_interval", "n_intervals")],
 )
 def update_figures(
-    data_opal: list[dict[str, object]],
+    n_intervals: int,
 ) -> tuple[go.Figure, go.Figure, px.line, go.Figure, go.Figure, px.line]:
     """Function to update the plots in this page.
 
     Args:
-        data_opal (list): Opal data
+        n_intervals (int): The number of times this page has updated.
+            indexes by 1 every 7 seconds.
 
     Returns:
         tuple[go.Figure, go.Figure, px.line, go.Figure, go.Figure, px.line]:
             The new figures.
     """
-    df_opal = pd.DataFrame(data_opal)
+    from ..data import DF_OPAL
 
-    intraday_market_sys_fig = generate_intraday_market_sys_fig(df_opal)
-    balancing_market_fig = generate_balancing_market_fig(df_opal)
-    energy_deficit_fig = generate_energy_deficit_fig(df_opal)
-    intraday_market_bids_fig = generate_intraday_market_bids_fig(df_opal)
+    intraday_market_sys_fig = generate_intraday_market_sys_fig(DF_OPAL)
+    balancing_market_fig = generate_balancing_market_fig(DF_OPAL)
+    energy_deficit_fig = generate_energy_deficit_fig(DF_OPAL)
+    intraday_market_bids_fig = generate_intraday_market_bids_fig(DF_OPAL)
     dsr_fig = generate_dsr_fig(df)  # TODO: replace with df_dsr when available
-    dsr_commands_fig = generate_dsr_commands_fig(df_opal)
+    dsr_commands_fig = generate_dsr_commands_fig(DF_OPAL)
     return (
         intraday_market_sys_fig,
         balancing_market_fig,
