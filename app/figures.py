@@ -523,7 +523,7 @@ def generate_weather_fig(df: pd.DataFrame) -> go.Figure:
         Plotly figure
     """
     sun_bins = [0, 0.33, 0.67]
-    sun_labels = ["☀️", "☀️☀️", "☀️☀️☀️"]
+    sun_labels = ["☁️", "🌤️", "☀️"]
     wind_bins = [0, 0.33, 0.67]
     wind_labels = ["💨", "💨💨", "💨💨💨"]
 
