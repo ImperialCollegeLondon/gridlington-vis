@@ -508,3 +508,83 @@ def generate_ev_charging_breakdown_fig(df: pd.DataFrame) -> go.Figure:
             legend_title_text="EV Status", title_text=df.iloc[-1]["Time"]
         )
     return ev_charging_breakdown_fig
+
+
+def generate_weather_fig(df: pd.DataFrame) -> go.Figure:
+    """Creates plotly figure for Weather table.
+
+    TODO: This data isn't available yet. For now I'm just making up data
+    Will also need to modify bins and labels
+
+    Args:
+        df: Wesim dataframe?
+
+    Returns:
+        Plotly figure
+    """
+    sun_bins = [0, 0.33, 0.67]
+    sun_labels = [
+        "\U00002601\U0000FE0F",
+        "\U0001F324\U0000FE0F",
+        "\U00002600\U0000FE0F",
+    ]
+    wind_bins = [0, 0.33, 0.67]
+    wind_labels = [
+        "\U0001F4A8",
+        "\U0001F4A8\U0001F4A8",
+        "\U0001F4A8\U0001F4A8\U0001F4A8",
+    ]
+
+    if len(df.columns) == 1:
+        weather_fig = go.Figure()
+
+    else:
+        # Make up data TODO: replace with real data
+        columns = ["Time1", "Time2", "Time3", "Time4", "Time5", "Time6"]
+        sun_data = np.random.uniform(0, 1, 6)
+        sun_data_labels = [sun_labels[i - 1] for i in np.digitize(sun_data, sun_bins)]
+        wind_data = np.random.uniform(0, 1, 6)
+        wind_data_labels = [
+            wind_labels[i - 1] for i in np.digitize(wind_data, wind_bins)
+        ]
+        data = [[sun_data_labels[i], wind_data_labels[i]] for i in range(len(columns))]
+
+        weather_fig = go.Figure(
+            data=[
+                go.Table(
+                    header=dict(values=columns, align="left"),
+                    cells=dict(values=data, align="left"),
+                )
+            ]
+        )
+
+    return weather_fig
+
+
+def generate_reserve_generation_fig(df: pd.DataFrame) -> go.Figure:
+    """Creates Plotly figure for Reserve/Standby Generation graph.
+
+    TODO: This data isn't in Opal yet - need to modify y when available
+    Just using dummy data for now
+    Will also need to modify y axis range
+
+    Args:
+        df: Opal dataframe
+
+    Returns:
+        Plotly express line graph
+    """
+    if len(df.columns) == 1:
+        reserve_generation_fig = px.line()
+    else:
+        reserve_generation_fig = px.line(
+            df,
+            x="Time",
+            y=df["Exp. Offshore Wind Generation"] - df["Real Offshore Wind Generation"],
+            range_y=[-600, 600],
+            range_x=time_range,
+        ).update_layout(
+            yaxis_title="MW"
+        )  # TODO: check units
+
+    return reserve_generation_fig
