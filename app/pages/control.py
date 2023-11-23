@@ -175,7 +175,7 @@ layout = html.Div(
                         "margin": "auto",
                     },
                     children=[
-                        get_button("update", "solar:upload-outline"),
+                        get_button("update", "mdi:tick"),
                         get_button("default", "iconoir:undo"),
                     ],
                 ),
