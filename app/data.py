@@ -20,7 +20,7 @@ empty_output = dcc.Store(id="empty", data=[])
     [Output("empty", "data")],
     [Input("data_interval", "n_intervals")],
 )
-def update_data(n_intervals: int) -> tuple[list[dict[str, object]],]:
+def update_data(n_intervals: int) -> tuple[list[None],]:
     """Function to update the data.
 
     Args:
