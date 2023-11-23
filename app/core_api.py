@@ -56,11 +56,36 @@ def create_all() -> None:
     """Function for creating all initial sections."""
     wait_for_ove()
     log.info("Creating OVE Sections...")
-    spaces = json.loads(requests.get(f"{API_URL}/spaces").text)
+    spaces = requests.get(f"{API_URL}/spaces").json()
     for section in INIT_SECTIONS.values():
         data = spaces[section["space"]][0] | section
         response = requests.post(f"{API_URL}/section", json=data)
         log.info(f"Created section in space '{section['space']}' with: {response.text}")
+
+
+def assign_sections(new_sections: dict[str, str]) -> None:
+    """Function for assigning sections."""
+    response = requests.get(f"{API_URL}/sections", params={"includeAppStates": True})
+    if response.status_code != requests.codes.OK:
+        log.error("Unable to get OVE Sections")
+        return
+
+    for section in response.json():
+        id = section["id"]
+        app = section["app"]
+        space = section["space"]
+
+        if space == "Tablet":
+            continue
+
+        new_app = INIT_SECTIONS[new_sections[space]]["app"]
+        log.debug(f"New App is {new_app}")
+
+        if new_app != app:
+            log.info(f"Setting view for {space} to {new_sections[space]}")
+            res = requests.post(f"{API_URL}/sections/{id}", json={"app": new_app})
+            if res.status_code != requests.codes.OK:
+                log.error(f"Could not set view for {space} to {new_sections[space]}")
 
 
 def move_section(id_num: int, space: str) -> None:
@@ -85,7 +110,7 @@ def move_section(id_num: int, space: str) -> None:
 
     url = f"{API_URL}/sections/{id_num}"
     response = requests.post(url, json=new_data)
-    print(response.text)
+    log.info(response.text)
 
 
 def swap_sections(id_a: int, id_b: int) -> None:
