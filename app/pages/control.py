@@ -245,6 +245,18 @@ def update_button_click(
         Args: Value inputs for the 8 dropdown menus
         """
         log.debug("Clicked Update Button!")
+        core.assign_sections(
+            {
+                "Hub01": Hub01_dropdown,
+                "Hub02": Hub02_dropdown,
+                "PC01-Top": PC01_Top_dropdown,
+                "PC01-Left": PC01_Left_dropdown,
+                "PC01-Right": PC01_Right_dropdown,
+                "PC02-Top": PC02_Top_dropdown,
+                "PC02-Left": PC02_Left_dropdown,
+                "PC02-Right": PC02_Right_dropdown,
+            }
+        )
         return ["Clicked Update Button!"]
 
     elif button_id == "default":
