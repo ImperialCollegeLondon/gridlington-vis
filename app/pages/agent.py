@@ -62,7 +62,10 @@ layout = html.Div(
                 html.Div(
                     style={"width": "48%"},
                     children=[
-                        html.H1("Agent and EV Locations", style={"textAlign": "center"}),
+                        html.H1(
+                            "Agent and EV Locations",
+                            style={"textAlign": "center"},
+                        ),
                         html.Div(
                             style={
                                 "position": "relative",
@@ -104,7 +107,8 @@ layout = html.Div(
                     style={"width": "48%"},
                     children=[
                         html.H1(
-                            "Agent and EV Locations on SLD", style={"textAlign": "center"}
+                            "Agent and EV Locations on SLD",
+                            style={"textAlign": "center"},
                         ),
                         html.Div(
                             style={
