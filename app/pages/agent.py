@@ -62,7 +62,7 @@ layout = html.Div(
                 html.Div(
                     style={"width": "48%"},
                     children=[
-                        html.H1("Agent Locations", style={"textAlign": "center"}),
+                        html.H1("Agent/EV Locations", style={"textAlign": "center"}),
                         html.Div(
                             style={
                                 "position": "relative",
@@ -81,24 +81,6 @@ layout = html.Div(
                                         "left": 0,
                                     },
                                 ),
-                            ],
-                        ),
-                    ],
-                ),
-                html.Div(
-                    style={"width": "48%"},
-                    children=[
-                        html.H1(
-                            "Electric Vehicle Location", style={"textAlign": "center"}
-                        ),
-                        html.Div(
-                            style={
-                                "position": "relative",
-                                "margin": "auto",
-                                "width": "60%",
-                            },
-                            children=[
-                                html.Img(src=svg_map.url, width="100%"),
                                 html.Img(
                                     id="ev_location_map_img",
                                     src=ev_location_map_img,
@@ -122,7 +104,7 @@ layout = html.Div(
                     style={"width": "48%"},
                     children=[
                         html.H1(
-                            "Agent Locations on SLD", style={"textAlign": "center"}
+                            "Agent/EV Locations on SLD", style={"textAlign": "center"}
                         ),
                         html.Div(
                             style={
@@ -142,25 +124,6 @@ layout = html.Div(
                                         "left": 0,
                                     },
                                 ),
-                            ],
-                        ),
-                    ],
-                ),
-                html.Div(
-                    style={"width": "48%"},
-                    children=[
-                        html.H1(
-                            "Electric Vehicle Location on SLD",
-                            style={"textAlign": "center"},
-                        ),
-                        html.Div(
-                            style={
-                                "position": "relative",
-                                "margin": "auto",
-                                "width": "60%",
-                            },
-                            children=[
-                                html.Img(src=svg_sld.url, width="100%"),
                                 html.Img(
                                     id="ev_location_sld_img",
                                     src=ev_location_sld_img,

@@ -204,19 +204,28 @@ def get_ev_map_coordinates(df: pd.DataFrame) -> tuple[list[float], list[float]]:
     return x_coordinates, y_coordinates
 
 
-def generate_sld_location_svg(location_data: pd.DataFrame) -> SVG:
+def generate_sld_location_svg(
+    location_data: pd.DataFrame,
+    **kwargs: str | float,
+) -> SVG:  # type: ignore # noqa
     """Generates an SVG of agent/EV locations for placement over the SLD image.
 
     Args:
         location_data (pd.DataFrame): A dataframe with columns x, y and count,
             representing the number of agents/EVs at each node
+        kwargs: optional extra arguments for write_agents_sld
 
     Returns:
         SVG: SVG of EV/agent locations for placement over SLD
     """
     svg = svg_sld.header
     for _, row in location_data.iterrows():
-        svg += write_agents_sld(row["x"], row["y"], int(row["count"]))
+        svg += write_agents_sld(
+            centre_x=row["x"],
+            centre_y=row["y"],
+            agent_count=int(row["count"]),
+            **kwargs,  # type: ignore # noqa
+        )
     svg += "</svg>"
     return SVG(svg)
 
@@ -231,7 +240,7 @@ def generate_agent_location_sld_img(df: pd.DataFrame) -> str:
         str: SVG url for direct use by html.Img
     """
     location_data = get_agent_sld_coordinates(df)
-    svg = generate_sld_location_svg(location_data)
+    svg = generate_sld_location_svg(location_data, angle_mid=180, colour="#6A0DAD")
     return svg.url
 
 
@@ -245,7 +254,7 @@ def generate_ev_location_sld_img(df: pd.DataFrame) -> str:
         str: SVG url for direct use by html.Img
     """
     location_data = get_ev_sld_coordinates(df)
-    svg = generate_sld_location_svg(location_data)
+    svg = generate_sld_location_svg(location_data, angle_mid=0, colour="#fcba03")
     return svg.url
 
 
@@ -291,7 +300,7 @@ def generate_agent_location_map_img(df: pd.DataFrame) -> str:
         str: SVG url for direct use by html.Img
     """
     x_coordinates, y_coordinates = get_agent_map_coordinates(df)
-    svg = generate_map_location_svg(x_coordinates, y_coordinates)
+    svg = generate_map_location_svg(x_coordinates, y_coordinates, colour="#6A0DAD")
     return svg.url
 
 
@@ -305,5 +314,5 @@ def generate_ev_location_map_img(df: pd.DataFrame) -> str:
         str: SVG url for direct use by html.Img
     """
     x_coordinates, y_coordinates = get_ev_map_coordinates(df)
-    svg = generate_map_location_svg(x_coordinates, y_coordinates)
+    svg = generate_map_location_svg(x_coordinates, y_coordinates, colour="#fcba03")
     return svg.url
