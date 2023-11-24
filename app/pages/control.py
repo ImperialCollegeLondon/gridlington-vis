@@ -284,6 +284,7 @@ def update_button_click(
     elif button_id == "restart":
         """Will make an API call to restart the Gridlington simulation and Datahub."""
         log.debug("Clicked Restart Button!")
+        core.refresh_sections()
         return ["Clicked Restart Button!"]
 
     else:

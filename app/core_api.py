@@ -88,6 +88,11 @@ def assign_sections(new_sections: dict[str, str]) -> None:
                 log.error(f"Could not set view for {space} to {new_sections[space]}")
 
 
+def refresh_sections() -> None:
+    """Refresh all the sections."""
+    requests.post(f"{API_URL}/sections/refresh")
+
+
 def move_section(id_num: int, space: str) -> None:
     """Function to move a section by ID to a specified space.
 
