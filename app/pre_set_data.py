@@ -6,7 +6,7 @@ import pandas as pd
 from . import log
 from .datahub_api import DataHubConnectionError, DataHubRequestError, get_opal_data
 
-OPAL_START_DATE = "2035-01-22 00:00"
+OPAL_START_DATE = "2035-01-22 04:00"
 
 
 def read_opal_data() -> pd.DataFrame:
@@ -38,7 +38,7 @@ def read_opal_data() -> pd.DataFrame:
         df.columns = pd.read_csv("data/opal_headers.csv").columns
 
     df["Time"] = (
-        pd.Timestamp(OPAL_START_DATE) + pd.to_timedelta(df["Time"], unit="S")
+        pd.Timestamp(OPAL_START_DATE) + pd.to_timedelta(df["Time"], unit="m")
     ).astype(str)
 
     return df
