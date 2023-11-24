@@ -12,11 +12,8 @@ import dash  # type: ignore
 import pandas as pd
 import plotly.express as px  # type: ignore
 from dash import Input, Output, callback, dcc, html  # type: ignore
-from dash.exceptions import PreventUpdate  # type: ignore
 from plotly import graph_objects as go  # type: ignore
 
-from .. import LIVE_MODEL, log
-from ..datahub_api import get_opal_data
 from ..figures import (
     generate_balancing_market_fig,
     generate_intraday_market_sys_fig,
@@ -25,10 +22,6 @@ from ..figures import (
 )
 
 dash.register_page(__name__)
-
-##################
-interval = 7000
-##################
 
 df = pd.DataFrame({"Col": [0]})
 
@@ -102,7 +95,6 @@ layout = html.Div(
                 ),
             ],
         ),
-        dcc.Interval(id="interval", interval=interval),
     ],
 )
 
@@ -114,9 +106,11 @@ layout = html.Div(
         Output("intraday_market_sys_fig", "figure"),
         Output("reserve_generation_fig", "figure"),
     ],
-    [Input("interval", "n_intervals")],
+    [Input("figure_interval", "n_intervals")],
 )
-def update_data(n_intervals: int) -> tuple[go.Figure, go.Figure, go.Figure, px.line]:
+def update_figures(
+    n_intervals: int,
+) -> tuple[go.Figure, go.Figure, go.Figure, px.line]:
     """Function to update the plots in this page.
 
     Args:
@@ -126,23 +120,12 @@ def update_data(n_intervals: int) -> tuple[go.Figure, go.Figure, go.Figure, px.l
     Returns:
         tuple[go.Figure, go.Figure, go.Figure, px.line]: The new figures.
     """
-    if n_intervals is None:
-        raise PreventUpdate
+    from ..data import DF_OPAL
 
-    if LIVE_MODEL:
-        log.debug("Updating plots from live model")
-        data = get_opal_data()
-        new_df = pd.DataFrame(**data)  # type: ignore[call-overload]
-    else:
-        from ..pre_set_data import OPAL_DATA
-
-        log.debug("Updating plots with pre-set data")
-        new_df = OPAL_DATA.loc[:n_intervals]
-
-    weather_fig = generate_weather_fig(new_df)
-    balancing_market_fig = generate_balancing_market_fig(new_df)
-    intraday_market_sys_fig = generate_intraday_market_sys_fig(new_df)
-    reserve_generation_fig = generate_reserve_generation_fig(new_df)
+    weather_fig = generate_weather_fig(DF_OPAL)
+    balancing_market_fig = generate_balancing_market_fig(DF_OPAL)
+    intraday_market_sys_fig = generate_intraday_market_sys_fig(DF_OPAL)
+    reserve_generation_fig = generate_reserve_generation_fig(DF_OPAL)
     return (
         weather_fig,
         balancing_market_fig,

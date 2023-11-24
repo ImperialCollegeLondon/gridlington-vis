@@ -1,8 +1,12 @@
 """Sets up the server for the Dash app."""
 import dash  # type: ignore
-from dash import Dash, html  # type: ignore
+from dash import Dash, dcc, html  # type: ignore
 
 from . import log
+
+##################
+interval = 7000
+##################
 
 app = Dash(__package__, use_pages=True, update_title=None)
 
@@ -13,6 +17,7 @@ app.layout = html.Div(
     },
     children=[
         dash.page_container,
+        dcc.Interval(id="figure_interval", interval=interval),
     ],
 )
 
