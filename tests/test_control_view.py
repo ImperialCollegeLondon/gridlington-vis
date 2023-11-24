@@ -4,7 +4,7 @@ from dash._callback_context import context_value  # type: ignore
 from dash._utils import AttributeDict  # type: ignore
 
 
-def test_control_view_callback():
+def test_control_view_callback(mocker):
     """Test for Control View callback function and buttons."""
     from app.pages.control import update_button_click
 
@@ -35,7 +35,9 @@ def test_control_view_callback():
     button_id = "button_update"
 
     ctx = copy_context()
+    patched_assign_sections = mocker.patch("app.core_api.assign_sections")
     output = ctx.run(run_callback)
+    patched_assign_sections.assert_called_once()
     assert output[0] == "Clicked Update Button!"
 
     """Test Default Button."""
