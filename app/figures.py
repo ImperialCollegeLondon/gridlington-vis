@@ -510,43 +510,54 @@ def generate_ev_charging_breakdown_fig(df: pd.DataFrame) -> go.Figure:
     return ev_charging_breakdown_fig
 
 
-def generate_weather_fig(df: pd.DataFrame) -> go.Figure:
+def generate_weather_fig(wesim_data: dict[str, pd.DataFrame]) -> go.Figure:
     """Creates plotly figure for Weather table.
 
-    TODO: This data isn't available yet. For now I'm just making up data
-    Will also need to modify bins and labels
-
     Args:
-        df: Wesim dataframe?
+        wesim_data: Wesim data (dictionary of dataframes)
 
     Returns:
         Plotly figure
     """
-    sun_bins = [0, 0.33, 0.67]
+    hours = [10, 11, 12, 13, 14, 15, 16, 17, 18]  # TODO: choose appropriate times
+
+    sun_bins = [0, 0.05, 0.1]  # TODO: choose appropriate bins
     sun_labels = [
         "\U00002601\U0000FE0F",
         "\U0001F324\U0000FE0F",
         "\U00002600\U0000FE0F",
     ]
-    wind_bins = [0, 0.33, 0.67]
+    wind_bins = [0, 0.05, 0.1]
     wind_labels = [
         "\U0001F4A8",
         "\U0001F4A8\U0001F4A8",
         "\U0001F4A8\U0001F4A8\U0001F4A8",
     ]
 
-    if len(df.columns) == 1:
+    if len(wesim_data) == 0:
         weather_fig = go.Figure()
 
     else:
-        # Make up data TODO: replace with real data
-        columns = ["Time1", "Time2", "Time3", "Time4", "Time5", "Time6"]
-        sun_data = np.random.uniform(0, 1, 6)
-        sun_data_labels = [sun_labels[i - 1] for i in np.digitize(sun_data, sun_bins)]
-        wind_data = np.random.uniform(0, 1, 6)
-        wind_data_labels = [
-            wind_labels[i - 1] for i in np.digitize(wind_data, wind_bins)
-        ]
+        wesim_regions = wesim_data["Regions"]
+        wesim_capacity = wesim_data["Capacity"]
+
+        def get_data_labels(
+            technology: str, bins: list[float], labels: list[str]
+        ) -> list[str]:
+            output = wesim_regions[
+                wesim_regions["Hour"].isin(hours) & (wesim_regions["Code"] == "Total")
+            ][technology].to_list()
+            capacity = wesim_capacity[wesim_capacity["Code"] == "Total"][
+                technology
+            ].squeeze()
+            output_norm = [o / capacity for o in output]
+            output_labelled = [labels[i - 1] for i in np.digitize(output_norm, bins)]
+            return output_labelled
+
+        sun_data_labels = get_data_labels("Solar PV", sun_bins, sun_labels)
+        wind_data_labels = get_data_labels("Onshore wind", wind_bins, wind_labels)
+
+        columns = [f"Hour {h}" for h in hours]  # TODO: choose appropriate column names
         data = [[sun_data_labels[i], wind_data_labels[i]] for i in range(len(columns))]
 
         weather_fig = go.Figure(
