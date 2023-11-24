@@ -14,6 +14,7 @@ import plotly.express as px  # type: ignore
 from dash import Input, Output, callback, dcc, html  # type: ignore
 from plotly import graph_objects as go  # type: ignore
 
+from ..data import WESIM
 from ..figures import (
     generate_balancing_market_fig,
     generate_intraday_market_sys_fig,
@@ -25,7 +26,7 @@ dash.register_page(__name__)
 
 df = pd.DataFrame({"Col": [0]})
 
-weather_fig = generate_weather_fig(df)
+weather_fig = generate_weather_fig(WESIM)
 balancing_market_fig = generate_balancing_market_fig(df)
 intraday_market_sys_fig = generate_intraday_market_sys_fig(df)
 reserve_generation_fig = generate_reserve_generation_fig(df)
@@ -110,7 +111,7 @@ layout = html.Div(
 )
 def update_figures(
     n_intervals: int,
-) -> tuple[go.Figure, go.Figure, go.Figure, px.line]:
+) -> tuple[go.Figure, go.Figure, px.line]:
     """Function to update the plots in this page.
 
     Args:
@@ -118,16 +119,14 @@ def update_figures(
             indexes by 1 every 7 seconds.
 
     Returns:
-        tuple[go.Figure, go.Figure, go.Figure, px.line]: The new figures.
+        tuple[go.Figure, go.Figure, px.line]: The new figures.
     """
     from ..data import DF_OPAL
 
-    weather_fig = generate_weather_fig(DF_OPAL)
     balancing_market_fig = generate_balancing_market_fig(DF_OPAL)
     intraday_market_sys_fig = generate_intraday_market_sys_fig(DF_OPAL)
     reserve_generation_fig = generate_reserve_generation_fig(DF_OPAL)
     return (
-        weather_fig,
         balancing_market_fig,
         intraday_market_sys_fig,
         reserve_generation_fig,

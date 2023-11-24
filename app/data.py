@@ -4,13 +4,22 @@ from dash import Input, Output, callback, dcc  # type: ignore
 from dash.exceptions import PreventUpdate  # type: ignore
 
 from . import LIVE_MODEL, log
-from .datahub_api import get_opal_data  # , get_dsr_data
+from .datahub_api import get_opal_data, get_wesim_data  # , get_dsr_data
 
 ##################
 interval = 7000
 ##################
 
 DF_OPAL = pd.DataFrame({"Col": [0]})
+
+if LIVE_MODEL:  # TODO: returning false even when datahub is running
+    WESIM = get_wesim_data()
+    WESIM = {key: pd.DataFrame(**item) for key, item in WESIM.items()}
+else:
+    WESIM = {}
+
+WESIM = get_wesim_data()
+WESIM = {key: pd.DataFrame(**item) for key, item in WESIM.items()}
 
 data_interval = dcc.Interval(id="data_interval", interval=interval)
 empty_output = dcc.Store(id="empty", data=[])
