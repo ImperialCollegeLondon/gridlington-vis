@@ -19,7 +19,6 @@ def test_control_view_callback(mocker):
             buttons[1],
             buttons[2],
             buttons[3],
-            buttons[4],
             "",
             "",
             "",
@@ -31,25 +30,19 @@ def test_control_view_callback(mocker):
         )
 
     """Test Update Button."""
-    buttons = [1, None, None, None, None]
+    buttons = [1, None, None, None]
     button_id = "button_update"
 
     ctx = copy_context()
-    patched_assign_sections = mocker.patch("app.core_api.assign_sections")
+    patched_assign_sections = mocker.patch(
+        "app.core_api.assign_sections", return_value=button_id
+    )
     output = ctx.run(run_callback)
     patched_assign_sections.assert_called_once()
-    assert output[0] == "Clicked Update Button!"
-
-    """Test Default Button."""
-    buttons = [None, 1, None, None, None]
-    button_id = "button_default"
-
-    ctx = copy_context()
-    output = ctx.run(run_callback)
-    assert output[0] == "Clicked Default Button!"
+    assert output[0] == button_id
 
     """Test Start Button."""
-    buttons = [None, None, 1, None, None]
+    buttons = [None, 1, None, None]
     button_id = "button_start"
 
     ctx = copy_context()
@@ -57,7 +50,7 @@ def test_control_view_callback(mocker):
     assert output[0] == "Clicked Start Button!"
 
     """Test Stop Button."""
-    buttons = [None, None, None, 1, None]
+    buttons = [None, None, 1, None]
     button_id = "button_stop"
 
     ctx = copy_context()
@@ -65,9 +58,17 @@ def test_control_view_callback(mocker):
     assert output[0] == "Clicked Stop Button!"
 
     """Test Restart Button."""
-    buttons = [None, None, None, None, 1]
+    buttons = [None, None, None, 1]
     button_id = "button_restart"
 
     ctx = copy_context()
     output = ctx.run(run_callback)
     assert output[0] == "Clicked Restart Button!"
+
+
+def test_default_button_callback():
+    """Test Default Button."""
+    from app.pages.control import default_button_click
+
+    output = default_button_click(0)
+    assert output[0] == "Dropdowns returned to default values. Click tick to assign."
