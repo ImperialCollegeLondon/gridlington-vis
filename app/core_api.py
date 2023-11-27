@@ -63,12 +63,20 @@ def create_all() -> None:
         log.info(f"Created section in space '{section['space']}' with: {response.text}")
 
 
-def assign_sections(new_sections: dict[str, str]) -> None:
+def assign_sections(new_sections: dict[str, str]) -> str:
     """Function for assigning sections."""
-    response = requests.get(f"{API_URL}/sections", params={"includeAppStates": True})
+    try:
+        response = requests.get(
+            f"{API_URL}/sections", params={"includeAppStates": True}
+        )
+    except requests.exceptions.ConnectionError as err:
+        log.error(str(err.args[0]))
+        return "Failed to connect to OVE. Most likely it is not running."
+
     if response.status_code != requests.codes.OK:
-        log.error("Unable to get OVE Sections")
-        return
+        message = "Unable to get OVE Sections."
+        log.error(message)
+        return f"{message} Might need to restart the OVE back-end."
 
     for section in response.json():
         id = section["id"]
@@ -85,7 +93,10 @@ def assign_sections(new_sections: dict[str, str]) -> None:
             log.info(f"Setting view for {space} to {new_sections[space]}")
             res = requests.post(f"{API_URL}/sections/{id}", json={"app": new_app})
             if res.status_code != requests.codes.OK:
-                log.error(f"Could not set view for {space} to {new_sections[space]}")
+                message = f"Could not set view for {space} to {new_sections[space]}"
+                log.error(message)
+                return f"Could not set view for {space} to {new_sections[space]}"
+    return "Sections updated successfully!"
 
 
 def move_section(id_num: int, space: str) -> None:
