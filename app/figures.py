@@ -542,8 +542,13 @@ def generate_weather_fig(wesim_data: dict[str, pd.DataFrame]) -> go.Figure:
         wesim_capacity = wesim_data["Capacity"]
         wesim_regions_total = wesim_regions[wesim_regions["Code"] == "Total"]
         wesim_capacity_total = wesim_capacity[wesim_capacity["Code"] == "Total"]
-        solar_capacity = wesim_capacity_total["Solar PV"].squeeze()
-        wind_capacity = wesim_capacity_total["Onshore wind"].squeeze()
+        solar_capacity = wesim_capacity_total["Solar PV"].to_list()[0]
+        wind_capacity = wesim_capacity_total["Onshore wind"].to_list()[0]
+
+        table_df = wesim_regions_total[
+            ["Hour", "Time", "Solar PV", "Onshore wind"]
+        ].copy()
+        table_df = table_df[table_df["Hour"].isin(hours)]
 
         def label_output(
             output: float, capacity: float, bins: list[float], labels: list[str]
@@ -552,32 +557,17 @@ def generate_weather_fig(wesim_data: dict[str, pd.DataFrame]) -> go.Figure:
             output_labelled = labels[np.digitize(output_norm, bins) - 1]
             return output_labelled
 
-        wesim_regions_total.loc[:, "Solar PV labels"] = wesim_regions_total.apply(
-            lambda x: label_output(
-                x["Solar PV"],
-                solar_capacity,
-                sun_bins,
-                sun_labels,
-            ),
-            axis=1,
-        )
-
-        wesim_regions_total.loc[:, "Onshore wind labels"] = wesim_regions_total.apply(
-            lambda x: label_output(
-                x["Onshore wind"],
-                wind_capacity,
-                wind_bins,
-                wind_labels,
-            ),
-            axis=1,
-        )
-
-        table_df = wesim_regions_total[wesim_regions_total["Hour"].isin(hours)]
-        columns = table_df["Time"]
-        data = [
-            [row["Solar PV labels"], row["Onshore wind labels"]]
-            for _, row in table_df.iterrows()
+        table_solar_labels = [
+            label_output(o, solar_capacity, sun_bins, sun_labels)
+            for o in table_df["Solar PV"].to_list()
         ]
+        table_wind_labels = [
+            label_output(o, wind_capacity, wind_bins, wind_labels)
+            for o in table_df["Onshore wind"].to_list()
+        ]
+
+        columns = table_df["Time"]
+        data = list(zip(table_solar_labels, table_wind_labels))
 
         weather_fig = go.Figure(
             data=[
@@ -609,8 +599,8 @@ def generate_reserve_generation_fig(wesim_data: dict[str, pd.DataFrame]) -> go.F
         solar_capacity = wesim_capacity[wesim_capacity["Code"] == "Total"][
             "Solar PV"
         ].squeeze()
-        wesim_regions_total = wesim_regions[(wesim_regions["Code"] == "Total")]
-        wesim_regions_total["Solar Reserve"] = wesim_regions_total.apply(
+        wesim_regions_total = wesim_regions[(wesim_regions["Code"] == "Total")].copy()
+        wesim_regions_total.loc[:, "Solar Reserve"] = wesim_regions_total.apply(
             lambda x: solar_capacity - x["Solar PV"], axis=1
         )
 
