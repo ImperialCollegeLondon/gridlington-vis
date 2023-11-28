@@ -13,7 +13,7 @@ time_range = ["2035-01-22 00:00:00", "2035-01-22 00:07:01.140"]
 
 
 def figure(title: str, title_size: float | int = 30) -> Callable:  # type:ignore
-    """Decorator for modifying figures.
+    """Decorator for common formatting of all figures.
 
     Args:
         title (str): Title
@@ -40,7 +40,7 @@ def figure(title: str, title_size: float | int = 30) -> Callable:  # type:ignore
 
 
 def line_graph(func: Callable) -> Callable:  # type:ignore
-    """Decorator to format time-series line graphs.
+    """Decorator for common formatting of time-series line graphs.
 
     Args:
         func (Callable): Line graph function
