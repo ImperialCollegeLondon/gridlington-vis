@@ -12,9 +12,15 @@ interval = 7000
 
 DF_OPAL = pd.DataFrame({"Col": [0]})
 
+WESIM_START_DATE = "2035-01-22 00:00"  # corresponding to hour 0 TODO: check
+
 if LIVE_MODEL:
-    wesim = get_wesim_data()
-    WESIM = {key: pd.DataFrame(**item) for key, item in wesim.items()}
+    WESIM = {key: pd.DataFrame(**item) for key, item in get_wesim_data().items()}
+    for df in WESIM.values():
+        if "Hour" in df.columns:
+            df["Time"] = (
+                pd.Timestamp(WESIM_START_DATE) + pd.to_timedelta(df["Hour"], unit="h")
+            ).astype(str)
 else:
     WESIM = {"df": pd.DataFrame({"Col": [0]})}
 

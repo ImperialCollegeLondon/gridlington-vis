@@ -6,7 +6,7 @@ import plotly.graph_objects as go  # type: ignore
 from plotly.colors import DEFAULT_PLOTLY_COLORS  # type: ignore
 from plotly.subplots import make_subplots  # type: ignore
 
-time_range = ["2035-01-22 00:00:00", "2035-01-22 00:07:01.140"]
+time_range = ["2035-01-22 04:00", "2035-01-22 11:00"]
 
 
 def generate_gen_split_fig(df: pd.DataFrame) -> px.pie:
@@ -519,7 +519,7 @@ def generate_weather_fig(wesim_data: dict[str, pd.DataFrame]) -> go.Figure:
     Returns:
         Plotly figure
     """
-    hours = [10, 11, 12, 13, 14, 15, 16, 17, 18]  # TODO: choose appropriate times
+    hours = [4, 5, 6, 7, 8, 9, 10, 11]  # TODO: choose appropriate times
 
     sun_bins = [0, 0.05, 0.1]  # TODO: choose appropriate bins
     sun_labels = [
@@ -540,25 +540,44 @@ def generate_weather_fig(wesim_data: dict[str, pd.DataFrame]) -> go.Figure:
     else:
         wesim_regions = wesim_data["Regions"]
         wesim_capacity = wesim_data["Capacity"]
+        wesim_regions_total = wesim_regions[wesim_regions["Code"] == "Total"]
+        wesim_capacity_total = wesim_capacity[wesim_capacity["Code"] == "Total"]
+        solar_capacity = wesim_capacity_total["Solar PV"].squeeze()
+        wind_capacity = wesim_capacity_total["Onshore wind"].squeeze()
 
-        def get_data_labels(
-            technology: str, bins: list[float], labels: list[str]
-        ) -> list[str]:
-            output = wesim_regions[
-                wesim_regions["Hour"].isin(hours) & (wesim_regions["Code"] == "Total")
-            ][technology].to_list()
-            capacity = wesim_capacity[wesim_capacity["Code"] == "Total"][
-                technology
-            ].squeeze()
-            output_norm = [o / capacity for o in output]
-            output_labelled = [labels[i - 1] for i in np.digitize(output_norm, bins)]
+        def label_output(
+            output: float, capacity: float, bins: list[float], labels: list[str]
+        ) -> str:
+            output_norm = output / capacity
+            output_labelled = labels[np.digitize(output_norm, bins) - 1]
             return output_labelled
 
-        sun_data_labels = get_data_labels("Solar PV", sun_bins, sun_labels)
-        wind_data_labels = get_data_labels("Onshore wind", wind_bins, wind_labels)
+        wesim_regions_total.loc[:, "Solar PV labels"] = wesim_regions_total.apply(
+            lambda x: label_output(
+                x["Solar PV"],
+                solar_capacity,
+                sun_bins,
+                sun_labels,
+            ),
+            axis=1,
+        )
 
-        columns = [f"Hour {h}" for h in hours]  # TODO: choose appropriate column names
-        data = [[sun_data_labels[i], wind_data_labels[i]] for i in range(len(columns))]
+        wesim_regions_total.loc[:, "Onshore wind labels"] = wesim_regions_total.apply(
+            lambda x: label_output(
+                x["Onshore wind"],
+                wind_capacity,
+                wind_bins,
+                wind_labels,
+            ),
+            axis=1,
+        )
+
+        table_df = wesim_regions_total[wesim_regions_total["Hour"].isin(hours)]
+        columns = table_df["Time"]
+        data = [
+            [row["Solar PV labels"], row["Onshore wind labels"]]
+            for _, row in table_df.iterrows()
+        ]
 
         weather_fig = go.Figure(
             data=[
@@ -584,24 +603,24 @@ def generate_reserve_generation_fig(wesim_data: dict[str, pd.DataFrame]) -> go.F
     if len(wesim_data) == 1:
         reserve_generation_fig = px.line()
     else:
-        hours = list(range(4, 25))  # TODO: choose appropriate time
         wesim_regions = wesim_data["Regions"]
         wesim_capacity = wesim_data["Capacity"]
 
-        solar_output = wesim_regions[
-            wesim_regions["Hour"].isin(hours) & (wesim_regions["Code"] == "Total")
-        ]["Solar PV"].to_list()
         solar_capacity = wesim_capacity[wesim_capacity["Code"] == "Total"][
             "Solar PV"
         ].squeeze()
-        solar_reserve = [solar_capacity - o for o in solar_output]
+        wesim_regions_total = wesim_regions[(wesim_regions["Code"] == "Total")]
+        wesim_regions_total["Solar Reserve"] = wesim_regions_total.apply(
+            lambda x: solar_capacity - x["Solar PV"], axis=1
+        )
 
         reserve_generation_fig = px.line(
-            x=hours,
-            y=solar_reserve,
+            wesim_regions_total,
+            x="Time",
+            y="Solar Reserve",
+            range_x=time_range,
         ).update_layout(
             yaxis_title="MW",
-            xaxis_title="Hour",
         )  # TODO: check units
 
     return reserve_generation_fig
