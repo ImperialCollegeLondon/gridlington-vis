@@ -1,5 +1,5 @@
 """Module for generating figure grid layout."""
-from dash import html
+from dash import html  # type: ignore
 
 
 class GridBuilder:
