@@ -572,30 +572,36 @@ def generate_weather_fig(wesim_data: dict[str, pd.DataFrame]) -> go.Figure:
     return weather_fig
 
 
-def generate_reserve_generation_fig(df: pd.DataFrame) -> go.Figure:
+def generate_reserve_generation_fig(wesim_data: dict[str, pd.DataFrame]) -> go.Figure:
     """Creates Plotly figure for Reserve/Standby Generation graph.
 
-    TODO: This data isn't in Opal yet - need to modify y when available
-    Just using dummy data for now
-    Will also need to modify y axis range
-
     Args:
-        df: Opal dataframe
+        wesim_data: Wesim data (dictionary of dataframes)
 
     Returns:
         Plotly express line graph
     """
-    if len(df.columns) == 1:
+    if len(wesim_data) == 0:
         reserve_generation_fig = px.line()
     else:
+        hours = list(range(4, 25))  # TODO: choose appropriate time
+        wesim_regions = wesim_data["Regions"]
+        wesim_capacity = wesim_data["Capacity"]
+
+        solar_output = wesim_regions[
+            wesim_regions["Hour"].isin(hours) & (wesim_regions["Code"] == "Total")
+        ]["Solar PV"].to_list()
+        solar_capacity = wesim_capacity[wesim_capacity["Code"] == "Total"][
+            "Solar PV"
+        ].squeeze()
+        solar_reserve = [solar_capacity - o for o in solar_output]
+
         reserve_generation_fig = px.line(
-            df,
-            x="Time",
-            y=df["Exp. Offshore Wind Generation"] - df["Real Offshore Wind Generation"],
-            range_y=[-600, 600],
-            range_x=time_range,
+            x=hours,
+            y=solar_reserve,
         ).update_layout(
-            yaxis_title="MW"
+            yaxis_title="MW",
+            xaxis_title="Hour",
         )  # TODO: check units
 
     return reserve_generation_fig

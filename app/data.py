@@ -18,9 +18,6 @@ if LIVE_MODEL:  # TODO: returning false even when datahub is running
 else:
     WESIM = {}
 
-WESIM = get_wesim_data()
-WESIM = {key: pd.DataFrame(**item) for key, item in WESIM.items()}
-
 data_interval = dcc.Interval(id="data_interval", interval=interval)
 empty_output = dcc.Store(id="empty", data=[])
 
