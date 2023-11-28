@@ -1,4 +1,7 @@
 """Functions for generating plotly figures."""
+from functools import wraps
+from typing import Callable, Union
+
 import numpy as np
 import pandas as pd
 import plotly.express as px  # type: ignore
@@ -7,9 +10,36 @@ from plotly.colors import DEFAULT_PLOTLY_COLORS  # type: ignore
 from plotly.subplots import make_subplots  # type: ignore
 
 time_range = ["2035-01-22 00:00:00", "2035-01-22 00:07:01.140"]
-title_size = 30
 
 
+def figure(title: str, title_size: float | int = 30) -> Callable:  # type:ignore
+    """Decorator for modifying figures.
+
+    Args:
+        title (str): Title
+        title_size (float | int, optional): Title size. Defaults to 30.
+
+    Returns:
+        Callable: Decorated function
+    """
+
+    def decorator(func: Callable) -> Callable:  # type:ignore
+        @wraps(func)
+        def wrapper(df: pd.DataFrame) -> Union[px.pie, px.line, go.Figure]:
+            fig = func(df)
+            fig.update_layout(
+                title_text=title,
+                title={"font": {"size": title_size}},
+                title_x=0.5,
+            )
+            return fig
+
+        return wrapper
+
+    return decorator
+
+
+@figure("Generation Split")
 def generate_gen_split_fig(df: pd.DataFrame) -> px.pie:
     """Creates Plotly figure for Generation Split graph.
 
@@ -39,15 +69,11 @@ def generate_gen_split_fig(df: pd.DataFrame) -> px.pie:
             values=gen_split_df,
         )
 
-    gen_split_fig.update_layout(
-        title_text="Generation Split",
-        title={"font": {"size": title_size}},
-        title_x=0.5,
-    )
     # title_text=df.iloc[-1]["Time"],
     return gen_split_fig
 
 
+@figure("Generation Total")
 def generate_total_gen_fig(df: pd.DataFrame) -> px.line:
     """Creates Plotly figure for Total Generation graph.
 
@@ -80,9 +106,6 @@ def generate_total_gen_fig(df: pd.DataFrame) -> px.line:
 
     total_gen_fig.update_layout(
         yaxis_title="GW",
-        title_text="Generation Total",
-        title={"font": {"size": title_size}},
-        title_x=0.5,
     )
     total_gen_fig.layout.xaxis.title = "Time"
     total_gen_fig.layout.xaxis.range = time_range
@@ -92,6 +115,7 @@ def generate_total_gen_fig(df: pd.DataFrame) -> px.line:
     return total_gen_fig
 
 
+@figure("Demand Total")
 def generate_total_dem_fig(df: pd.DataFrame) -> px.line:
     """Creates Plotly figure for Total Demand graph.
 
@@ -113,9 +137,6 @@ def generate_total_dem_fig(df: pd.DataFrame) -> px.line:
         )
     total_dem_fig.update_layout(
         yaxis_title="GW",
-        title_text="Demand Total",
-        title={"font": {"size": title_size}},
-        title_x=0.5,
     )
     total_dem_fig.layout.xaxis.title = "Time"
     total_dem_fig.layout.xaxis.range = time_range
@@ -124,6 +145,7 @@ def generate_total_dem_fig(df: pd.DataFrame) -> px.line:
     return total_dem_fig
 
 
+@figure("System Frequency")
 def generate_system_freq_fig(df: pd.DataFrame) -> px.line:
     """Creates Plotly figure for System Frequency graph.
 
@@ -146,9 +168,6 @@ def generate_system_freq_fig(df: pd.DataFrame) -> px.line:
         )
     system_freq_fig.update_layout(
         yaxis_title="GW",
-        title_text="System Frequency",
-        title={"font": {"size": title_size}},
-        title_x=0.5,
     )
     system_freq_fig.layout.xaxis.title = "Time"
     system_freq_fig.layout.xaxis.range = time_range
@@ -158,6 +177,7 @@ def generate_system_freq_fig(df: pd.DataFrame) -> px.line:
     return system_freq_fig
 
 
+@figure("Intra-day Market System")
 def generate_intraday_market_sys_fig(df: pd.DataFrame) -> go.Figure:
     """Creates Plotly figure for Intra-day Market System graph.
 
@@ -207,15 +227,12 @@ def generate_intraday_market_sys_fig(df: pd.DataFrame) -> go.Figure:
     intraday_market_sys_fig.for_each_trace(
         lambda t: t.update(line=dict(color=t.marker.color))
     )
-    intraday_market_sys_fig.update_layout(
-        title={"text": "Intra-day Market System", "font": {"size": title_size}},
-        title_x=0.5,
-    )
     intraday_market_sys_fig.update_xaxes(type="date")
 
     return intraday_market_sys_fig
 
 
+@figure("Balancing Market")
 def generate_balancing_market_fig(df: pd.DataFrame) -> go.Figure:
     """Creates Plotly figure for Balancing Market graph.
 
@@ -265,15 +282,12 @@ def generate_balancing_market_fig(df: pd.DataFrame) -> go.Figure:
     balancing_market_fig.for_each_trace(
         lambda t: t.update(line=dict(color=t.marker.color))
     )
-    balancing_market_fig.update_layout(
-        title={"text": "Balancing Market", "font": {"size": title_size}},
-        title_x=0.5,
-    )
     balancing_market_fig.update_xaxes(type="date")
 
     return balancing_market_fig
 
 
+@figure("Energy Deficit")
 def generate_energy_deficit_fig(df: pd.DataFrame) -> px.line:
     """Creates Plotly figure for Energy Deficit graph.
 
@@ -294,9 +308,6 @@ def generate_energy_deficit_fig(df: pd.DataFrame) -> px.line:
 
     energy_deficit_fig.update_layout(
         yaxis_title="MW",
-        title_text="Energy Deficit",
-        title={"font": {"size": title_size}},
-        title_x=0.5,
     )
     energy_deficit_fig.layout.xaxis.title = "Time"
     energy_deficit_fig.layout.xaxis.range = time_range
@@ -305,6 +316,7 @@ def generate_energy_deficit_fig(df: pd.DataFrame) -> px.line:
     return energy_deficit_fig
 
 
+@figure("Intraday Market Bids and Offers")
 def generate_intraday_market_bids_fig(df: pd.DataFrame) -> go.Figure:
     """Creates plotly Figure object for Intraday Market Bids and Offers table.
 
@@ -329,16 +341,10 @@ def generate_intraday_market_bids_fig(df: pd.DataFrame) -> go.Figure:
             ]
         )
 
-    intraday_market_bids_fig.update_layout(
-        title={
-            "text": "Intraday Market Bids and Offers",
-            "font": {"size": title_size},
-        },
-        title_x=0.5,
-    )
     return intraday_market_bids_fig
 
 
+@figure("Demand Side Response")
 def generate_dsr_fig(df: pd.DataFrame) -> go.Figure:
     """Creates plotly figure for Demand Side Response graph.
 
@@ -383,14 +389,11 @@ def generate_dsr_fig(df: pd.DataFrame) -> go.Figure:
     dsr_fig.layout.yaxis.range = [-1, 1]  # TODO: Check range
     dsr_fig.layout.yaxis2.range = [-1, 1]
     dsr_fig.for_each_trace(lambda t: t.update(line=dict(color=t.marker.color)))
-    dsr_fig.update_layout(
-        title={"text": "Demand Side Response", "font": {"size": title_size}},
-        title_x=0.5,
-    )
     dsr_fig.update_xaxes(type="date")
     return dsr_fig
 
 
+@figure("DSR Commands to Agents")
 def generate_dsr_commands_fig(df: pd.DataFrame) -> px.line:
     """Creates Plotly figure for DSR Commands to Agents graph.
 
@@ -426,9 +429,6 @@ def generate_dsr_commands_fig(df: pd.DataFrame) -> px.line:
     dsr_commands_fig.update_layout(
         yaxis_title="MW",
         legend_title=None,
-        title_text="DSR Commands to Agents",
-        title={"font": {"size": title_size}},
-        title_x=0.5,
     )
     dsr_commands_fig.layout.xaxis.title = "Time"
     dsr_commands_fig.layout.xaxis.range = time_range
@@ -529,6 +529,7 @@ def create_waffle_chart(
     return waffle
 
 
+@figure("Agent Activity Breakdown")
 def generate_agent_activity_breakdown_fig(df: pd.DataFrame) -> go.Figure:
     """Creates waffle chart for agent activity breakdown figure.
 
@@ -551,14 +552,12 @@ def generate_agent_activity_breakdown_fig(df: pd.DataFrame) -> go.Figure:
         )
     agent_activity_breakdown_fig.update_layout(
         legend_title_text="Household Activity",
-        title_text="Agent Activity Breakdown",
-        title={"font": {"size": title_size}},
-        title_x=0.5,
     )
     # title_text=df.iloc[-1]["Time"]
     return agent_activity_breakdown_fig
 
 
+@figure("Electric Vehicle Charging Breakdown")
 def generate_ev_charging_breakdown_fig(df: pd.DataFrame) -> go.Figure:
     """Creates waffle chart for EV charging breakdown figure.
 
@@ -579,11 +578,6 @@ def generate_ev_charging_breakdown_fig(df: pd.DataFrame) -> go.Figure:
         )
     ev_charging_breakdown_fig.update_layout(
         legend_title_text="EV Status",
-        title_text="Electric Vehicle Charging Breakdown",
-        title={
-            "font": {"size": title_size},
-        },
-        title_x=0.5,
     )
     # title_text=df.iloc[-1]["Time"]
     return ev_charging_breakdown_fig
