@@ -12,11 +12,11 @@ interval = 7000
 
 DF_OPAL = pd.DataFrame({"Col": [0]})
 
-if LIVE_MODEL:  # TODO: returning false even when datahub is running
-    WESIM = get_wesim_data()
-    WESIM = {key: pd.DataFrame(**item) for key, item in WESIM.items()}
+if LIVE_MODEL:
+    wesim = get_wesim_data()
+    WESIM = {key: pd.DataFrame(**item) for key, item in wesim.items()}
 else:
-    WESIM = {}
+    WESIM = {"df": pd.DataFrame({"Col": [0]})}
 
 data_interval = dcc.Interval(id="data_interval", interval=interval)
 empty_output = dcc.Store(id="empty", data=[])

@@ -534,7 +534,7 @@ def generate_weather_fig(wesim_data: dict[str, pd.DataFrame]) -> go.Figure:
         "\U0001F4A8\U0001F4A8\U0001F4A8",
     ]
 
-    if len(wesim_data) == 0:
+    if len(wesim_data) == 1:
         weather_fig = go.Figure()
 
     else:
@@ -581,7 +581,7 @@ def generate_reserve_generation_fig(wesim_data: dict[str, pd.DataFrame]) -> go.F
     Returns:
         Plotly express line graph
     """
-    if len(wesim_data) == 0:
+    if len(wesim_data) == 1:
         reserve_generation_fig = px.line()
     else:
         hours = list(range(4, 25))  # TODO: choose appropriate time
