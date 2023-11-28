@@ -7,6 +7,7 @@ from plotly.colors import DEFAULT_PLOTLY_COLORS  # type: ignore
 from plotly.subplots import make_subplots  # type: ignore
 
 time_range = ["2035-01-22 00:00:00", "2035-01-22 00:07:01.140"]
+title_size = 30
 
 
 def generate_gen_split_fig(df: pd.DataFrame) -> px.pie:
@@ -22,7 +23,6 @@ def generate_gen_split_fig(df: pd.DataFrame) -> px.pie:
         gen_split_fig = px.pie()
     else:
         gen_split_df = df.iloc[-1, 13:23]
-
         gen_split_fig = px.pie(
             names=[
                 "Battery Generation",
@@ -37,7 +37,14 @@ def generate_gen_split_fig(df: pd.DataFrame) -> px.pie:
                 "Gas Generation",
             ],
             values=gen_split_df,
-        ).update_layout(title_text=df.iloc[-1]["Time"])
+        )
+
+    gen_split_fig.update_layout(
+        title_text="Generation Split",
+        title={"font": {"size": title_size}},
+        title_x=0.5,
+    )
+    # title_text=df.iloc[-1]["Time"],
     return gen_split_fig
 
 
@@ -69,9 +76,19 @@ def generate_total_gen_fig(df: pd.DataFrame) -> px.line:
                 "Hydro Generation",
                 "Gas Generation",
             ],
-            range_x=time_range,
-            range_y=[-5, 70],
-        ).update_layout(yaxis_title="GW")
+        )
+
+    total_gen_fig.update_layout(
+        yaxis_title="GW",
+        title_text="Generation Total",
+        title={"font": {"size": title_size}},
+        title_x=0.5,
+    )
+    total_gen_fig.layout.xaxis.title = "Time"
+    total_gen_fig.layout.xaxis.range = time_range
+    total_gen_fig.layout.yaxis.range = [-5, 70]
+    total_gen_fig.update_xaxes(type="date")
+
     return total_gen_fig
 
 
@@ -93,9 +110,17 @@ def generate_total_dem_fig(df: pd.DataFrame) -> px.line:
             y=[
                 "Total Demand",
             ],
-            range_x=time_range,
-            range_y=[-5, 70],
-        ).update_layout(yaxis_title="GW")
+        )
+    total_dem_fig.update_layout(
+        yaxis_title="GW",
+        title_text="Demand Total",
+        title={"font": {"size": title_size}},
+        title_x=0.5,
+    )
+    total_dem_fig.layout.xaxis.title = "Time"
+    total_dem_fig.layout.xaxis.range = time_range
+    total_dem_fig.layout.yaxis.range = [-5, 70]
+    total_dem_fig.update_xaxes(type="date")
     return total_dem_fig
 
 
@@ -118,9 +143,18 @@ def generate_system_freq_fig(df: pd.DataFrame) -> px.line:
                 "Total Generation",
                 "Total Demand",
             ],
-            range_x=time_range,
-            range_y=[-5, 70],
-        ).update_layout(yaxis_title="GW")
+        )
+    system_freq_fig.update_layout(
+        yaxis_title="GW",
+        title_text="System Frequency",
+        title={"font": {"size": title_size}},
+        title_x=0.5,
+    )
+    system_freq_fig.layout.xaxis.title = "Time"
+    system_freq_fig.layout.xaxis.range = time_range
+    system_freq_fig.layout.yaxis.range = [-5, 70]
+    system_freq_fig.update_xaxes(type="date")
+
     return system_freq_fig
 
 
@@ -135,36 +169,35 @@ def generate_intraday_market_sys_fig(df: pd.DataFrame) -> go.Figure:
     """
     intraday_market_sys_fig = make_subplots(specs=[[{"secondary_y": True}]])
 
-    if len(df.columns) == 1:
-        return intraday_market_sys_fig
-
-    left_axis_columns = [
-        "Intra-Day Market Generation",
-        "Intra-Day Market Storage",
-        "Intra-Day Market Demand",
-    ]
-    intraday_market_sys_fig_left = px.line(
-        df,
-        x="Time",
-        y=left_axis_columns,
-    ).for_each_trace(lambda t: t.update(name=t.name + " (MW)"))
-
-    right_axis_columns = [
-        "Intra-Day Market Value",
-    ]
-    intraday_market_sys_fig_right = (
-        px.line(
+    if not len(df.columns) == 1:
+        left_axis_columns = [
+            "Intra-Day Market Generation",
+            "Intra-Day Market Storage",
+            "Intra-Day Market Demand",
+        ]
+        intraday_market_sys_fig_left = px.line(
             df,
             x="Time",
-            y=right_axis_columns,
-        )
-        .update_traces(yaxis="y2")
-        .for_each_trace(lambda t: t.update(name=t.name + " (£/MW)"))
-    )
+            y=left_axis_columns,
+        ).for_each_trace(lambda t: t.update(name=t.name + " (MW)"))
 
-    intraday_market_sys_fig.add_traces(
-        intraday_market_sys_fig_left.data + intraday_market_sys_fig_right.data
-    )
+        right_axis_columns = [
+            "Intra-Day Market Value",
+        ]
+        intraday_market_sys_fig_right = (
+            px.line(
+                df,
+                x="Time",
+                y=right_axis_columns,
+            )
+            .update_traces(yaxis="y2")
+            .for_each_trace(lambda t: t.update(name=t.name + " (£/MW)"))
+        )
+
+        intraday_market_sys_fig.add_traces(
+            intraday_market_sys_fig_left.data + intraday_market_sys_fig_right.data
+        )
+
     intraday_market_sys_fig.layout.xaxis.title = "Time"
     intraday_market_sys_fig.layout.yaxis.title = "MW"
     intraday_market_sys_fig.layout.yaxis2.title = "£/MW"
@@ -174,6 +207,11 @@ def generate_intraday_market_sys_fig(df: pd.DataFrame) -> go.Figure:
     intraday_market_sys_fig.for_each_trace(
         lambda t: t.update(line=dict(color=t.marker.color))
     )
+    intraday_market_sys_fig.update_layout(
+        title={"text": "Intra-day Market System", "font": {"size": title_size}},
+        title_x=0.5,
+    )
+    intraday_market_sys_fig.update_xaxes(type="date")
 
     return intraday_market_sys_fig
 
@@ -189,36 +227,35 @@ def generate_balancing_market_fig(df: pd.DataFrame) -> go.Figure:
     """
     balancing_market_fig = make_subplots(specs=[[{"secondary_y": True}]])
 
-    if len(df.columns) == 1:
-        return balancing_market_fig
-
-    left_axis_columns = [
-        "Balancing Mechanism Generation",
-        "Balancing Mechanism Storage",
-        "Balancing Mechanism Demand",
-    ]
-    balancing_market_fig_left = px.line(
-        df,
-        x="Time",
-        y=left_axis_columns,
-    ).for_each_trace(lambda t: t.update(name=t.name + " (MW)"))
-
-    right_axis_columns = [
-        "Balancing Mechanism Value",
-    ]
-    balancing_market_fig_right = (
-        px.line(
+    if not len(df.columns) == 1:
+        left_axis_columns = [
+            "Balancing Mechanism Generation",
+            "Balancing Mechanism Storage",
+            "Balancing Mechanism Demand",
+        ]
+        balancing_market_fig_left = px.line(
             df,
             x="Time",
-            y=right_axis_columns,
-        )
-        .update_traces(yaxis="y2")
-        .for_each_trace(lambda t: t.update(name=t.name + " (£/MW)"))
-    )
+            y=left_axis_columns,
+        ).for_each_trace(lambda t: t.update(name=t.name + " (MW)"))
 
-    balancing_market_fig.add_traces(
-        balancing_market_fig_left.data + balancing_market_fig_right.data
-    )
+        right_axis_columns = [
+            "Balancing Mechanism Value",
+        ]
+        balancing_market_fig_right = (
+            px.line(
+                df,
+                x="Time",
+                y=right_axis_columns,
+            )
+            .update_traces(yaxis="y2")
+            .for_each_trace(lambda t: t.update(name=t.name + " (£/MW)"))
+        )
+
+        balancing_market_fig.add_traces(
+            balancing_market_fig_left.data + balancing_market_fig_right.data
+        )
+
     balancing_market_fig.layout.xaxis.title = "Time"
     balancing_market_fig.layout.yaxis.title = "MW"
     balancing_market_fig.layout.yaxis2.title = "£/MW"
@@ -228,6 +265,11 @@ def generate_balancing_market_fig(df: pd.DataFrame) -> go.Figure:
     balancing_market_fig.for_each_trace(
         lambda t: t.update(line=dict(color=t.marker.color))
     )
+    balancing_market_fig.update_layout(
+        title={"text": "Balancing Market", "font": {"size": title_size}},
+        title_x=0.5,
+    )
+    balancing_market_fig.update_xaxes(type="date")
 
     return balancing_market_fig
 
@@ -248,10 +290,18 @@ def generate_energy_deficit_fig(df: pd.DataFrame) -> px.line:
             df,
             x="Time",
             y=df["Exp. Offshore Wind Generation"] - df["Real Offshore Wind Generation"],
-            range_y=[-600, 600],
-            range_x=time_range,
-        ).update_layout(yaxis_title="MW")
+        )
 
+    energy_deficit_fig.update_layout(
+        yaxis_title="MW",
+        title_text="Energy Deficit",
+        title={"font": {"size": title_size}},
+        title_x=0.5,
+    )
+    energy_deficit_fig.layout.xaxis.title = "Time"
+    energy_deficit_fig.layout.xaxis.range = time_range
+    energy_deficit_fig.layout.yaxis.range = [-600, 600]
+    energy_deficit_fig.update_xaxes(type="date")
     return energy_deficit_fig
 
 
@@ -279,6 +329,13 @@ def generate_intraday_market_bids_fig(df: pd.DataFrame) -> go.Figure:
             ]
         )
 
+    intraday_market_bids_fig.update_layout(
+        title={
+            "text": "Intraday Market Bids and Offers",
+            "font": {"size": title_size},
+        },
+        title_x=0.5,
+    )
     return intraday_market_bids_fig
 
 
@@ -293,33 +350,32 @@ def generate_dsr_fig(df: pd.DataFrame) -> go.Figure:
     """
     dsr_fig = make_subplots(specs=[[{"secondary_y": True}]])
 
-    if len(df.columns) == 1:
-        return dsr_fig
-
-    left_axis_columns = [
-        "Cost",  # TODO: This will need to be changed when data is available
-        "Cost",  # TODO: As above
-    ]
-    dsr_fig_left = px.line(
-        df,
-        x="Time",
-        y=left_axis_columns,
-    ).for_each_trace(lambda t: t.update(name=t.name + " (kW)"))
-
-    right_axis_columns = [
-        "Cost",
-    ]
-    dsr_fig_right = (
-        px.line(
+    if not len(df.columns) == 1:
+        left_axis_columns = [
+            "Cost",  # TODO: This will need to be changed when data is available
+            "Cost",  # TODO: As above
+        ]
+        dsr_fig_left = px.line(
             df,
             x="Time",
-            y=right_axis_columns,
-        )
-        .update_traces(yaxis="y2")
-        .for_each_trace(lambda t: t.update(name=t.name + " (£/MW)"))
-    )
+            y=left_axis_columns,
+        ).for_each_trace(lambda t: t.update(name=t.name + " (kW)"))
 
-    dsr_fig.add_traces(dsr_fig_left.data + dsr_fig_right.data)
+        right_axis_columns = [
+            "Cost",
+        ]
+        dsr_fig_right = (
+            px.line(
+                df,
+                x="Time",
+                y=right_axis_columns,
+            )
+            .update_traces(yaxis="y2")
+            .for_each_trace(lambda t: t.update(name=t.name + " (£/MW)"))
+        )
+
+        dsr_fig.add_traces(dsr_fig_left.data + dsr_fig_right.data)
+
     dsr_fig.layout.xaxis.title = "Time"  # TODO: Check units
     dsr_fig.layout.yaxis.title = "kW"
     dsr_fig.layout.yaxis2.title = "£/MW"
@@ -327,7 +383,11 @@ def generate_dsr_fig(df: pd.DataFrame) -> go.Figure:
     dsr_fig.layout.yaxis.range = [-1, 1]  # TODO: Check range
     dsr_fig.layout.yaxis2.range = [-1, 1]
     dsr_fig.for_each_trace(lambda t: t.update(line=dict(color=t.marker.color)))
-
+    dsr_fig.update_layout(
+        title={"text": "Demand Side Response", "font": {"size": title_size}},
+        title_x=0.5,
+    )
+    dsr_fig.update_xaxes(type="date")
     return dsr_fig
 
 
@@ -361,10 +421,19 @@ def generate_dsr_commands_fig(df: pd.DataFrame) -> px.line:
                 "Name",
                 "Name2",
             ],
-            range_y=[-8, 8],
-            range_x=time_range,
-        ).update_layout(yaxis_title="MW", legend_title=None)
+        )
 
+    dsr_commands_fig.update_layout(
+        yaxis_title="MW",
+        legend_title=None,
+        title_text="DSR Commands to Agents",
+        title={"font": {"size": title_size}},
+        title_x=0.5,
+    )
+    dsr_commands_fig.layout.xaxis.title = "Time"
+    dsr_commands_fig.layout.xaxis.range = time_range
+    dsr_commands_fig.layout.yaxis.range = [-8, 8]
+    dsr_commands_fig.update_xaxes(type="date")
     return dsr_commands_fig
 
 
@@ -480,9 +549,13 @@ def generate_agent_activity_breakdown_fig(df: pd.DataFrame) -> go.Figure:
         agent_activity_breakdown_fig = create_waffle_chart(
             categories=categories, counts=counts, gap=1
         )
-        agent_activity_breakdown_fig.update_layout(
-            legend_title_text="Household Activity", title_text=df.iloc[-1]["Time"]
-        )
+    agent_activity_breakdown_fig.update_layout(
+        legend_title_text="Household Activity",
+        title_text="Agent Activity Breakdown",
+        title={"font": {"size": title_size}},
+        title_x=0.5,
+    )
+    # title_text=df.iloc[-1]["Time"]
     return agent_activity_breakdown_fig
 
 
@@ -504,9 +577,15 @@ def generate_ev_charging_breakdown_fig(df: pd.DataFrame) -> go.Figure:
         ev_charging_breakdown_fig = create_waffle_chart(
             categories=categories, counts=counts, gap=1
         )
-        ev_charging_breakdown_fig.update_layout(
-            legend_title_text="EV Status", title_text=df.iloc[-1]["Time"]
-        )
+    ev_charging_breakdown_fig.update_layout(
+        legend_title_text="EV Status",
+        title_text="Electric Vehicle Charging Breakdown",
+        title={
+            "font": {"size": title_size},
+        },
+        title_x=0.5,
+    )
+    # title_text=df.iloc[-1]["Time"]
     return ev_charging_breakdown_fig
 
 

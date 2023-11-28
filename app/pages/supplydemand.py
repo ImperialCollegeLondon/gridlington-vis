@@ -42,7 +42,6 @@ layout = html.Div(
                 html.Div(
                     style={"width": "48%"},
                     children=[
-                        html.H1("Generation Split", style={"textAlign": "center"}),
                         dcc.Graph(
                             id="graph-gen-split",
                             figure=gen_split_fig,
@@ -53,7 +52,6 @@ layout = html.Div(
                 html.Div(
                     style={"width": "48%"},
                     children=[
-                        html.H1("Generation Total", style={"textAlign": "center"}),
                         dcc.Graph(
                             id="graph-gen-total",
                             figure=total_gen_fig,
@@ -69,7 +67,6 @@ layout = html.Div(
                 html.Div(
                     style={"width": "48%"},
                     children=[
-                        html.H1("Demand Total", style={"textAlign": "center"}),
                         dcc.Graph(
                             id="graph-demand",
                             figure=total_dem_fig,
@@ -80,7 +77,6 @@ layout = html.Div(
                 html.Div(
                     style={"width": "48%"},
                     children=[
-                        html.H1("System Frequency", style={"textAlign": "center"}),
                         dcc.Graph(
                             id="graph-freq",
                             figure=system_freq_fig,
