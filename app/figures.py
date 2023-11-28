@@ -39,6 +39,26 @@ def figure(title: str, title_size: float | int = 30) -> Callable:  # type:ignore
     return decorator
 
 
+def line_graph(func: Callable) -> Callable:  # type:ignore
+    """Decorator to format time-series line graphs.
+
+    Args:
+        func (Callable): Line graph function
+
+    Returns:
+        Callable: Decorated function
+    """
+
+    def wrapper(df: pd.DataFrame) -> px.line:
+        fig = func(df)
+        fig.layout.xaxis.title = "Time"
+        fig.layout.xaxis.range = time_range
+        fig.update_xaxes(type="date")
+        return fig
+
+    return wrapper
+
+
 @figure("Generation Split")
 def generate_gen_split_fig(df: pd.DataFrame) -> px.pie:
     """Creates Plotly figure for Generation Split graph.
@@ -74,6 +94,7 @@ def generate_gen_split_fig(df: pd.DataFrame) -> px.pie:
 
 
 @figure("Generation Total")
+@line_graph
 def generate_total_gen_fig(df: pd.DataFrame) -> px.line:
     """Creates Plotly figure for Total Generation graph.
 
@@ -107,15 +128,13 @@ def generate_total_gen_fig(df: pd.DataFrame) -> px.line:
     total_gen_fig.update_layout(
         yaxis_title="GW",
     )
-    total_gen_fig.layout.xaxis.title = "Time"
-    total_gen_fig.layout.xaxis.range = time_range
     total_gen_fig.layout.yaxis.range = [-5, 70]
-    total_gen_fig.update_xaxes(type="date")
 
     return total_gen_fig
 
 
 @figure("Demand Total")
+@line_graph
 def generate_total_dem_fig(df: pd.DataFrame) -> px.line:
     """Creates Plotly figure for Total Demand graph.
 
@@ -138,14 +157,12 @@ def generate_total_dem_fig(df: pd.DataFrame) -> px.line:
     total_dem_fig.update_layout(
         yaxis_title="GW",
     )
-    total_dem_fig.layout.xaxis.title = "Time"
-    total_dem_fig.layout.xaxis.range = time_range
     total_dem_fig.layout.yaxis.range = [-5, 70]
-    total_dem_fig.update_xaxes(type="date")
     return total_dem_fig
 
 
 @figure("System Frequency")
+@line_graph
 def generate_system_freq_fig(df: pd.DataFrame) -> px.line:
     """Creates Plotly figure for System Frequency graph.
 
@@ -169,15 +186,13 @@ def generate_system_freq_fig(df: pd.DataFrame) -> px.line:
     system_freq_fig.update_layout(
         yaxis_title="GW",
     )
-    system_freq_fig.layout.xaxis.title = "Time"
-    system_freq_fig.layout.xaxis.range = time_range
     system_freq_fig.layout.yaxis.range = [-5, 70]
-    system_freq_fig.update_xaxes(type="date")
 
     return system_freq_fig
 
 
 @figure("Intra-day Market System")
+@line_graph
 def generate_intraday_market_sys_fig(df: pd.DataFrame) -> go.Figure:
     """Creates Plotly figure for Intra-day Market System graph.
 
@@ -218,21 +233,19 @@ def generate_intraday_market_sys_fig(df: pd.DataFrame) -> go.Figure:
             intraday_market_sys_fig_left.data + intraday_market_sys_fig_right.data
         )
 
-    intraday_market_sys_fig.layout.xaxis.title = "Time"
     intraday_market_sys_fig.layout.yaxis.title = "MW"
     intraday_market_sys_fig.layout.yaxis2.title = "£/MW"
-    intraday_market_sys_fig.layout.xaxis.range = time_range
     intraday_market_sys_fig.layout.yaxis.range = [-100, 100]
     intraday_market_sys_fig.layout.yaxis2.range = [-10000, 10000]
     intraday_market_sys_fig.for_each_trace(
         lambda t: t.update(line=dict(color=t.marker.color))
     )
-    intraday_market_sys_fig.update_xaxes(type="date")
 
     return intraday_market_sys_fig
 
 
 @figure("Balancing Market")
+@line_graph
 def generate_balancing_market_fig(df: pd.DataFrame) -> go.Figure:
     """Creates Plotly figure for Balancing Market graph.
 
@@ -273,21 +286,19 @@ def generate_balancing_market_fig(df: pd.DataFrame) -> go.Figure:
             balancing_market_fig_left.data + balancing_market_fig_right.data
         )
 
-    balancing_market_fig.layout.xaxis.title = "Time"
     balancing_market_fig.layout.yaxis.title = "MW"
     balancing_market_fig.layout.yaxis2.title = "£/MW"
-    balancing_market_fig.layout.xaxis.range = time_range
     balancing_market_fig.layout.yaxis.range = [-250, 250]
     balancing_market_fig.layout.yaxis2.range = [-50000, 50000]
     balancing_market_fig.for_each_trace(
         lambda t: t.update(line=dict(color=t.marker.color))
     )
-    balancing_market_fig.update_xaxes(type="date")
 
     return balancing_market_fig
 
 
 @figure("Energy Deficit")
+@line_graph
 def generate_energy_deficit_fig(df: pd.DataFrame) -> px.line:
     """Creates Plotly figure for Energy Deficit graph.
 
@@ -309,10 +320,7 @@ def generate_energy_deficit_fig(df: pd.DataFrame) -> px.line:
     energy_deficit_fig.update_layout(
         yaxis_title="MW",
     )
-    energy_deficit_fig.layout.xaxis.title = "Time"
-    energy_deficit_fig.layout.xaxis.range = time_range
     energy_deficit_fig.layout.yaxis.range = [-600, 600]
-    energy_deficit_fig.update_xaxes(type="date")
     return energy_deficit_fig
 
 
@@ -345,6 +353,7 @@ def generate_intraday_market_bids_fig(df: pd.DataFrame) -> go.Figure:
 
 
 @figure("Demand Side Response")
+@line_graph
 def generate_dsr_fig(df: pd.DataFrame) -> go.Figure:
     """Creates plotly figure for Demand Side Response graph.
 
@@ -382,18 +391,16 @@ def generate_dsr_fig(df: pd.DataFrame) -> go.Figure:
 
         dsr_fig.add_traces(dsr_fig_left.data + dsr_fig_right.data)
 
-    dsr_fig.layout.xaxis.title = "Time"  # TODO: Check units
     dsr_fig.layout.yaxis.title = "kW"
     dsr_fig.layout.yaxis2.title = "£/MW"
-    dsr_fig.layout.xaxis.range = time_range
     dsr_fig.layout.yaxis.range = [-1, 1]  # TODO: Check range
     dsr_fig.layout.yaxis2.range = [-1, 1]
     dsr_fig.for_each_trace(lambda t: t.update(line=dict(color=t.marker.color)))
-    dsr_fig.update_xaxes(type="date")
     return dsr_fig
 
 
 @figure("DSR Commands to Agents")
+@line_graph
 def generate_dsr_commands_fig(df: pd.DataFrame) -> px.line:
     """Creates Plotly figure for DSR Commands to Agents graph.
 
@@ -430,10 +437,7 @@ def generate_dsr_commands_fig(df: pd.DataFrame) -> px.line:
         yaxis_title="MW",
         legend_title=None,
     )
-    dsr_commands_fig.layout.xaxis.title = "Time"
-    dsr_commands_fig.layout.xaxis.range = time_range
     dsr_commands_fig.layout.yaxis.range = [-8, 8]
-    dsr_commands_fig.update_xaxes(type="date")
     return dsr_commands_fig
 
 
