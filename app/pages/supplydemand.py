@@ -45,7 +45,7 @@ layout = html.Div(
                         dcc.Graph(
                             id="graph-gen-split",
                             figure=gen_split_fig,
-                            style={"height": "40vh"},
+                            style={"height": "50vh"},
                         ),
                     ],
                 ),
@@ -55,7 +55,7 @@ layout = html.Div(
                         dcc.Graph(
                             id="graph-gen-total",
                             figure=total_gen_fig,
-                            style={"height": "40vh"},
+                            style={"height": "50vh"},
                         ),
                     ],
                 ),
@@ -70,7 +70,7 @@ layout = html.Div(
                         dcc.Graph(
                             id="graph-demand",
                             figure=total_dem_fig,
-                            style={"height": "40vh"},
+                            style={"height": "50vh"},
                         ),
                     ],
                 ),
@@ -80,7 +80,7 @@ layout = html.Div(
                         dcc.Graph(
                             id="graph-freq",
                             figure=system_freq_fig,
-                            style={"height": "40vh"},
+                            style={"height": "50vh"},
                         ),
                     ],
                 ),
