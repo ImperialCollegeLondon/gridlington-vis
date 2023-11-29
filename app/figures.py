@@ -513,15 +513,18 @@ def generate_ev_charging_breakdown_fig(df: pd.DataFrame) -> go.Figure:
 def generate_weather_fig(wesim_data: dict[str, pd.DataFrame]) -> go.Figure:
     """Creates plotly figure for Weather table.
 
+    Sun and wind levels are allocated to bins with associated icons.
+    Bin thresholds (sun_bins, wind_bins) can be modified as appropriate.
+
     Args:
         wesim_data: Wesim data (dictionary of dataframes)
 
     Returns:
         Plotly figure
     """
-    hours = [4, 5, 6, 7, 8, 9, 10, 11]  # TODO: choose appropriate times
+    hours = [4, 5, 6, 7, 8, 9, 10, 11]
 
-    sun_bins = [0, 0.05, 0.1]  # TODO: choose appropriate bins
+    sun_bins = [0, 0.05, 0.1]
     sun_labels = [
         "\U00002601\U0000FE0F",
         "\U0001F324\U0000FE0F",
@@ -572,8 +575,10 @@ def generate_weather_fig(wesim_data: dict[str, pd.DataFrame]) -> go.Figure:
         weather_fig = go.Figure(
             data=[
                 go.Table(
-                    header=dict(values=columns, align="left"),
-                    cells=dict(values=data, align="left"),
+                    header=dict(values=columns, align="center"),
+                    cells=dict(
+                        values=data, align="center", height=50, font=dict(size=30)
+                    ),
                 )
             ]
         )
