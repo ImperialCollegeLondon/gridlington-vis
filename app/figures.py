@@ -617,6 +617,7 @@ def generate_ev_charging_breakdown_fig(df: pd.DataFrame) -> go.Figure:
     return ev_charging_breakdown_fig
 
 
+@figure("Weather")
 def generate_weather_fig(wesim_data: dict[str, pd.DataFrame]) -> go.Figure:
     """Creates plotly figure for Weather table.
 
@@ -693,6 +694,8 @@ def generate_weather_fig(wesim_data: dict[str, pd.DataFrame]) -> go.Figure:
     return weather_fig
 
 
+@figure("Reserve/Standby Generation")
+@axes(ylabel="MW", yrange=[25000, 35000])
 def generate_reserve_generation_fig(wesim_data: dict[str, pd.DataFrame]) -> go.Figure:
     """Creates Plotly figure for Reserve/Standby Generation graph.
 
@@ -720,9 +723,5 @@ def generate_reserve_generation_fig(wesim_data: dict[str, pd.DataFrame]) -> go.F
             wesim_regions_total,
             x="Time",
             y="Solar Reserve",
-            range_x=time_range,
-        ).update_layout(
-            yaxis_title="MW",
-        )  # TODO: check units
-
+        )
     return reserve_generation_fig
