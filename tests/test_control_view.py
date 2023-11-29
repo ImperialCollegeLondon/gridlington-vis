@@ -69,5 +69,7 @@ def test_control_view_callback(mocker):
     button_id = "button_restart"
 
     ctx = copy_context()
+    patched_refresh_sections = mocker.patch("app.core_api.refresh_sections")
     output = ctx.run(run_callback)
+    patched_refresh_sections.assert_called_once()
     assert output[0] == "Clicked Restart Button!"
