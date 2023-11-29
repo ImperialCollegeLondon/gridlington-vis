@@ -2,7 +2,6 @@
 
 import dash  # type: ignore
 from dash import Input, Output, State, callback, ctx, dcc, html  # type: ignore
-from dash.exceptions import PreventUpdate  # type: ignore
 from dash_iconify import DashIconify  # type: ignore
 
 from .. import core_api as core
@@ -201,10 +200,9 @@ layout = html.Div(
 
 
 @callback(
-    Output("message", "children"),
+    Output("message", "children", allow_duplicate=True),
     [
         Input("button_update", "n_clicks"),
-        Input("button_default", "n_clicks"),
         Input("button_start", "n_clicks"),
         Input("button_stop", "n_clicks"),
         Input("button_restart", "n_clicks"),
@@ -219,10 +217,10 @@ layout = html.Div(
         State("PC02-Left_dropdown", "value"),
         State("PC02-Right_dropdown", "value"),
     ],
+    prevent_initial_call=True,
 )
 def update_button_click(
     button_update: int | None,
-    button_default: int | None,
     button_start: int | None,
     button_stop: int | None,
     button_restart: int | None,
@@ -236,10 +234,6 @@ def update_button_click(
     PC02_Right_dropdown: str,
 ) -> list[str]:
     """Placeholder function for buttons."""
-    button_id = ctx.triggered_id
-    if ctx.triggered_id is None:
-        raise PreventUpdate
-
     button_id = ctx.triggered_id[7:]
 
     if button_id == "update":
@@ -248,7 +242,7 @@ def update_button_click(
         Args: Value inputs for the 8 dropdown menus
         """
         log.debug("Clicked Update Button!")
-        core.assign_sections(
+        message = core.assign_sections(
             {
                 "Hub01": Hub01_dropdown,
                 "Hub02": Hub02_dropdown,
@@ -260,16 +254,7 @@ def update_button_click(
                 "PC02-Right": PC02_Right_dropdown,
             }
         )
-        return ["Clicked Update Button!"]
-
-    elif button_id == "default":
-        """Will make an API call to set up OVE sections accoding to
-        default configuration.
-
-        Args: INIT_SECTIONS list from core_api.py
-        """
-        log.debug("Clicked Default Button!")
-        return ["Clicked Default Button!"]
+        return [message]
 
     elif button_id == "start":
         """Will make an API call to start the Gridlington simulation and Datahub."""
@@ -289,3 +274,34 @@ def update_button_click(
 
     else:
         return [""]
+
+
+@callback(
+    [
+        Output("message", "children", allow_duplicate=True),
+        Output("Hub01_dropdown", "value"),
+        Output("Hub02_dropdown", "value"),
+        Output("PC01-Top_dropdown", "value"),
+        Output("PC01-Left_dropdown", "value"),
+        Output("PC01-Right_dropdown", "value"),
+        Output("PC02-Top_dropdown", "value"),
+        Output("PC02-Left_dropdown", "value"),
+        Output("PC02-Right_dropdown", "value"),
+    ],
+    [Input("button_default", "n_clicks")],
+    prevent_initial_call=True,
+)
+def default_button_click(n_clicks: int | None) -> list[str]:
+    """Returns the dropdowns to their default values."""
+    log.debug("Clicked Default Button!")
+    return [
+        "Dropdowns returned to default values. Click tick to assign.",
+        get_default("Hub01"),
+        get_default("Hub02"),
+        get_default("PC01-Top"),
+        get_default("PC01-Left"),
+        get_default("PC01-Right"),
+        get_default("PC02-Top"),
+        get_default("PC02-Left"),
+        get_default("PC02-Right"),
+    ]
