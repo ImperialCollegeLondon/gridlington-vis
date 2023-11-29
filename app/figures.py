@@ -12,12 +12,12 @@ from plotly.subplots import make_subplots  # type: ignore
 time_range = ["2035-01-22 00:00:00", "2035-01-22 00:07:01.140"]
 
 
-def figure(title: str, title_size: float | int = 30) -> Callable:  # type:ignore
+def figure(title: str, title_size: float = 30) -> Callable:  # type:ignore
     """Decorator for common formatting of all figures.
 
     Args:
         title (str): Title
-        title_size (float | int, optional): Title size. Defaults to 30.
+        title_size (float, optional): Title size. Defaults to 30.
 
     Returns:
         Callable: Decorated function
@@ -39,24 +39,40 @@ def figure(title: str, title_size: float | int = 30) -> Callable:  # type:ignore
     return decorator
 
 
-def line_graph(func: Callable) -> Callable:  # type:ignore
-    """Decorator for common formatting of time-series line graphs.
+def axes(
+    ylabel: str,
+    yrange: list[str | float],
+    xlabel: str = "Time",
+    xrange: list[str | float] = time_range,  # type:ignore
+) -> Callable:  # type:ignore
+    """Decorator to set axis labels and ranges.
 
     Args:
-        func (Callable): Line graph function
+        ylabel (str): Y axis label
+        yrange (list[str  |  float]): Y axis range
+        xlabel (str, optional): X axis label. Defaults to "Time".
+        xrange (list[str  |  float], optional): X-axis range.
+            Defaults to time_range.
 
     Returns:
         Callable: Decorated function
     """
 
-    def wrapper(df: pd.DataFrame) -> px.line:
-        fig = func(df)
-        fig.layout.xaxis.title = "Time"
-        fig.layout.xaxis.range = time_range
-        fig.update_xaxes(type="date")
-        return fig
+    def decorator(func: Callable) -> Callable:  # type:ignore
+        @wraps(func)
+        def wrapper(df: pd.DataFrame) -> Union[px.pie, px.line, go.Figure]:
+            fig = func(df)
+            fig.layout.xaxis.title = xlabel
+            fig.layout.xaxis.range = xrange
+            if xlabel == "Time":
+                fig.update_xaxes(type="date")
+            fig.layout.yaxis.title = ylabel
+            fig.layout.yaxis.range = yrange
+            return fig
 
-    return wrapper
+        return wrapper
+
+    return decorator
 
 
 @figure("Generation Split")
@@ -94,7 +110,7 @@ def generate_gen_split_fig(df: pd.DataFrame) -> px.pie:
 
 
 @figure("Generation Total")
-@line_graph
+@axes(ylabel="GW", yrange=[-5, 70])
 def generate_total_gen_fig(df: pd.DataFrame) -> px.line:
     """Creates Plotly figure for Total Generation graph.
 
@@ -125,16 +141,11 @@ def generate_total_gen_fig(df: pd.DataFrame) -> px.line:
             ],
         )
 
-    total_gen_fig.update_layout(
-        yaxis_title="GW",
-    )
-    total_gen_fig.layout.yaxis.range = [-5, 70]
-
     return total_gen_fig
 
 
 @figure("Demand Total")
-@line_graph
+@axes(ylabel="GW", yrange=[-5, 70])
 def generate_total_dem_fig(df: pd.DataFrame) -> px.line:
     """Creates Plotly figure for Total Demand graph.
 
@@ -154,15 +165,11 @@ def generate_total_dem_fig(df: pd.DataFrame) -> px.line:
                 "Total Demand",
             ],
         )
-    total_dem_fig.update_layout(
-        yaxis_title="GW",
-    )
-    total_dem_fig.layout.yaxis.range = [-5, 70]
     return total_dem_fig
 
 
 @figure("System Frequency")
-@line_graph
+@axes(ylabel="GW", yrange=[-5, 70])
 def generate_system_freq_fig(df: pd.DataFrame) -> px.line:
     """Creates Plotly figure for System Frequency graph.
 
@@ -183,16 +190,11 @@ def generate_system_freq_fig(df: pd.DataFrame) -> px.line:
                 "Total Demand",
             ],
         )
-    system_freq_fig.update_layout(
-        yaxis_title="GW",
-    )
-    system_freq_fig.layout.yaxis.range = [-5, 70]
 
     return system_freq_fig
 
 
 @figure("Intra-day Market System")
-@line_graph
 def generate_intraday_market_sys_fig(df: pd.DataFrame) -> go.Figure:
     """Creates Plotly figure for Intra-day Market System graph.
 
@@ -245,7 +247,6 @@ def generate_intraday_market_sys_fig(df: pd.DataFrame) -> go.Figure:
 
 
 @figure("Balancing Market")
-@line_graph
 def generate_balancing_market_fig(df: pd.DataFrame) -> go.Figure:
     """Creates Plotly figure for Balancing Market graph.
 
@@ -298,7 +299,7 @@ def generate_balancing_market_fig(df: pd.DataFrame) -> go.Figure:
 
 
 @figure("Energy Deficit")
-@line_graph
+@axes(ylabel="MW", yrange=[-600, 600])
 def generate_energy_deficit_fig(df: pd.DataFrame) -> px.line:
     """Creates Plotly figure for Energy Deficit graph.
 
@@ -317,10 +318,6 @@ def generate_energy_deficit_fig(df: pd.DataFrame) -> px.line:
             y=df["Exp. Offshore Wind Generation"] - df["Real Offshore Wind Generation"],
         )
 
-    energy_deficit_fig.update_layout(
-        yaxis_title="MW",
-    )
-    energy_deficit_fig.layout.yaxis.range = [-600, 600]
     return energy_deficit_fig
 
 
@@ -353,7 +350,6 @@ def generate_intraday_market_bids_fig(df: pd.DataFrame) -> go.Figure:
 
 
 @figure("Demand Side Response")
-@line_graph
 def generate_dsr_fig(df: pd.DataFrame) -> go.Figure:
     """Creates plotly figure for Demand Side Response graph.
 
@@ -361,7 +357,7 @@ def generate_dsr_fig(df: pd.DataFrame) -> go.Figure:
         df: DSR data DataFrame. TODO: Will this be DSR, Opal or both?
 
     Returns:
-        Plotly express figure
+        Plotly graph objects figure
     """
     dsr_fig = make_subplots(specs=[[{"secondary_y": True}]])
 
@@ -400,7 +396,7 @@ def generate_dsr_fig(df: pd.DataFrame) -> go.Figure:
 
 
 @figure("DSR Commands to Agents")
-@line_graph
+@axes(ylabel="MW", yrange=[-8, 8])
 def generate_dsr_commands_fig(df: pd.DataFrame) -> px.line:
     """Creates Plotly figure for DSR Commands to Agents graph.
 
@@ -434,10 +430,8 @@ def generate_dsr_commands_fig(df: pd.DataFrame) -> px.line:
         )
 
     dsr_commands_fig.update_layout(
-        yaxis_title="MW",
         legend_title=None,
     )
-    dsr_commands_fig.layout.yaxis.range = [-8, 8]
     return dsr_commands_fig
 
 
