@@ -12,7 +12,7 @@ from plotly.subplots import make_subplots  # type: ignore
 time_range = ["2035-01-22 04:00", "2035-01-22 11:00"]
 
 
-def figure(title: str, title_size: float = 30) -> Callable:  # type:ignore
+def figure(title: str, title_size: float = 30) -> Callable:  # type: ignore[type-arg]
     """Decorator for common formatting of all figures.
 
     Args:
@@ -23,7 +23,7 @@ def figure(title: str, title_size: float = 30) -> Callable:  # type:ignore
         Callable: Decorated function
     """
 
-    def decorator(func: Callable) -> Callable:  # type:ignore
+    def decorator(func: Callable) -> Callable:  # type: ignore[type-arg]
         @wraps(func)
         def wrapper(df: pd.DataFrame) -> Union[px.pie, px.line, go.Figure]:
             fig = func(df)
@@ -44,7 +44,7 @@ def axes(
     yrange: list[str | float],
     xlabel: str = "Time",
     xrange: list[str | float] = time_range,  # type:ignore
-) -> Callable:  # type:ignore
+) -> Callable:  # type: ignore[type-arg]
     """Decorator to set axis labels and ranges.
 
     Args:
@@ -58,7 +58,7 @@ def axes(
         Callable: Decorated function
     """
 
-    def decorator(func: Callable) -> Callable:  # type:ignore
+    def decorator(func: Callable) -> Callable:  # type: ignore[type-arg]
         @wraps(func)
         def wrapper(df: pd.DataFrame) -> Union[px.pie, px.line, go.Figure]:
             fig = func(df)
@@ -75,7 +75,7 @@ def axes(
     return decorator
 
 
-def timestamp(x: float = 0, y: float = 1) -> Callable:  # type:ignore
+def timestamp(x: float = 0, y: float = 1) -> Callable:  # type: ignore[type-arg]
     """Decorator to add timestamp to figure.
 
     Args:
@@ -86,7 +86,7 @@ def timestamp(x: float = 0, y: float = 1) -> Callable:  # type:ignore
         Callable: Decorated function
     """
 
-    def decorator(func: Callable) -> Callable:  # type:ignore
+    def decorator(func: Callable) -> Callable:  # type: ignore[type-arg]
         @wraps(func)
         def wrapper(df: pd.DataFrame) -> Union[px.pie, px.line, go.Figure]:
             fig = func(df)
