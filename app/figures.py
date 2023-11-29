@@ -44,6 +44,8 @@ def axes(
     yrange: list[str | float],
     xlabel: str = "Time",
     xrange: list[str | float] = time_range,  # type:ignore
+    xdomain: list[float] = [0, 1],
+    ydomain: list[float] = [0, 1],
 ) -> Callable:  # type: ignore[type-arg]
     """Decorator to set axis labels and ranges.
 
@@ -53,6 +55,10 @@ def axes(
         xlabel (str, optional): X axis label. Defaults to "Time".
         xrange (list[str  |  float], optional): X-axis range.
             Defaults to time_range.
+        xdomain (list[float], optional): Region of figure width occupied by
+            the x-axis. Defaults to [0, 1].
+        ydomain (list[float], optional): Region of figure height occupied by
+            the y-axis. Defaults to [0, 1].
 
     Returns:
         Callable: Decorated function
@@ -68,6 +74,7 @@ def axes(
                 fig.update_xaxes(type="date")
             fig.layout.yaxis.title = ylabel
             fig.layout.yaxis.range = yrange
+            fig.update_layout(xaxis=dict(domain=xdomain), yaxis=dict(domain=ydomain))
             return fig
 
         return wrapper
