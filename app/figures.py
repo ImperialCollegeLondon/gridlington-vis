@@ -75,7 +75,44 @@ def axes(
     return decorator
 
 
+def timestamp(x: float = 0, y: float = 1) -> Callable:  # type:ignore
+    """Decorator to add timestamp to figure.
+
+    Args:
+        x (float, optional): x coordinate of the timestamp. Defaults to 0.
+        y (float, optional): y coordinate of the timestamp. Defaults to 1.
+
+    Returns:
+        Callable: Decorated function
+    """
+
+    def decorator(func: Callable) -> Callable:  # type:ignore
+        @wraps(func)
+        def wrapper(df: pd.DataFrame) -> Union[px.pie, px.line, go.Figure]:
+            fig = func(df)
+
+            if not len(df.columns) == 1:
+                fig.update_layout(
+                    annotations=[
+                        dict(
+                            text=df.iloc[-1]["Time"],
+                            x=x,
+                            y=y,
+                            showarrow=False,
+                            font=dict(size=14, color="black"),
+                        )
+                    ]
+                )
+
+            return fig
+
+        return wrapper
+
+    return decorator
+
+
 @figure("Generation Split")
+@timestamp()
 def generate_gen_split_fig(df: pd.DataFrame) -> px.pie:
     """Creates Plotly figure for Generation Split graph.
 
@@ -105,7 +142,6 @@ def generate_gen_split_fig(df: pd.DataFrame) -> px.pie:
             values=gen_split_df,
         )
 
-    # title_text=df.iloc[-1]["Time"],
     return gen_split_fig
 
 
@@ -528,6 +564,7 @@ def create_waffle_chart(
 
 
 @figure("Agent Activity Breakdown")
+@timestamp()
 def generate_agent_activity_breakdown_fig(df: pd.DataFrame) -> go.Figure:
     """Creates waffle chart for agent activity breakdown figure.
 
@@ -551,11 +588,11 @@ def generate_agent_activity_breakdown_fig(df: pd.DataFrame) -> go.Figure:
     agent_activity_breakdown_fig.update_layout(
         legend_title_text="Household Activity",
     )
-    # title_text=df.iloc[-1]["Time"]
     return agent_activity_breakdown_fig
 
 
 @figure("Electric Vehicle Charging Breakdown")
+@timestamp()
 def generate_ev_charging_breakdown_fig(df: pd.DataFrame) -> go.Figure:
     """Creates waffle chart for EV charging breakdown figure.
 
@@ -577,7 +614,6 @@ def generate_ev_charging_breakdown_fig(df: pd.DataFrame) -> go.Figure:
     ev_charging_breakdown_fig.update_layout(
         legend_title_text="EV Status",
     )
-    # title_text=df.iloc[-1]["Time"]
     return ev_charging_breakdown_fig
 
 
