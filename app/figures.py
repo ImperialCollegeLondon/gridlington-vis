@@ -9,7 +9,7 @@ import plotly.graph_objects as go  # type: ignore
 from plotly.colors import DEFAULT_PLOTLY_COLORS  # type: ignore
 from plotly.subplots import make_subplots  # type: ignore
 
-time_range = ["2035-01-22 00:00:00", "2035-01-22 00:07:01.140"]
+time_range = ["2035-01-22 04:00", "2035-01-22 11:00"]
 
 
 def figure(title: str, title_size: float = 30) -> Callable:  # type:ignore
@@ -617,50 +617,76 @@ def generate_ev_charging_breakdown_fig(df: pd.DataFrame) -> go.Figure:
     return ev_charging_breakdown_fig
 
 
-def generate_weather_fig(df: pd.DataFrame) -> go.Figure:
+@figure("Weather")
+def generate_weather_fig(wesim_data: dict[str, pd.DataFrame]) -> go.Figure:
     """Creates plotly figure for Weather table.
 
-    TODO: This data isn't available yet. For now I'm just making up data
-    Will also need to modify bins and labels
+    Sun and wind levels are allocated to bins with associated icons.
+    Bin thresholds (sun_bins, wind_bins) can be modified as appropriate.
 
     Args:
-        df: Wesim dataframe?
+        wesim_data: Wesim data (dictionary of dataframes)
 
     Returns:
         Plotly figure
     """
-    sun_bins = [0, 0.33, 0.67]
+    hours = [4, 5, 6, 7, 8, 9, 10, 11]
+
+    sun_bins = [0, 0.05, 0.1]
     sun_labels = [
         "\U00002601\U0000FE0F",
         "\U0001F324\U0000FE0F",
         "\U00002600\U0000FE0F",
     ]
-    wind_bins = [0, 0.33, 0.67]
+    wind_bins = [0, 0.05, 0.1]
     wind_labels = [
         "\U0001F4A8",
         "\U0001F4A8\U0001F4A8",
         "\U0001F4A8\U0001F4A8\U0001F4A8",
     ]
 
-    if len(df.columns) == 1:
+    if len(wesim_data) == 1:
         weather_fig = go.Figure()
 
     else:
-        # Make up data TODO: replace with real data
-        columns = ["Time1", "Time2", "Time3", "Time4", "Time5", "Time6"]
-        sun_data = np.random.uniform(0, 1, 6)
-        sun_data_labels = [sun_labels[i - 1] for i in np.digitize(sun_data, sun_bins)]
-        wind_data = np.random.uniform(0, 1, 6)
-        wind_data_labels = [
-            wind_labels[i - 1] for i in np.digitize(wind_data, wind_bins)
+        wesim_regions = wesim_data["Regions"]
+        wesim_capacity = wesim_data["Capacity"]
+        wesim_regions_total = wesim_regions[wesim_regions["Code"] == "Total"]
+        wesim_capacity_total = wesim_capacity[wesim_capacity["Code"] == "Total"]
+        solar_capacity = wesim_capacity_total["Solar PV"].to_list()[0]
+        wind_capacity = wesim_capacity_total["Onshore wind"].to_list()[0]
+
+        table_df = wesim_regions_total[
+            ["Hour", "Time", "Solar PV", "Onshore wind"]
+        ].copy()
+        table_df = table_df[table_df["Hour"].isin(hours)]
+
+        def label_output(
+            output: float, capacity: float, bins: list[float], labels: list[str]
+        ) -> str:
+            output_norm = output / capacity
+            output_labelled = labels[np.digitize(output_norm, bins) - 1]
+            return output_labelled
+
+        table_solar_labels = [
+            label_output(o, solar_capacity, sun_bins, sun_labels)
+            for o in table_df["Solar PV"].to_list()
         ]
-        data = [[sun_data_labels[i], wind_data_labels[i]] for i in range(len(columns))]
+        table_wind_labels = [
+            label_output(o, wind_capacity, wind_bins, wind_labels)
+            for o in table_df["Onshore wind"].to_list()
+        ]
+
+        columns = table_df["Time"]
+        data = list(zip(table_solar_labels, table_wind_labels))
 
         weather_fig = go.Figure(
             data=[
                 go.Table(
-                    header=dict(values=columns, align="left"),
-                    cells=dict(values=data, align="left"),
+                    header=dict(values=columns, align="center"),
+                    cells=dict(
+                        values=data, align="center", height=50, font=dict(size=30)
+                    ),
                 )
             ]
         )
@@ -668,30 +694,34 @@ def generate_weather_fig(df: pd.DataFrame) -> go.Figure:
     return weather_fig
 
 
-def generate_reserve_generation_fig(df: pd.DataFrame) -> go.Figure:
+@figure("Reserve/Standby Generation")
+@axes(ylabel="MW", yrange=[25000, 35000])
+def generate_reserve_generation_fig(wesim_data: dict[str, pd.DataFrame]) -> go.Figure:
     """Creates Plotly figure for Reserve/Standby Generation graph.
 
-    TODO: This data isn't in Opal yet - need to modify y when available
-    Just using dummy data for now
-    Will also need to modify y axis range
-
     Args:
-        df: Opal dataframe
+        wesim_data: Wesim data (dictionary of dataframes)
 
     Returns:
         Plotly express line graph
     """
-    if len(df.columns) == 1:
+    if len(wesim_data) == 1:
         reserve_generation_fig = px.line()
     else:
-        reserve_generation_fig = px.line(
-            df,
-            x="Time",
-            y=df["Exp. Offshore Wind Generation"] - df["Real Offshore Wind Generation"],
-            range_y=[-600, 600],
-            range_x=time_range,
-        ).update_layout(
-            yaxis_title="MW"
-        )  # TODO: check units
+        wesim_regions = wesim_data["Regions"]
+        wesim_capacity = wesim_data["Capacity"]
 
+        solar_capacity = wesim_capacity[wesim_capacity["Code"] == "Total"][
+            "Solar PV"
+        ].squeeze()
+        wesim_regions_total = wesim_regions[(wesim_regions["Code"] == "Total")].copy()
+        wesim_regions_total.loc[:, "Solar Reserve"] = wesim_regions_total.apply(
+            lambda x: solar_capacity - x["Solar PV"], axis=1
+        )
+
+        reserve_generation_fig = px.line(
+            wesim_regions_total,
+            x="Time",
+            y="Solar Reserve",
+        )
     return reserve_generation_fig
