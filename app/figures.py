@@ -12,7 +12,7 @@ from plotly.subplots import make_subplots  # type: ignore
 time_range = ["2035-01-22 04:00", "2035-01-22 11:00"]
 
 
-def figure(title: str, title_size: float = 30) -> Callable:  # type:ignore
+def figure(title: str, title_size: float = 30) -> Callable:  # type: ignore[type-arg]
     """Decorator for common formatting of all figures.
 
     Args:
@@ -23,7 +23,7 @@ def figure(title: str, title_size: float = 30) -> Callable:  # type:ignore
         Callable: Decorated function
     """
 
-    def decorator(func: Callable) -> Callable:  # type:ignore
+    def decorator(func: Callable) -> Callable:  # type: ignore[type-arg]
         @wraps(func)
         def wrapper(df: pd.DataFrame) -> Union[px.pie, px.line, go.Figure]:
             fig = func(df)
@@ -44,7 +44,9 @@ def axes(
     yrange: list[str | float],
     xlabel: str = "Time",
     xrange: list[str | float] = time_range,  # type:ignore
-) -> Callable:  # type:ignore
+    xdomain: list[float] = [0, 1],
+    ydomain: list[float] = [0, 1],
+) -> Callable:  # type: ignore[type-arg]
     """Decorator to set axis labels and ranges.
 
     Args:
@@ -53,12 +55,16 @@ def axes(
         xlabel (str, optional): X axis label. Defaults to "Time".
         xrange (list[str  |  float], optional): X-axis range.
             Defaults to time_range.
+        xdomain (list[float], optional): Region of figure width occupied by
+            the x-axis. Defaults to [0, 1].
+        ydomain (list[float], optional): Region of figure height occupied by
+            the y-axis. Defaults to [0, 1].
 
     Returns:
         Callable: Decorated function
     """
 
-    def decorator(func: Callable) -> Callable:  # type:ignore
+    def decorator(func: Callable) -> Callable:  # type: ignore[type-arg]
         @wraps(func)
         def wrapper(df: pd.DataFrame) -> Union[px.pie, px.line, go.Figure]:
             fig = func(df)
@@ -68,6 +74,7 @@ def axes(
                 fig.update_xaxes(type="date")
             fig.layout.yaxis.title = ylabel
             fig.layout.yaxis.range = yrange
+            fig.update_layout(xaxis=dict(domain=xdomain), yaxis=dict(domain=ydomain))
             return fig
 
         return wrapper
@@ -75,7 +82,7 @@ def axes(
     return decorator
 
 
-def timestamp(x: float = 0, y: float = 1) -> Callable:  # type:ignore
+def timestamp(x: float = 0, y: float = 1) -> Callable:  # type: ignore[type-arg]
     """Decorator to add timestamp to figure.
 
     Args:
@@ -86,7 +93,7 @@ def timestamp(x: float = 0, y: float = 1) -> Callable:  # type:ignore
         Callable: Decorated function
     """
 
-    def decorator(func: Callable) -> Callable:  # type:ignore
+    def decorator(func: Callable) -> Callable:  # type: ignore[type-arg]
         @wraps(func)
         def wrapper(df: pd.DataFrame) -> Union[px.pie, px.line, go.Figure]:
             fig = func(df)
