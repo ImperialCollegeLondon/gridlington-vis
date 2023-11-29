@@ -13,7 +13,7 @@ Six plots (2x3):
 import dash  # type: ignore
 import pandas as pd
 import plotly.express as px  # type: ignore
-from dash import Input, Output, callback, dcc, html  # type: ignore
+from dash import Input, Output, callback, dcc  # type: ignore
 from plotly import graph_objects as go  # type: ignore
 
 from ..figures import (
@@ -24,6 +24,7 @@ from ..figures import (
     generate_intraday_market_bids_fig,
     generate_intraday_market_sys_fig,
 )
+from ..layout import GridBuilder
 
 dash.register_page(__name__)
 
@@ -36,85 +37,63 @@ intraday_market_bids_fig = generate_intraday_market_bids_fig(df)
 dsr_fig = generate_dsr_fig(df)
 dsr_commands_fig = generate_dsr_commands_fig(df)
 
-layout = html.Div(
-    style={
-        "display": "flex",
-        "flex-direction": "column",
-        "justify-content": "space-around",
-    },
-    children=[
-        html.Div(
-            style={"display": "flex", "justify-content": "space-around"},
-            children=[
-                html.Div(
-                    style={"width": "32%"},
-                    children=[
-                        dcc.Graph(
-                            id="graph-intraday-market-sys",
-                            figure=intraday_market_sys_fig,
-                            style={"height": "50vh"},
-                        ),
-                    ],
-                ),
-                html.Div(
-                    style={"width": "32%"},
-                    children=[
-                        dcc.Graph(
-                            id="graph-balancing-market",
-                            figure=balancing_market_fig,
-                            style={"height": "50vh"},
-                        ),
-                    ],
-                ),
-                html.Div(
-                    style={"width": "32%"},
-                    children=[
-                        dcc.Graph(
-                            id="graph-energy-deficit",
-                            figure=energy_deficit_fig,
-                            style={"height": "50vh"},
-                        ),
-                    ],
-                ),
-            ],
-        ),
-        html.Div(
-            style={"display": "flex", "justify-content": "space-around"},
-            children=[
-                html.Div(
-                    style={"width": "32%"},
-                    children=[
-                        dcc.Graph(
-                            id="table-intraday-market-bids",
-                            figure=intraday_market_bids_fig,
-                            style={"height": "50vh"},
-                        ),
-                    ],
-                ),
-                html.Div(
-                    style={"width": "32%"},
-                    children=[
-                        dcc.Graph(
-                            id="graph-dsr",
-                            figure=dsr_fig,
-                            style={"height": "50vh"},
-                        ),
-                    ],
-                ),
-                html.Div(
-                    style={"width": "32%"},
-                    children=[
-                        dcc.Graph(
-                            id="graph-dsr-commands",
-                            figure=dsr_commands_fig,
-                            style={"height": "50vh"},
-                        ),
-                    ],
-                ),
-            ],
-        ),
-    ],
+
+grid = GridBuilder(rows=2, cols=3)
+grid.add_element(
+    dcc.Graph(
+        id="graph-intraday-market-sys",
+        figure=intraday_market_sys_fig,
+        style={"height": "100%", "width": "100%"},
+    ),
+    row=0,
+    col=0,
 )
+grid.add_element(
+    dcc.Graph(
+        id="graph-balancing-market",
+        figure=balancing_market_fig,
+        style={"height": "100%", "width": "100%"},
+    ),
+    row=0,
+    col=1,
+)
+grid.add_element(
+    dcc.Graph(
+        id="graph-energy-deficit",
+        figure=energy_deficit_fig,
+        style={"height": "100%", "width": "100%"},
+    ),
+    row=0,
+    col=2,
+)
+grid.add_element(
+    dcc.Graph(
+        id="table-intraday-market-bids",
+        figure=intraday_market_bids_fig,
+        style={"height": "100%", "width": "100%"},
+    ),
+    row=1,
+    col=0,
+)
+grid.add_element(
+    dcc.Graph(
+        id="graph-dsr",
+        figure=dsr_fig,
+        style={"height": "100%", "width": "100%"},
+    ),
+    row=1,
+    col=1,
+)
+grid.add_element(
+    dcc.Graph(
+        id="graph-dsr-commands",
+        figure=dsr_commands_fig,
+        style={"height": "100%", "width": "100%"},
+    ),
+    row=1,
+    col=2,
+)
+layout = grid.layout
 
 
 @callback(

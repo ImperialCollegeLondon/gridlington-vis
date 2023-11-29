@@ -35,6 +35,7 @@ grid.add_element(
     dcc.Graph(
         id="graph-gen-split",
         figure=gen_split_fig,
+        style={"height": "100%", "width": "100%"},
     ),
     row=0,
     col=0,
@@ -43,6 +44,7 @@ grid.add_element(
     dcc.Graph(
         id="graph-gen-total",
         figure=total_gen_fig,
+        style={"height": "100%", "width": "100%"},
     ),
     row=0,
     col=1,
@@ -51,6 +53,7 @@ grid.add_element(
     dcc.Graph(
         id="graph-demand",
         figure=total_dem_fig,
+        style={"height": "100%", "width": "100%"},
     ),
     row=1,
     col=0,
@@ -59,11 +62,12 @@ grid.add_element(
     dcc.Graph(
         id="graph-freq",
         figure=system_freq_fig,
+        style={"height": "100%", "width": "100%"},
     ),
     row=1,
     col=1,
 )
-layout = grid.build_layout()
+layout = grid.layout
 
 
 @callback(

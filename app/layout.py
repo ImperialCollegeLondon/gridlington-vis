@@ -3,56 +3,57 @@ from dash import html  # type: ignore
 
 
 class GridBuilder:
-    """_summary_."""
+    """Class for building a grid layout of graphs."""
 
     def __init__(
         self,
         rows: int,
         cols: int,
-        row_heights: list[str] = None,  # type: ignore
-        col_widths: list[str] = None,  # type:ignore
+        row_heights: list[str] | None = None,
+        col_widths: list[str] | None = None,
     ):
-        """_summary_.
+        """Initialise grid with specified rows and columns.
 
         Args:
-            rows (int): _description_
-            cols (int): _description_
-            row_heights (list[str], optional): _description_. Defaults to None.
-            col_widths (list[str], optional): _description_. Defaults to None.
+            rows (int): Number of rows
+            cols (int): Number of columns
+            row_heights (list[str], optional): List of row heights (vh format).
+                Defaults to None.
+            col_widths (list[str], optional): List of column widths (vw format).
+                Defaults to None.
         """
+        if row_heights is None:
+            row_heights = [f"{100 / rows}vh"] * rows
+        if col_widths is None:
+            col_widths = [f"{100 / cols}vw"] * cols
+
         self.rows = rows
         self.cols = cols
         self.row_heights = row_heights
         self.col_widths = col_widths
-        self.row_heights = row_heights
-        self.col_widths = col_widths
-        if not self.row_heights:
-            self.row_heights = [f"{100 / rows}vh"] * rows
-        if not self.col_widths:
-            self.col_widths = [f"{100 / cols}%" for _ in range(cols)]
         self.grid_elements = [[None] * cols for _ in range(rows)]
 
     def add_element(self, element: html.Div, row: int, col: int) -> None:
-        """_summary_.
+        """Add an element to the grid at a specified position.
 
         Args:
-            element (html.Div): _description_
-            row (int): _description_
-            col (int): _description_
+            element (html.Div): Single div to add to the grid
+            row (int): Row index
+            col (int): Column index
 
         Raises:
-            ValueError: _description_
+            ValueError: Raised if row/column index is not in grid bounds
         """
-        if 0 <= row < self.rows and 0 <= col < self.cols:
-            self.grid_elements[row][col] = element
-        else:
+        if 0 > row >= self.rows and 0 > col >= self.cols:
             raise ValueError("Invalid row or column index.")
+        self.grid_elements[row][col] = element
 
-    def build_layout(self) -> html.Div:
-        """_summary_.
+    @property
+    def layout(self) -> html.Div:
+        """Builds a grid layout with the elements added so far.
 
         Returns:
-            html.Div: _description_
+            html.Div: The full grid layout as a div
         """
         grid_layout = html.Div(
             style={
@@ -69,8 +70,13 @@ class GridBuilder:
                     },
                     children=[
                         html.Div(
-                            style={"width": self.col_widths[j]},
-                            children=[self.grid_elements[i][j]],
+                            style={
+                                "width": self.col_widths[j],
+                                "height": self.row_heights[i],
+                            },
+                            children=[
+                                self.grid_elements[i][j],
+                            ],
                         )
                         for j in range(self.cols)
                     ],
