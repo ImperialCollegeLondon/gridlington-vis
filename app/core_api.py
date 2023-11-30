@@ -37,7 +37,7 @@ INIT_SECTIONS = {
     "NMX": {"space": "PC01-Top", "app": webrtc},
     "Balance of Supply and Demand": {"space": "PC01-Left", "app": html("supplydemand")},
     "Markets and Reserve": {"space": "PC01-Right", "app": html("marketsreserve")},
-    "NMX Georgraphic Map": {"space": "PC02-Top", "app": webrtc},
+    "NMX Geographic Map": {"space": "PC02-Top", "app": webrtc},
     "NMX 11kV Schematic": {"space": "PC02-Left", "app": webrtc},
     "NMX Issues": {"space": "PC02-Right", "app": webrtc},
     "Market": {"space": "Hub01", "app": html("market")},
