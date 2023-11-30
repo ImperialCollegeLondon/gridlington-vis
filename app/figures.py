@@ -278,6 +278,9 @@ def generate_intraday_market_sys_fig(df: pd.DataFrame) -> go.Figure:
             intraday_market_sys_fig_left.data + intraday_market_sys_fig_right.data
         )
 
+    intraday_market_sys_fig.layout.xaxis.title = "Time"
+    intraday_market_sys_fig.layout.xaxis.range = time_range
+    intraday_market_sys_fig.update_xaxes(type="date")
     intraday_market_sys_fig.layout.yaxis.title = "MW"
     intraday_market_sys_fig.layout.yaxis2.title = "£/MW"
     intraday_market_sys_fig.layout.yaxis.range = [-100, 100]
@@ -330,6 +333,9 @@ def generate_balancing_market_fig(df: pd.DataFrame) -> go.Figure:
             balancing_market_fig_left.data + balancing_market_fig_right.data
         )
 
+    balancing_market_fig.layout.xaxis.title = "Time"
+    balancing_market_fig.layout.xaxis.range = time_range
+    balancing_market_fig.update_xaxes(type="date")
     balancing_market_fig.layout.yaxis.title = "MW"
     balancing_market_fig.layout.yaxis2.title = "£/MW"
     balancing_market_fig.layout.yaxis.range = [-250, 250]
@@ -430,6 +436,9 @@ def generate_dsr_fig(df: pd.DataFrame) -> go.Figure:
 
         dsr_fig.add_traces(dsr_fig_left.data + dsr_fig_right.data)
 
+    dsr_fig.layout.xaxis.title = "Time"
+    dsr_fig.layout.xaxis.range = time_range
+    dsr_fig.update_xaxes(type="date")
     dsr_fig.layout.yaxis.title = "kW"
     dsr_fig.layout.yaxis2.title = "£/MW"
     dsr_fig.layout.yaxis.range = [-1, 1]  # TODO: Check range
