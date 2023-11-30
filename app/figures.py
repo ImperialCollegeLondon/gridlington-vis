@@ -588,7 +588,7 @@ def create_waffle_chart(
 
 
 @figure("Agent Activity Breakdown")
-@timestamp()
+@timestamp(y=1.05)
 def generate_agent_activity_breakdown_fig(df: pd.DataFrame) -> go.Figure:
     """Creates waffle chart for agent activity breakdown figure.
 
@@ -616,7 +616,7 @@ def generate_agent_activity_breakdown_fig(df: pd.DataFrame) -> go.Figure:
 
 
 @figure("Electric Vehicle Charging Breakdown")
-@timestamp()
+@timestamp(y=1.05)
 def generate_ev_charging_breakdown_fig(df: pd.DataFrame) -> go.Figure:
     """Creates waffle chart for EV charging breakdown figure.
 

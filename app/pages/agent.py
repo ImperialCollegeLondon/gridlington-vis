@@ -1,13 +1,11 @@
 """Agent view page in dash app.
 
-Seven plots:
-- Agent Locations
-- Agent Locations on SLD
+Five plots:
+- Agent and EV Locations
+- Agent and EV Locations on SLD
 - Agent Activity Breakdown
-- Electric Vehicle Location
-- Electric Vehicle Location on SLD
 - Electric Vehicle Charging Breakdown
-- DSR commands to agents.
+- DSR commands to agents
 """
 
 import dash  # type: ignore
@@ -21,6 +19,7 @@ from ..figures import (
     generate_dsr_commands_fig,
     generate_ev_charging_breakdown_fig,
 )
+from ..layout import GridBuilder
 from ..svg import (
     generate_agent_location_map_img,
     generate_agent_location_sld_img,
@@ -42,138 +41,119 @@ ev_location_sld_img = generate_ev_location_sld_img(df)
 ev_charging_breakdown_fig = generate_ev_charging_breakdown_fig(df)
 dsr_commands_fig = generate_dsr_commands_fig(df)
 
-layout = html.Div(
-    style={
-        "display": "flex",
-        "flex-direction": "column",
-        "justify-content": "space-around",
-    },
-    children=[
-        html.Div(
-            style={"display": "flex", "justify-content": "space-around"},
-            children=[
-                html.Div(
-                    style={"width": "48%"},
-                    children=[
-                        html.H1(
-                            "Agent and EV Locations",
-                            style={"textAlign": "center"},
-                        ),
-                        html.Div(
-                            style={
-                                "position": "relative",
-                                "margin": "auto",
-                                "width": "60%",
-                            },
-                            children=[
-                                html.Img(src=svg_map.url, width="100%"),
-                                html.Img(
-                                    id="agent_location_map_img",
-                                    src=agent_location_map_img,
-                                    width="100%",
-                                    style={
-                                        "position": "absolute",
-                                        "top": 0,
-                                        "left": 0,
-                                    },
-                                ),
-                                html.Img(
-                                    id="ev_location_map_img",
-                                    src=ev_location_map_img,
-                                    width="100%",
-                                    style={
-                                        "position": "absolute",
-                                        "top": 0,
-                                        "left": 0,
-                                    },
-                                ),
-                            ],
-                        ),
-                    ],
-                ),
-            ],
-        ),
-        html.Div(
-            style={"display": "flex", "justify-content": "space-around"},
-            children=[
-                html.Div(
-                    style={"width": "48%"},
-                    children=[
-                        html.H1(
-                            "Agent and EV Locations on SLD",
-                            style={"textAlign": "center"},
-                        ),
-                        html.Div(
-                            style={
-                                "position": "relative",
-                                "margin": "auto",
-                                "width": "60%",
-                            },
-                            children=[
-                                html.Img(src=svg_sld.url, width="100%"),
-                                html.Img(
-                                    id="agent_location_sld_img",
-                                    src=agent_location_sld_img,
-                                    width="100%",
-                                    style={
-                                        "position": "absolute",
-                                        "top": 0,
-                                        "left": 0,
-                                    },
-                                ),
-                                html.Img(
-                                    id="ev_location_sld_img",
-                                    src=ev_location_sld_img,
-                                    width="100%",
-                                    style={
-                                        "position": "absolute",
-                                        "top": 0,
-                                        "left": 0,
-                                    },
-                                ),
-                            ],
-                        ),
-                    ],
-                ),
-            ],
-        ),
-        html.Div(
-            style={"display": "flex", "justify-content": "space-around"},
-            children=[
-                html.Div(
-                    style={"width": "32%"},
-                    children=[
-                        dcc.Graph(
-                            id="agent_activity_breakdown_fig",
-                            figure=agent_activity_breakdown_fig,
-                            style={"height": "30vh"},
-                        ),
-                    ],
-                ),
-                html.Div(
-                    style={"width": "32%"},
-                    children=[
-                        dcc.Graph(
-                            id="ev_charging_breakdown_fig",
-                            figure=ev_charging_breakdown_fig,
-                            style={"height": "30vh"},
-                        ),
-                    ],
-                ),
-                html.Div(
-                    style={"width": "32%"},
-                    children=[
-                        dcc.Graph(
-                            id="dsr_commands_fig",
-                            figure=dsr_commands_fig,
-                            style={"height": "30vh"},
-                        ),
-                    ],
-                ),
-            ],
-        ),
-    ],
+grid = GridBuilder(rows=2, cols=3)
+grid.add_element(
+    html.Div(
+        children=[
+            html.H1(
+                "Agent and EV Locations",
+                style={"textAlign": "center"},
+            ),
+            html.Div(
+                style={
+                    "position": "relative",
+                    "margin": "auto",
+                    "width": "100%",
+                },
+                children=[
+                    html.Img(src=svg_map.url, width="100%"),
+                    html.Img(
+                        id="agent_location_map_img",
+                        src=agent_location_map_img,
+                        width="100%",
+                        style={
+                            "position": "absolute",
+                            "top": 0,
+                            "left": 0,
+                        },
+                    ),
+                    html.Img(
+                        id="ev_location_map_img",
+                        src=ev_location_map_img,
+                        width="100%",
+                        style={
+                            "position": "absolute",
+                            "top": 0,
+                            "left": 0,
+                        },
+                    ),
+                ],
+            ),
+        ],
+    ),
+    row=0,
+    col=0,
 )
+grid.add_element(
+    html.Div(
+        children=[
+            html.H1(
+                "Agent and EV Locations on SLD",
+                style={"textAlign": "center"},
+            ),
+            html.Div(
+                style={
+                    "position": "relative",
+                    "margin": "auto",
+                    "width": "100%",
+                },
+                children=[
+                    html.Img(src=svg_sld.url, width="100%"),
+                    html.Img(
+                        id="agent_location_sld_img",
+                        src=agent_location_sld_img,
+                        width="100%",
+                        style={
+                            "position": "absolute",
+                            "top": 0,
+                            "left": 0,
+                        },
+                    ),
+                    html.Img(
+                        id="ev_location_sld_img",
+                        src=ev_location_sld_img,
+                        width="100%",
+                        style={
+                            "position": "absolute",
+                            "top": 0,
+                            "left": 0,
+                        },
+                    ),
+                ],
+            ),
+        ],
+    ),
+    row=0,
+    col=1,
+)
+grid.add_element(
+    dcc.Graph(
+        id="agent_activity_breakdown_fig",
+        figure=agent_activity_breakdown_fig,
+        style={"height": "100%", "width": "100%"},
+    ),
+    row=1,
+    col=0,
+)
+grid.add_element(
+    dcc.Graph(
+        id="ev_charging_breakdown_fig",
+        figure=ev_charging_breakdown_fig,
+        style={"height": "100%", "width": "100%"},
+    ),
+    row=1,
+    col=1,
+)
+grid.add_element(
+    dcc.Graph(
+        id="dsr_commands_fig",
+        figure=dsr_commands_fig,
+        style={"height": "100%", "width": "100%"},
+    ),
+    row=1,
+    col=2,
+)
+layout = grid.layout
 
 
 @callback(
