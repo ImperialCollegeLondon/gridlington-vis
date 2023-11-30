@@ -49,35 +49,30 @@ layout = html.Div(
                 html.Div(
                     style={"width": "32%"},
                     children=[
-                        html.H1(
-                            "Intra-day Market System", style={"textAlign": "center"}
-                        ),
                         dcc.Graph(
                             id="graph-intraday-market-sys",
                             figure=intraday_market_sys_fig,
-                            style={"height": "40vh"},
+                            style={"height": "50vh"},
                         ),
                     ],
                 ),
                 html.Div(
                     style={"width": "32%"},
                     children=[
-                        html.H1("Balancing Market", style={"textAlign": "center"}),
                         dcc.Graph(
                             id="graph-balancing-market",
                             figure=balancing_market_fig,
-                            style={"height": "40vh"},
+                            style={"height": "50vh"},
                         ),
                     ],
                 ),
                 html.Div(
                     style={"width": "32%"},
                     children=[
-                        html.H1("Energy Deficit", style={"textAlign": "center"}),
                         dcc.Graph(
                             id="graph-energy-deficit",
                             figure=energy_deficit_fig,
-                            style={"height": "40vh"},
+                            style={"height": "50vh"},
                         ),
                     ],
                 ),
@@ -89,38 +84,30 @@ layout = html.Div(
                 html.Div(
                     style={"width": "32%"},
                     children=[
-                        html.H1(
-                            "Intraday Market Bids and Offers",
-                            style={"textAlign": "center"},
-                        ),
                         dcc.Graph(
                             id="table-intraday-market-bids",
                             figure=intraday_market_bids_fig,
-                            style={"height": "40vh"},
+                            style={"height": "50vh"},
                         ),
                     ],
                 ),
                 html.Div(
                     style={"width": "32%"},
                     children=[
-                        html.H1("Demand Side Response", style={"textAlign": "center"}),
                         dcc.Graph(
                             id="graph-dsr",
                             figure=dsr_fig,
-                            style={"height": "40vh"},
+                            style={"height": "50vh"},
                         ),
                     ],
                 ),
                 html.Div(
                     style={"width": "32%"},
                     children=[
-                        html.H1(
-                            "DSR Commands to Agents", style={"textAlign": "center"}
-                        ),
                         dcc.Graph(
                             id="graph-dsr-commands",
                             figure=dsr_commands_fig,
-                            style={"height": "40vh"},
+                            style={"height": "50vh"},
                         ),
                     ],
                 ),

@@ -143,9 +143,6 @@ layout = html.Div(
                 html.Div(
                     style={"width": "32%"},
                     children=[
-                        html.H1(
-                            "Agent Activity Breakdown", style={"textAlign": "center"}
-                        ),
                         dcc.Graph(
                             id="agent_activity_breakdown_fig",
                             figure=agent_activity_breakdown_fig,
@@ -156,10 +153,6 @@ layout = html.Div(
                 html.Div(
                     style={"width": "32%"},
                     children=[
-                        html.H1(
-                            "Electric Vehicle Charging Breakdown",
-                            style={"textAlign": "center"},
-                        ),
                         dcc.Graph(
                             id="ev_charging_breakdown_fig",
                             figure=ev_charging_breakdown_fig,
@@ -170,9 +163,6 @@ layout = html.Div(
                 html.Div(
                     style={"width": "32%"},
                     children=[
-                        html.H1(
-                            "DSR Commands to Agents", style={"textAlign": "center"}
-                        ),
                         dcc.Graph(
                             id="dsr_commands_fig",
                             figure=dsr_commands_fig,

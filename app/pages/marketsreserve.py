@@ -43,7 +43,6 @@ layout = html.Div(
                 html.Div(
                     style={"width": "48%"},
                     children=[
-                        html.H1("Weather", style={"textAlign": "center"}),
                         dcc.Graph(
                             id="weather_fig",
                             figure=weather_fig,
@@ -54,7 +53,6 @@ layout = html.Div(
                 html.Div(
                     style={"width": "48%"},
                     children=[
-                        html.H1("Balancing Market", style={"textAlign": "center"}),
                         dcc.Graph(
                             id="balancing_market_fig",
                             figure=balancing_market_fig,
@@ -70,9 +68,6 @@ layout = html.Div(
                 html.Div(
                     style={"width": "48%"},
                     children=[
-                        html.H1(
-                            "Intra-day Market System", style={"textAlign": "center"}
-                        ),
                         dcc.Graph(
                             id="intraday_market_sys_fig",
                             figure=intraday_market_sys_fig,
@@ -83,9 +78,6 @@ layout = html.Div(
                 html.Div(
                     style={"width": "48%"},
                     children=[
-                        html.H1(
-                            "Reserve/Standby Generation", style={"textAlign": "center"}
-                        ),
                         dcc.Graph(
                             id="reserve_generation_fig",
                             figure=reserve_generation_fig,
