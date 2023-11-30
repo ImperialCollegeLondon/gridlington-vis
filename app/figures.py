@@ -82,12 +82,18 @@ def axes(
     return decorator
 
 
-def timestamp(x: float = 0, y: float = 1) -> Callable:  # type: ignore[type-arg]
+def timestamp(
+    x: float = 0, y: float = 1, fontsize: float = 14, color: str = "black"
+) -> Callable:  # type: ignore[type-arg]
     """Decorator to add timestamp to figure.
+
+    Coordinate scheme: x=0, y=1 corresponds to top left
 
     Args:
         x (float, optional): x coordinate of the timestamp. Defaults to 0.
         y (float, optional): y coordinate of the timestamp. Defaults to 1.
+        fontsize (float, optional): font size
+        color (str, optional): text color
 
     Returns:
         Callable: Decorated function
@@ -105,8 +111,10 @@ def timestamp(x: float = 0, y: float = 1) -> Callable:  # type: ignore[type-arg]
                             text=df.iloc[-1]["Time"],
                             x=x,
                             y=y,
+                            xref="paper",
+                            yref="paper",
                             showarrow=False,
-                            font=dict(size=14, color="black"),
+                            font=dict(size=fontsize, color=color),
                         )
                     ]
                 )
