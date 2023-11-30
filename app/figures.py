@@ -220,7 +220,7 @@ def generate_total_dem_fig(df: pd.DataFrame) -> px.line:
 
 
 @figure("System Frequency")
-@axes(ylabel="GW", yrange=[-5, 70])
+@axes(ylabel="Hz", yrange=[40, 70])
 def generate_system_freq_fig(df: pd.DataFrame) -> px.line:
     """Creates Plotly figure for System Frequency graph.
 
