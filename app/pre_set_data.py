@@ -30,7 +30,7 @@ def read_opal_data() -> pd.DataFrame:
         .reset_index(drop=True)
     )
     try:
-        columns = get_opal_data()["columns"]
+        columns = pd.Index(get_opal_data()["columns"])
     except (DataHubConnectionError, DataHubRequestError):
         log.warning(
             "Issue with DataHub connection or request - using default Opal headers."

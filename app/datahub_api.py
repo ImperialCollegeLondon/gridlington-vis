@@ -53,7 +53,7 @@ def request_datahub(
 
 def get_opal_data(
     start: int | None = None, end: int | None = None
-) -> dict[str, dict]:  # type: ignore[type-arg]
+) -> dict[str, list]:  # type: ignore[type-arg]
     """Function for making a GET request for Opal data.
 
     Args:
