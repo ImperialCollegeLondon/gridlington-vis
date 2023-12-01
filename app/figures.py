@@ -9,6 +9,17 @@ import plotly.graph_objects as go  # type: ignore
 from plotly.colors import DEFAULT_PLOTLY_COLORS  # type: ignore
 from plotly.subplots import make_subplots  # type: ignore
 
+from .svg import (
+    generate_map_location_svg,
+    generate_sld_location_svg,
+    get_agent_map_coordinates,
+    get_agent_sld_coordinates,
+    get_ev_map_coordinates,
+    get_ev_sld_coordinates,
+    svg_map,
+    svg_sld,
+)
+
 time_range = ["2035-01-22 04:00", "2035-01-22 11:00"]
 
 
@@ -749,3 +760,57 @@ def generate_reserve_generation_fig(wesim_data: dict[str, pd.DataFrame]) -> go.F
             y="Solar Reserve",
         )
     return reserve_generation_fig
+
+
+@figure("Agent and EV Locations")
+def generate_map_fig(df: pd.DataFrame) -> go.Figure:
+    """Creates map figure.
+
+    Args:
+        df (pd.DataFrame): Opal dataframe
+
+    Returns:
+        go.Figure: Plotly figure object
+    """
+    agent_x, agent_y = get_agent_map_coordinates(df)
+    agent_svg = generate_map_location_svg(agent_x, agent_y, colour="#6A0DAD")
+    ev_x, ev_y = get_ev_map_coordinates(df)
+    ev_svg = generate_map_location_svg(ev_x, ev_y, colour="#fcba03")
+
+    map_fig = go.Figure()
+    args = {"x": 0, "y": 1, "xref": "paper", "yref": "paper", "sizex": 1, "sizey": 1}
+    map_fig.add_layout_image(source=svg_map.url, **args)
+    map_fig.add_layout_image(source=agent_svg.url, **args)
+    map_fig.add_layout_image(source=ev_svg.url, **args)
+    map_fig.update_layout(yaxis=dict(scaleanchor="x"), plot_bgcolor="rgba(0,0,0,0)")
+    map_fig.update_xaxes(visible=False)
+    map_fig.update_yaxes(visible=False)
+    return map_fig
+
+
+@figure("Agent and EV Locations on SLD")
+def generate_sld_fig(df: pd.DataFrame) -> go.Figure:
+    """Creates SLD figure.
+
+    Args:
+        df (pd.DataFrame): Opal dataframe
+
+    Returns:
+        go.Figure: Plotly figure object
+    """
+    agent_location_data = get_agent_sld_coordinates(df)
+    agent_svg = generate_sld_location_svg(
+        agent_location_data, angle_mid=180, colour="#6A0DAD"
+    )
+    ev_location_data = get_ev_sld_coordinates(df)
+    ev_svg = generate_sld_location_svg(ev_location_data, angle_mid=0, colour="#fcba03")
+
+    sld_fig = go.Figure()
+    args = {"x": 0, "y": 1, "xref": "paper", "yref": "paper", "sizex": 1, "sizey": 1}
+    sld_fig.add_layout_image(source=svg_sld.url, **args)
+    sld_fig.add_layout_image(source=agent_svg.url, **args)
+    sld_fig.add_layout_image(source=ev_svg.url, **args)
+    sld_fig.update_layout(yaxis=dict(scaleanchor="x"), plot_bgcolor="rgba(0,0,0,0)")
+    sld_fig.update_xaxes(visible=False)
+    sld_fig.update_yaxes(visible=False)
+    return sld_fig

@@ -12,116 +12,42 @@ import dash  # type: ignore
 import pandas as pd
 import plotly.express as px  # type: ignore
 import plotly.graph_objects as go  # type: ignore
-from dash import Input, Output, callback, dcc, html  # type: ignore
+from dash import Input, Output, callback, dcc  # type: ignore
 
 from ..figures import (
     generate_agent_activity_breakdown_fig,
     generate_dsr_commands_fig,
     generate_ev_charging_breakdown_fig,
+    generate_map_fig,
+    generate_sld_fig,
 )
 from ..layout import GridBuilder
-from ..svg import (
-    generate_agent_location_map_img,
-    generate_agent_location_sld_img,
-    generate_ev_location_map_img,
-    generate_ev_location_sld_img,
-    svg_map,
-    svg_sld,
-)
 
 dash.register_page(__name__)
 
 df = pd.DataFrame({"Col": [0]})
 
-agent_location_map_img = generate_agent_location_map_img(df)
-agent_location_sld_img = generate_agent_location_sld_img(df)
+sld_fig = generate_sld_fig(df)
+map_fig = generate_map_fig(df)
 agent_activity_breakdown_fig = generate_agent_activity_breakdown_fig(df)
-ev_location_map_img = generate_ev_location_map_img(df)
-ev_location_sld_img = generate_ev_location_sld_img(df)
 ev_charging_breakdown_fig = generate_ev_charging_breakdown_fig(df)
 dsr_commands_fig = generate_dsr_commands_fig(df)
 
 grid = GridBuilder(rows=2, cols=3)
 grid.add_element(
-    html.Div(
-        children=[
-            html.H1(
-                "Agent and EV Locations",
-                style={"textAlign": "center"},
-            ),
-            html.Div(
-                style={
-                    "position": "relative",
-                    "margin": "auto",
-                    "width": "100%",
-                },
-                children=[
-                    html.Img(src=svg_map.url, width="100%"),
-                    html.Img(
-                        id="agent_location_map_img",
-                        src=agent_location_map_img,
-                        width="100%",
-                        style={
-                            "position": "absolute",
-                            "top": 0,
-                            "left": 0,
-                        },
-                    ),
-                    html.Img(
-                        id="ev_location_map_img",
-                        src=ev_location_map_img,
-                        width="100%",
-                        style={
-                            "position": "absolute",
-                            "top": 0,
-                            "left": 0,
-                        },
-                    ),
-                ],
-            ),
-        ],
+    dcc.Graph(
+        id="map_fig",
+        figure=map_fig,
+        style={"height": "100%", "width": "100%"},
     ),
     row=0,
     col=0,
 )
 grid.add_element(
-    html.Div(
-        children=[
-            html.H1(
-                "Agent and EV Locations on SLD",
-                style={"textAlign": "center"},
-            ),
-            html.Div(
-                style={
-                    "position": "relative",
-                    "margin": "auto",
-                    "width": "100%",
-                },
-                children=[
-                    html.Img(src=svg_sld.url, width="100%"),
-                    html.Img(
-                        id="agent_location_sld_img",
-                        src=agent_location_sld_img,
-                        width="100%",
-                        style={
-                            "position": "absolute",
-                            "top": 0,
-                            "left": 0,
-                        },
-                    ),
-                    html.Img(
-                        id="ev_location_sld_img",
-                        src=ev_location_sld_img,
-                        width="100%",
-                        style={
-                            "position": "absolute",
-                            "top": 0,
-                            "left": 0,
-                        },
-                    ),
-                ],
-            ),
-        ],
+    dcc.Graph(
+        id="sld_fig",
+        figure=sld_fig,
+        style={"height": "100%", "width": "100%"},
     ),
     row=0,
     col=1,
@@ -158,11 +84,9 @@ layout = grid.layout
 
 @callback(
     [
-        Output("agent_location_map_img", "src"),
-        Output("agent_location_sld_img", "src"),
+        Output("map_fig", "figure"),
+        Output("sld_fig", "figure"),
         Output("agent_activity_breakdown_fig", "figure"),
-        Output("ev_location_map_img", "src"),
-        Output("ev_location_sld_img", "src"),
         Output("ev_charging_breakdown_fig", "figure"),
         Output("dsr_commands_fig", "figure"),
     ],
@@ -170,7 +94,7 @@ layout = grid.layout
 )
 def update_figures(
     n_intervals: int,
-) -> tuple[str, str, go.Figure, str, str, go.Figure, px.line]:
+) -> tuple[go.Figure, go.Figure, go.Figure, go.Figure, px.line]:
     """Function to update the plots in this page.
 
     Args:
@@ -178,25 +102,21 @@ def update_figures(
             indexes by 1 every 7 seconds.
 
     Returns:
-        tuple[str, str, px.pie, str, str, px.pie, px.line]:
+        tuple[go.Figure, go.Figure, go.Figure, go.Figure, px.line]:
             The new figures.
     """
     from ..data import DF_OPAL
 
     # TODO: ensure each figure is using the correct dataframe
-    agent_location_fig = generate_agent_location_map_img(DF_OPAL)
-    agent_location_sld_img = generate_agent_location_sld_img(DF_OPAL)
+    map_fig = generate_map_fig(DF_OPAL)
+    sld_fig = generate_sld_fig(DF_OPAL)
     agent_activity_breakdown_fig = generate_agent_activity_breakdown_fig(DF_OPAL)
-    ev_location_fig = generate_ev_location_map_img(DF_OPAL)
-    ev_location_sld_img = generate_ev_location_sld_img(DF_OPAL)
     ev_charging_breakdown_fig = generate_ev_charging_breakdown_fig(DF_OPAL)
     dsr_commands_fig = generate_dsr_commands_fig(DF_OPAL)
     return (
-        agent_location_fig,
-        agent_location_sld_img,
+        map_fig,
+        sld_fig,
         agent_activity_breakdown_fig,
-        ev_location_fig,
-        ev_location_sld_img,
         ev_charging_breakdown_fig,
         dsr_commands_fig,
     )

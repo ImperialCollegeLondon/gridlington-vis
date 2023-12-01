@@ -230,34 +230,6 @@ def generate_sld_location_svg(
     return SVG(svg)
 
 
-def generate_agent_location_sld_img(df: pd.DataFrame) -> str:
-    """Generates an SVG url of agent locations for placement over the SLD image.
-
-    Args:
-        df (pd.DataFrame): TODO: Opal or DSR?
-
-    Returns:
-        str: SVG url for direct use by html.Img
-    """
-    location_data = get_agent_sld_coordinates(df)
-    svg = generate_sld_location_svg(location_data, angle_mid=180, colour="#6A0DAD")
-    return svg.url
-
-
-def generate_ev_location_sld_img(df: pd.DataFrame) -> str:
-    """Generates an SVG url of EV locations for placement over the SLD image.
-
-    Args:
-        df (pd.DataFrame): TODO: Opal or DSR?
-
-    Returns:
-        str: SVG url for direct use by html.Img
-    """
-    location_data = get_ev_sld_coordinates(df)
-    svg = generate_sld_location_svg(location_data, angle_mid=0, colour="#fcba03")
-    return svg.url
-
-
 def generate_map_location_svg(
     x_coordinates: list[float],
     y_coordinates: list[float],
@@ -288,31 +260,3 @@ def generate_map_location_svg(
         )
     svg += "</svg>"
     return SVG(svg)
-
-
-def generate_agent_location_map_img(df: pd.DataFrame) -> str:
-    """Generates an SVG url of agent locations for placement over the SLD image.
-
-    Args:
-        df (pd.DataFrame): TODO: Opal or DSR?
-
-    Returns:
-        str: SVG url for direct use by html.Img
-    """
-    x_coordinates, y_coordinates = get_agent_map_coordinates(df)
-    svg = generate_map_location_svg(x_coordinates, y_coordinates, colour="#6A0DAD")
-    return svg.url
-
-
-def generate_ev_location_map_img(df: pd.DataFrame) -> str:
-    """Generates an SVG url of EV locations for placement over the SLD image.
-
-    Args:
-        df (pd.DataFrame): TODO: Opal or DSR?
-
-    Returns:
-        str: SVG url for direct use by html.Img
-    """
-    x_coordinates, y_coordinates = get_ev_map_coordinates(df)
-    svg = generate_map_location_svg(x_coordinates, y_coordinates, colour="#fcba03")
-    return svg.url
