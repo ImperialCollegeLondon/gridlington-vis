@@ -31,13 +31,14 @@ def read_opal_data() -> pd.DataFrame:
     )
     try:
         columns = get_opal_data()["columns"]
-        df.columns = columns[: df.shape[1]]
-        df = df.reindex(columns=columns)
     except (DataHubConnectionError, DataHubRequestError):
         log.warning(
             "Issue with DataHub connection or request - using default Opal headers."
         )
-        df.columns = pd.read_csv("data/opal_headers.csv").columns
+        columns = pd.read_csv("data/opal_headers.csv").columns
+
+    df.columns = columns[: df.shape[1]]
+    df = df.reindex(columns=columns)
 
     df["Time"] = (
         pd.Timestamp(OPAL_START_DATE) + pd.to_timedelta(df["Time"], unit="m")
