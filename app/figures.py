@@ -514,7 +514,7 @@ def dhondt_algorithm(votes: list[int], seats: int) -> list[int]:
     Used below to allocate squares in waffle plots
 
     Args:
-        votes (list[float]): List of votes
+        votes (list[int]): List of votes
         seats (int): Total number of seats
 
     Returns:
