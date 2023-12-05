@@ -116,18 +116,14 @@ def timestamp(
             fig = func(df)
 
             if not len(df.columns) == 1:
-                fig.update_layout(
-                    annotations=[
-                        dict(
-                            text=df.iloc[-1]["Time"],
-                            x=x,
-                            y=y,
-                            xref="paper",
-                            yref="paper",
-                            showarrow=False,
-                            font=dict(size=fontsize, color=color),
-                        )
-                    ]
+                fig.add_annotation(
+                    text=df.iloc[-1]["Time"],
+                    x=x,
+                    y=y,
+                    xref="paper",
+                    yref="paper",
+                    showarrow=False,
+                    font=dict(size=fontsize, color=color),
                 )
 
             return fig
@@ -509,6 +505,8 @@ def generate_dsr_commands_fig(df: pd.DataFrame) -> px.line:
 def sainte_lague_algorithm(votes: list[int], seats: int) -> list[int]:
     """Saint-Lague algorithm for proportional representation in voting.
 
+    https://en.wikipedia.org/wiki/Sainte-Lagu%C3%AB_method
+
     In general, this can be used to allocate a limited set of resources
         (seats) to a large population of agents (votes)
     Used below to allocate squares in waffle plots
@@ -533,6 +531,7 @@ def sainte_lague_algorithm(votes: list[int], seats: int) -> list[int]:
 def create_waffle_chart(
     categories: list[str],
     counts: list[int],
+    label: str,
     colors: list[str] | None = None,
     squares: int | None = None,
     rows: int | None = None,
@@ -543,6 +542,7 @@ def create_waffle_chart(
     Args:
         categories (list[str]): List of categories
         counts (list[int]): List of counts
+        label (str): Text label used in the scale annotation
         colors (list[str], optional): List of colors. If None, will use plotly
             default color map. Defaults to None.
         squares (int, optional): Total number of squares in the waffle plot.
@@ -577,10 +577,7 @@ def create_waffle_chart(
         raise TypeError("Counts must be integers")
 
     # Proportional representation
-    if squares:
-        counts_pr = sainte_lague_algorithm(counts, squares)
-    else:
-        counts_pr = counts
+    counts_pr = sainte_lague_algorithm(counts, squares) if squares else counts
 
     # Shape
     total = sum(counts_pr)
@@ -629,6 +626,24 @@ def create_waffle_chart(
             )
         ]
     )
+
+    # Scale
+    if squares:
+        text = f"Scale:<br>1 square ≈ {round(sum(counts) / squares)} {label}s"
+    else:
+        text = f"Scale:<br>1 square = 1 {label}"
+    waffle.add_annotation(
+        text=text,
+        x=1.02,
+        y=0,
+        xref="paper",
+        yref="paper",
+        align="left",
+        xanchor="left",
+        showarrow=False,
+        font=dict(size=12, color="black"),
+    )
+
     waffle.update_layout(yaxis=dict(scaleanchor="x"), plot_bgcolor="rgba(0,0,0,0)")
     waffle.update_xaxes(visible=False)
     waffle.update_yaxes(visible=False, autorange="reversed")
@@ -660,6 +675,7 @@ def generate_agent_activity_breakdown_fig(df: pd.DataFrame) -> go.Figure:
         agent_activity_breakdown_fig = create_waffle_chart(
             categories=categories,
             counts=counts,
+            label="agent",
             squares=546,  # for consistency with EV chart (below)
             gap=1,
             rows=21,  # -> 26 columns
@@ -690,6 +706,7 @@ def generate_ev_charging_breakdown_fig(df: pd.DataFrame) -> go.Figure:
         ev_charging_breakdown_fig = create_waffle_chart(
             categories=categories,
             counts=counts,
+            label="EV",
             gap=1,
             rows=21,  # -> 26 columns
         )
