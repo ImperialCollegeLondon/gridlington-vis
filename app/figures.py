@@ -506,8 +506,8 @@ def generate_dsr_commands_fig(df: pd.DataFrame) -> px.line:
     return dsr_commands_fig
 
 
-def dhondt_algorithm(votes: list[int], seats: int) -> list[int]:
-    """D'Hondt algorithm for proportional representation in voting.
+def sainte_lague_algorithm(votes: list[int], seats: int) -> list[int]:
+    """Saint-Lague algorithm for proportional representation in voting.
 
     In general, this can be used to allocate a limited set of resources
         (seats) to a large population of agents (votes)
@@ -523,7 +523,7 @@ def dhondt_algorithm(votes: list[int], seats: int) -> list[int]:
     allocated_seats = [0] * len(votes)
 
     for _ in range(seats):
-        quotients = [v / (a + 1) for v, a in zip(votes, allocated_seats)]
+        quotients = [v / (2 * a + 1) for v, a in zip(votes, allocated_seats)]
         max_index = quotients.index(max(quotients))
         allocated_seats[max_index] += 1
 
@@ -578,7 +578,7 @@ def create_waffle_chart(
 
     # Proportional representation
     if squares:
-        counts_pr = dhondt_algorithm(counts, squares)
+        counts_pr = sainte_lague_algorithm(counts, squares)
     else:
         counts_pr = counts
 
