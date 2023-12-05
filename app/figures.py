@@ -506,10 +506,35 @@ def generate_dsr_commands_fig(df: pd.DataFrame) -> px.line:
     return dsr_commands_fig
 
 
+def dhondt_algorithm(votes: list[int], seats: int) -> list[int]:
+    """D'Hondt algorithm for proportional representation in voting.
+
+    In general, this can be used to allocate a limited set of resources
+        (seats) to a large population of agents (votes)
+    Used below to allocate squares in waffle plots
+
+    Args:
+        votes (list[float]): List of votes
+        seats (int): Total number of seats
+
+    Returns:
+        list: Number of seats allocated to each party
+    """
+    allocated_seats = [0] * len(votes)
+
+    for _ in range(seats):
+        quotients = [v / (a + 1) for v, a in zip(votes, allocated_seats)]
+        max_index = quotients.index(max(quotients))
+        allocated_seats[max_index] += 1
+
+    return allocated_seats
+
+
 def create_waffle_chart(
     categories: list[str],
     counts: list[int],
     colors: list[str] | None = None,
+    squares: int | None = None,
     rows: int | None = None,
     gap: float = 0.0,
 ) -> go.Figure:
@@ -520,6 +545,10 @@ def create_waffle_chart(
         counts (list[int]): List of counts
         colors (list[str], optional): List of colors. If None, will use plotly
             default color map. Defaults to None.
+        squares (int, optional): Total number of squares in the waffle plot.
+            If set, will allocate counts to this many squares based on a
+            proportional representation algorithm. If None, will default to
+            sum(counts) (i.e. no proportional representation). Defaults to None.
         rows (int, optional): Number of rows in the chart. Number of columns
             is set automatically. If None, will produce a square chart.
             Defaults to None.
@@ -547,16 +576,22 @@ def create_waffle_chart(
     if not all(isinstance(item, int) for item in counts):
         raise TypeError("Counts must be integers")
 
+    # Proportional representation
+    if squares:
+        counts_pr = dhondt_algorithm(counts, squares)
+    else:
+        counts_pr = counts
+
     # Shape
-    total = sum(counts)
+    total = sum(counts_pr)
     if not rows:
         rows = max(int(total**0.5), 1)  # Default to square chart
     columns = int(np.ceil(total / rows))
 
     # Create numpy array
     z_flat = np.ones([columns * rows])
-    z_flat[: sum(counts)] = [
-        i / len(categories) for i, c in enumerate(counts) for _ in range(c)
+    z_flat[:total] = [
+        i / len(categories) for i, c in enumerate(counts_pr) for _ in range(c)
     ]
     z = z_flat.reshape((rows, columns))
 
@@ -564,16 +599,19 @@ def create_waffle_chart(
     colorscale = [[i / len(categories), c] for i, c in enumerate(colors)]
     colorscale.append([1, "rgb(255, 255, 255)"])
 
+    # Create legend labels
+    labels = [f"{category} ({count})" for category, count in zip(categories, counts)]
+
     # Legend
     legend_traces = [
         go.Scatter(
             x=[None],
             y=[None],
             mode="markers",
-            name=cat,
+            name=label,
             marker=dict(size=7, color=col, symbol="square"),
         )
-        for cat, col in zip(categories, colors)
+        for label, col in zip(labels, colors)
     ]
 
     # Waffle plot
@@ -603,8 +641,10 @@ def create_waffle_chart(
 def generate_agent_activity_breakdown_fig(df: pd.DataFrame) -> go.Figure:
     """Creates waffle chart for agent activity breakdown figure.
 
+    TODO: total number of agents is changing at each timestep
+
     Args:
-        df: Opal dataframe TODO: Should we be using DSR instead?
+        df: Opal dataframe
 
     Returns:
         Waffle chart
@@ -618,7 +658,11 @@ def generate_agent_activity_breakdown_fig(df: pd.DataFrame) -> go.Figure:
         categories = [h.split("(")[1].split(")")[0] for h in household_activities]
         counts = [int(df[h].iloc[-1]) for h in household_activities]
         agent_activity_breakdown_fig = create_waffle_chart(
-            categories=categories, counts=counts, gap=1
+            categories=categories,
+            counts=counts,
+            squares=546,  # for consistency with EV chart (below)
+            gap=1,
+            rows=21,  # -> 26 columns
         )
     agent_activity_breakdown_fig.update_layout(
         legend_title_text="Household Activity",
@@ -632,7 +676,7 @@ def generate_ev_charging_breakdown_fig(df: pd.DataFrame) -> go.Figure:
     """Creates waffle chart for EV charging breakdown figure.
 
     Args:
-        df: Opal dataframe TODO: Should we be using DSR instead?
+        df: Opal dataframe
 
     Returns:
         Waffle chart
@@ -642,9 +686,12 @@ def generate_ev_charging_breakdown_fig(df: pd.DataFrame) -> go.Figure:
     else:
         ev_states = [c for c in df.columns.values.tolist() if "Ev Status" in c]
         categories = [h.split("(")[1].split(")")[0] for h in ev_states]
-        counts = [int(df[h].iloc[-1]) for h in ev_states]
+        counts = [int(df[h].iloc[-1]) for h in ev_states]  # sum(counts) = 546
         ev_charging_breakdown_fig = create_waffle_chart(
-            categories=categories, counts=counts, gap=1
+            categories=categories,
+            counts=counts,
+            gap=1,
+            rows=21,  # -> 26 columns
         )
     ev_charging_breakdown_fig.update_layout(
         legend_title_text="EV Status",
