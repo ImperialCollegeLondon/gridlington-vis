@@ -151,7 +151,7 @@ power_sources_colors = {
 
 
 @figure("Generation Split")
-@timestamp()
+@timestamp(y=-0.05, x=1.2)
 def generate_gen_split_fig(df: pd.DataFrame) -> px.pie:
     """Creates Plotly figure for Generation Split graph.
 
@@ -182,6 +182,7 @@ def generate_gen_split_fig(df: pd.DataFrame) -> px.pie:
             values=values_positive,
             domain={"x": [0, 0.5], "y": [0, 1]},
             marker=dict(colors=[power_sources_colors[n] for n in names_positive]),
+            legendgroup="1",
         )
 
         # Right pie
@@ -193,15 +194,38 @@ def generate_gen_split_fig(df: pd.DataFrame) -> px.pie:
                 "y": [0.5 - height_right / 2, 0.5 + height_right / 2],
             },
             marker=dict(colors=[power_sources_colors[n] for n in names_negative]),
+            legendgroup="2",
         )
 
         # Figure
         fig = go.Figure(data=[pie_left, pie_right])
         fig.update_traces(
             textposition="inside",
-            texttemplate="%{value:.1f}",
+            texttemplate="%{value:.1f} GW",
         )
-        fig.update_layout(uniformtext_minsize=12, uniformtext_mode="hide")
+        fig.update_layout(
+            uniformtext_minsize=12, uniformtext_mode="hide", legend_tracegroupgap=50
+        )
+
+        # Titles
+        fig.add_annotation(
+            text="Power Generation",
+            x=0.155,
+            y=1.07,
+            xref="paper",
+            yref="paper",
+            showarrow=False,
+            font=dict(size=20),
+        )
+        fig.add_annotation(
+            text="Storage/Interconnector Use",
+            x=0.9,
+            y=1.07,
+            xref="paper",
+            yref="paper",
+            showarrow=False,
+            font=dict(size=20),
+        )
 
     return fig
 
@@ -225,6 +249,9 @@ def generate_total_gen_fig(df: pd.DataFrame) -> px.line:
             x="Time",
             y=["Total Generation"] + power_sources,
             color_discrete_map={**power_sources_colors, "Total Generation": "black"},
+        )
+        total_gen_fig.update_layout(
+            legend_title=None,
         )
 
     return total_gen_fig
