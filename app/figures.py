@@ -162,19 +162,49 @@ def generate_gen_split_fig(df: pd.DataFrame) -> px.pie:
         Plotly express figure
     """
     if len(df.columns) == 1:
-        gen_split_fig = px.pie()
+        fig = go.Figure(go.Pie())
     else:
-        gen_split_df = df.iloc[-1, 13:23]
-        gen_split_fig = px.pie(
-            names=power_sources,
-            values=gen_split_df,
-            color=power_sources,
-            color_discrete_map=power_sources_colors,
+        # Data
+        values = df.iloc[-1].loc[power_sources]
+        values_negative, names_negative = zip(
+            *[(val, name) for val, name in zip(values, power_sources) if val < 0]
         )
-        gen_split_fig.update_traces(textposition="inside")
-        gen_split_fig.update_layout(uniformtext_minsize=12, uniformtext_mode="hide")
+        values_positive, names_positive = zip(
+            *[(val, name) for val, name in zip(values, power_sources) if val >= 0]
+        )
+        sum_negative = -sum(values_negative)
+        sum_positive = sum([v for v in values if v > 0])
+        height_right = (sum_negative / sum_positive) ** 0.5
 
-    return gen_split_fig
+        # Left pie
+        pie_left = go.Pie(
+            labels=names_positive,
+            values=values_positive,
+            domain={"x": [0, 0.5], "y": [0, 1]},
+            marker=dict(colors=[power_sources_colors[n] for n in names_positive]),
+        )
+
+        # Right pie
+        pie_right = go.Pie(
+            labels=names_negative,
+            values=[-v for v in values_negative],
+            domain={
+                "x": [0.5, 1],
+                "y": [0.5 - height_right / 2, 0.5 + height_right / 2],
+            },
+            marker=dict(colors=[power_sources_colors[n] for n in names_negative]),
+        )
+
+        # Figure
+        fig = go.Figure(data=[pie_left, pie_right])
+        fig.update_traces(textposition="inside", textinfo="value")
+        fig.update_layout(uniformtext_minsize=12, uniformtext_mode="hide")
+        fig.update_layout(
+            legend=dict(traceorder="normal", itemorder="array", itemsizing="trace"),
+            legend_itemorder=power_sources,
+        )
+
+    return fig
 
 
 @figure("Generation Total")
