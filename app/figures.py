@@ -171,6 +171,8 @@ def generate_gen_split_fig(df: pd.DataFrame) -> px.pie:
             color=power_sources,
             color_discrete_map=power_sources_colors,
         )
+        gen_split_fig.update_traces(textposition="inside")
+        gen_split_fig.update_layout(uniformtext_minsize=12, uniformtext_mode="hide")
 
     return gen_split_fig
 
