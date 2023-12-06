@@ -197,12 +197,11 @@ def generate_gen_split_fig(df: pd.DataFrame) -> px.pie:
 
         # Figure
         fig = go.Figure(data=[pie_left, pie_right])
-        fig.update_traces(textposition="inside", textinfo="value")
-        fig.update_layout(uniformtext_minsize=12, uniformtext_mode="hide")
-        fig.update_layout(
-            legend=dict(traceorder="normal", itemorder="array", itemsizing="trace"),
-            legend_itemorder=power_sources,
+        fig.update_traces(
+            textposition="inside",
+            texttemplate="%{value:.1f}",
         )
+        fig.update_layout(uniformtext_minsize=12, uniformtext_mode="hide")
 
     return fig
 
