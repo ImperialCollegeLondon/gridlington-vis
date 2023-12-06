@@ -133,6 +133,23 @@ def timestamp(
     return decorator
 
 
+power_sources = [
+    "Battery Generation",
+    "Interconnector Power",
+    "Offshore Wind Generation",
+    "Onshore Wind Generation",
+    "Other Generation",
+    "Pump Generation",
+    "Pv Generation",
+    "Nuclear Generation",
+    "Hydro Generation",
+    "Gas Generation",
+]
+power_sources_colors = {
+    s: c for s, c in zip(power_sources, DEFAULT_PLOTLY_COLORS[: len(power_sources)])
+}
+
+
 @figure("Generation Split")
 @timestamp()
 def generate_gen_split_fig(df: pd.DataFrame) -> px.pie:
@@ -149,19 +166,10 @@ def generate_gen_split_fig(df: pd.DataFrame) -> px.pie:
     else:
         gen_split_df = df.iloc[-1, 13:23]
         gen_split_fig = px.pie(
-            names=[
-                "Battery Generation",
-                "Interconnector Power",
-                "Offshore Wind Generation",
-                "Onshore Wind Generation",
-                "Other Generation",
-                "Pump Generation",
-                "Pv Generation",
-                "Nuclear Generation",
-                "Hydro Generation",
-                "Gas Generation",
-            ],
+            names=power_sources,
             values=gen_split_df,
+            color=power_sources,
+            color_discrete_map=power_sources_colors,
         )
 
     return gen_split_fig
@@ -184,19 +192,8 @@ def generate_total_gen_fig(df: pd.DataFrame) -> px.line:
         total_gen_fig = px.line(
             df,
             x="Time",
-            y=[
-                "Total Generation",
-                "Battery Generation",
-                "Interconnector Power",
-                "Offshore Wind Generation",
-                "Onshore Wind Generation",
-                "Other Generation",
-                "Pump Generation",
-                "Pv Generation",
-                "Nuclear Generation",
-                "Hydro Generation",
-                "Gas Generation",
-            ],
+            y=["Total Generation"] + power_sources,
+            color_discrete_map={**power_sources_colors, "Total Generation": "black"},
         )
 
     return total_gen_fig
