@@ -233,7 +233,7 @@ def generate_total_gen_fig(df: pd.DataFrame) -> px.line:
 
 
 @figure("Demand Total")
-@axes(ylabel="GW", yrange=[-5, 70])
+@axes(ylabel="Total Demand (GW)", yrange=[-5, 70])
 def generate_total_dem_fig(df: pd.DataFrame) -> px.line:
     """Creates Plotly figure for Total Demand graph.
 
@@ -253,6 +253,7 @@ def generate_total_dem_fig(df: pd.DataFrame) -> px.line:
                 "Total Demand",
             ],
         )
+        total_dem_fig.update_layout(showlegend=False)
     return total_dem_fig
 
 
@@ -315,7 +316,7 @@ def generate_intraday_market_sys_fig_left(df: pd.DataFrame) -> go.Figure:
     return intraday_market_sys_fig_left
 
 
-@axes(ylabel="£/MW", yrange=[-10000, 10000], xdomain=[0.6, 1])
+@axes(ylabel="Intra-Day Market Value (£/MW)", yrange=[-10000, 10000], xdomain=[0.6, 1])
 def generate_intraday_market_sys_fig_right(df: pd.DataFrame) -> px.line:
     """Generate right panel of Intraday Market System figure.
 
@@ -333,8 +334,7 @@ def generate_intraday_market_sys_fig_right(df: pd.DataFrame) -> px.line:
                 x=df["Time"],
                 y=df["Intra-Day Market Value"],
                 mode="lines",
-                name="Intra-Day Market Value (£/MW)",
-                showlegend=True,
+                showlegend=False,
             )
         )
     return intraday_market_sys_fig_right
@@ -391,7 +391,9 @@ def generate_balancing_market_fig_left(df: pd.DataFrame) -> go.Figure:
     return balancing_market_fig_left
 
 
-@axes(ylabel="£/MW", yrange=[-50000, 50000], xdomain=[0.6, 1])
+@axes(
+    ylabel="Balancing Mechanism Value (£/MW)", yrange=[-50000, 50000], xdomain=[0.6, 1]
+)
 def generate_balancing_market_fig_right(df: pd.DataFrame) -> go.Figure:
     """Generate right panel for Balancing Market figure.
 
@@ -409,8 +411,7 @@ def generate_balancing_market_fig_right(df: pd.DataFrame) -> go.Figure:
                 x=df["Time"],
                 y=df["Balancing Mechanism Value"],
                 mode="lines",
-                name="Balancing Mechanism Value (£/MW)",
-                showlegend=True,
+                showlegend=False,
             )
         )
     return balancing_market_fig_right
@@ -435,7 +436,7 @@ def generate_balancing_market_fig(df: pd.DataFrame) -> go.Figure:
 
 
 @figure("Energy Deficit")
-@axes(ylabel="MW", yrange=[-600, 600])
+@axes(ylabel="Energy Deficit (MW)", yrange=[-600, 600])
 def generate_energy_deficit_fig(df: pd.DataFrame) -> px.line:
     """Creates Plotly figure for Energy Deficit graph.
 
@@ -517,7 +518,7 @@ def generate_dsr_fig_left(df: pd.DataFrame) -> go.Figure:
     return dsr_fig_left
 
 
-@axes(ylabel="£/MW", yrange=[-1, 1], xdomain=[0.6, 1])
+@axes(ylabel="Cost (£/MW)", yrange=[-1, 1], xdomain=[0.6, 1])
 def generate_dsr_fig_right(df: pd.DataFrame) -> go.Figure:
     """Generate right panel of Demand Side Response figure.
 
@@ -535,8 +536,7 @@ def generate_dsr_fig_right(df: pd.DataFrame) -> go.Figure:
                 x=df["Time"],
                 y=df["Cost"],
                 mode="lines",
-                name="Cost (£/MW)",
-                showlegend=True,
+                showlegend=False,
             )
         )
     return dsr_fig_right
