@@ -490,8 +490,13 @@ def generate_intraday_market_bids_fig(df: pd.DataFrame) -> go.Figure:
 def generate_dsr_fig_left(df: pd.DataFrame) -> go.Figure:
     """Generate left panel of Demand Side Response figure.
 
+    TODO: this will need to be fixed when the data is available
+    Will either be in DSR or Opal
+
+    See https://github.com/ImperialCollegeLondon/gridlington-vis/issues/34#issuecomment-1768200705
+
     Args:
-        df (pd.DataFrame): Opal dataframe
+        df (pd.DataFrame): DSR data DataFrame
 
     Returns:
         go.Figure: Plotly figure
@@ -522,8 +527,10 @@ def generate_dsr_fig_left(df: pd.DataFrame) -> go.Figure:
 def generate_dsr_fig_right(df: pd.DataFrame) -> go.Figure:
     """Generate right panel of Demand Side Response figure.
 
+    TODO: this will need to be checked when the DSR data is available
+
     Args:
-        df (pd.DataFrame): Opal dataframe
+        df (pd.DataFrame): DSR data DataFrame
 
     Returns:
         go.Figure: Plotly figure
@@ -546,8 +553,10 @@ def generate_dsr_fig_right(df: pd.DataFrame) -> go.Figure:
 def generate_dsr_fig(df: pd.DataFrame) -> go.Figure:
     """Creates plotly figure for Demand Side Response graph.
 
+    TODO: double check this when all the data is available
+
     Args:
-        df: Opal DataFrame.
+        df: DSR data DataFrame (TODO: may take opal as well)
 
     Returns:
         Plotly graph objects figure
