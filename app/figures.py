@@ -173,14 +173,18 @@ def generate_gen_split_fig(df: pd.DataFrame) -> px.pie:
             *[(val, name) for val, name in zip(values, power_sources) if val >= 0]
         )
         sum_negative = -sum(values_negative)
-        sum_positive = sum([v for v in values if v > 0])
-        height_right = (sum_negative / sum_positive) ** 0.5
+        sum_positive = sum(values_positive)
+        height_left = 1  # fixed height for left pie
+        height_right = height_left * (sum_negative / sum_positive) ** 0.5
 
         # Left pie
         pie_left = go.Pie(
             labels=names_positive,
             values=values_positive,
-            domain={"x": [0, 0.5], "y": [0, 1]},
+            domain={
+                "x": [0, 0.5],
+                "y": [0.5 - height_left / 2, 0.5 + height_left / 2],
+            },
             marker=dict(colors=[power_sources_colors[n] for n in names_positive]),
             legendgroup="1",
         )
