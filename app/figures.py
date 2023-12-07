@@ -151,7 +151,7 @@ power_sources_colors = {
 
 
 @figure("Generation Split")
-@timestamp(y=-0.05, x=1.2)
+@timestamp(y=0, x=1)
 def generate_gen_split_fig(df: pd.DataFrame) -> px.pie:
     """Creates Plotly figure for Generation Split graph.
 
@@ -210,28 +210,28 @@ def generate_gen_split_fig(df: pd.DataFrame) -> px.pie:
         # Titles
         fig.add_annotation(
             text="Power Generation",
-            x=0.155,
-            y=1.07,
+            x=0.18,
+            y=1,
             xref="paper",
             yref="paper",
             showarrow=False,
-            font=dict(size=20),
+            font=dict(size=24),
         )
         fig.add_annotation(
             text="Storage/Interconnector Use",
-            x=0.9,
-            y=1.07,
+            x=0.86,
+            y=1,
             xref="paper",
             yref="paper",
             showarrow=False,
-            font=dict(size=20),
+            font=dict(size=24),
         )
 
     return fig
 
 
 @figure("Generation Total")
-@axes(ylabel="GW", yrange=[-5, 70])
+@axes(ylabel="Power Generation (GW)", yrange=[-5, 70])
 def generate_total_gen_fig(df: pd.DataFrame) -> px.line:
     """Creates Plotly figure for Total Generation graph.
 
