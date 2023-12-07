@@ -174,8 +174,8 @@ def generate_gen_split_fig(df: pd.DataFrame) -> px.pie:
         )
         sum_negative = -sum(values_negative)
         sum_positive = sum(values_positive)
-        height_left = 1  # fixed height for left pie
-        height_right = height_left * (sum_negative / sum_positive) ** 0.5
+        diameter_left = 1  # fixed diameter for left pie
+        diameter_right = diameter_left * (sum_negative / sum_positive) ** 0.5
 
         # Left pie
         pie_left = go.Pie(
@@ -183,7 +183,7 @@ def generate_gen_split_fig(df: pd.DataFrame) -> px.pie:
             values=values_positive,
             domain={
                 "x": [0, 0.5],
-                "y": [0.5 - height_left / 2, 0.5 + height_left / 2],
+                "y": [0.5 - diameter_left / 2, 0.5 + diameter_left / 2],
             },
             marker=dict(colors=[power_sources_colors[n] for n in names_positive]),
             legendgroup="1",
@@ -197,7 +197,7 @@ def generate_gen_split_fig(df: pd.DataFrame) -> px.pie:
             values=[-v for v in values_negative],
             domain={
                 "x": [0.5, 1],
-                "y": [0.5 - height_right / 2, 0.5 + height_right / 2],
+                "y": [0.5 - diameter_right / 2, 0.5 + diameter_right / 2],
             },
             marker=dict(colors=[power_sources_colors[n] for n in names_negative]),
             legendgroup="2",
@@ -216,23 +216,23 @@ def generate_gen_split_fig(df: pd.DataFrame) -> px.pie:
         )
 
         # Titles
+        title_kwargs = {
+            "xref": "paper",
+            "yref": "paper",
+            "showarrow": False,
+            "font": dict(size=24),
+        }
         fig.add_annotation(
             text="Power Generation",
             x=0.18,
             y=1,
-            xref="paper",
-            yref="paper",
-            showarrow=False,
-            font=dict(size=24),
+            **title_kwargs,
         )
         fig.add_annotation(
             text="Storage/Interconnector Use",
             x=0.86,
             y=1,
-            xref="paper",
-            yref="paper",
-            showarrow=False,
-            font=dict(size=24),
+            **title_kwargs,
         )
 
     return fig
