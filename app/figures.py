@@ -187,6 +187,8 @@ def generate_gen_split_fig(df: pd.DataFrame) -> px.pie:
             },
             marker=dict(colors=[power_sources_colors[n] for n in names_positive]),
             legendgroup="1",
+            sort=False,
+            direction="clockwise",
         )
 
         # Right pie
@@ -199,6 +201,8 @@ def generate_gen_split_fig(df: pd.DataFrame) -> px.pie:
             },
             marker=dict(colors=[power_sources_colors[n] for n in names_negative]),
             legendgroup="2",
+            sort=False,
+            direction="clockwise",
         )
 
         # Figure
