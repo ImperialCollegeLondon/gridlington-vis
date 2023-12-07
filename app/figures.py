@@ -283,7 +283,7 @@ def generate_system_freq_fig(df: pd.DataFrame) -> px.line:
     return system_freq_fig
 
 
-@axes(ylabel="MW", yrange=[-100, 100], xdomain=[0, 0.4])
+@axes(ylabel="MW", yrange=[-100, 100], xdomain=[0, 0.43])
 def generate_intraday_market_sys_fig_left(df: pd.DataFrame) -> go.Figure:
     """Generate left panel of Intraday Market System figure.
 
@@ -307,7 +307,7 @@ def generate_intraday_market_sys_fig_left(df: pd.DataFrame) -> go.Figure:
                     x=df["Time"],
                     y=df[c],
                     mode="lines",
-                    name=c + " (MW)",
+                    name=c,
                     showlegend=True,
                 )
                 for c in columns
@@ -316,7 +316,7 @@ def generate_intraday_market_sys_fig_left(df: pd.DataFrame) -> go.Figure:
     return intraday_market_sys_fig_left
 
 
-@axes(ylabel="Intra-Day Market Value (£/MW)", yrange=[-10000, 10000], xdomain=[0.6, 1])
+@axes(ylabel="Intra-Day Market Value (£/MW)", yrange=[-10000, 10000], xdomain=[0.57, 1])
 def generate_intraday_market_sys_fig_right(df: pd.DataFrame) -> px.line:
     """Generate right panel of Intraday Market System figure.
 
@@ -355,10 +355,11 @@ def generate_intraday_market_sys_fig(df: pd.DataFrame) -> go.Figure:
     intraday_market_sys_fig = combine_left_right_subplots(
         intraday_market_sys_fig_left, intraday_market_sys_fig_right
     )
+    intraday_market_sys_fig.update_layout(legend=dict(x=0, y=1))
     return intraday_market_sys_fig
 
 
-@axes(ylabel="MW", yrange=[-250, 250], xdomain=[0, 0.4])
+@axes(ylabel="MW", yrange=[-250, 250], xdomain=[0, 0.43])
 def generate_balancing_market_fig_left(df: pd.DataFrame) -> go.Figure:
     """Generate left panel for Balancing Market figure.
 
@@ -382,7 +383,7 @@ def generate_balancing_market_fig_left(df: pd.DataFrame) -> go.Figure:
                     x=df["Time"],
                     y=df[c],
                     mode="lines",
-                    name=c + " (MW)",
+                    name=c,
                     showlegend=True,
                 )
                 for c in columns
@@ -392,7 +393,7 @@ def generate_balancing_market_fig_left(df: pd.DataFrame) -> go.Figure:
 
 
 @axes(
-    ylabel="Balancing Mechanism Value (£/MW)", yrange=[-50000, 50000], xdomain=[0.6, 1]
+    ylabel="Balancing Mechanism Value (£/MW)", yrange=[-50000, 50000], xdomain=[0.57, 1]
 )
 def generate_balancing_market_fig_right(df: pd.DataFrame) -> go.Figure:
     """Generate right panel for Balancing Market figure.
@@ -432,6 +433,7 @@ def generate_balancing_market_fig(df: pd.DataFrame) -> go.Figure:
     balancing_market_fig = combine_left_right_subplots(
         balancing_market_fig_left, balancing_market_fig_right
     )
+    balancing_market_fig.update_layout(legend=dict(x=0, y=1))
     return balancing_market_fig
 
 
@@ -486,7 +488,7 @@ def generate_intraday_market_bids_fig(df: pd.DataFrame) -> go.Figure:
     return intraday_market_bids_fig
 
 
-@axes(ylabel="kW", yrange=[-1, 1], xdomain=[0, 0.4])
+@axes(ylabel="kW", yrange=[-1, 1], xdomain=[0, 0.43])
 def generate_dsr_fig_left(df: pd.DataFrame) -> go.Figure:
     """Generate left panel of Demand Side Response figure.
 
@@ -514,7 +516,7 @@ def generate_dsr_fig_left(df: pd.DataFrame) -> go.Figure:
                     x=df["Time"],
                     y=df[c],
                     mode="lines",
-                    name=c + " (MW)",
+                    name=c,
                     showlegend=True,
                 )
                 for c in columns
@@ -523,7 +525,7 @@ def generate_dsr_fig_left(df: pd.DataFrame) -> go.Figure:
     return dsr_fig_left
 
 
-@axes(ylabel="Cost (£/MW)", yrange=[-1, 1], xdomain=[0.6, 1])
+@axes(ylabel="Cost (£/MW)", yrange=[-1, 1], xdomain=[0.57, 1])
 def generate_dsr_fig_right(df: pd.DataFrame) -> go.Figure:
     """Generate right panel of Demand Side Response figure.
 
@@ -564,6 +566,7 @@ def generate_dsr_fig(df: pd.DataFrame) -> go.Figure:
     dsr_fig_left = generate_dsr_fig_left(df)
     dsr_fig_right = generate_dsr_fig_right(df)
     dsr_fig = combine_left_right_subplots(dsr_fig_left, dsr_fig_right)
+    dsr_fig.update_layout(legend=dict(x=0, y=1))
     return dsr_fig
 
 
@@ -899,7 +902,7 @@ def generate_weather_fig(wesim_data: dict[str, pd.DataFrame]) -> go.Figure:
 
 
 @figure("Reserve/Standby Generation")
-@axes(ylabel="MW", yrange=[25000, 35000])
+@axes(ylabel="Reserve/Standby Generation (MW)", yrange=[25000, 35000])
 def generate_reserve_generation_fig(wesim_data: dict[str, pd.DataFrame]) -> go.Figure:
     """Creates Plotly figure for Reserve/Standby Generation graph.
 
