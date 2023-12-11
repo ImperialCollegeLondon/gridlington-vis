@@ -133,6 +133,36 @@ def timestamp(
     return decorator
 
 
+def combine_left_right_subplots(fig_left: go.Figure, fig_right: go.Figure) -> go.Figure:
+    """Assembles two go.Figure objects into left-right subplots.
+
+    Must specify xdomain for the two subplots using the axes decorator to
+        avoid overlap
+
+    Args:
+        fig_left (go.Figure): Left figure
+        fig_right (go.Figure): Right figure
+
+    Returns:
+        go.Figure: Combined figure
+    """
+    fig = make_subplots(rows=1, cols=2)
+
+    # Transfer data from original figures
+    for trace in fig_left.data:
+        fig.add_trace(trace, row=1, col=1)
+    for trace in fig_right.data:
+        fig.add_trace(trace, row=1, col=2)
+
+    # Transfer layout properties from original figures
+    fig.layout.xaxis.update(fig_left.layout.xaxis)
+    fig.layout.yaxis.update(fig_left.layout.yaxis)
+    fig.layout.xaxis2.update(fig_right.layout.xaxis)
+    fig.layout.yaxis2.update(fig_right.layout.yaxis)
+
+    return fig
+
+
 power_sources = [
     "Battery Generation",
     "Interconnector Power",
@@ -145,11 +175,12 @@ power_sources = [
     "Hydro Generation",
     "Gas Generation",
 ]
+
 power_sources_colors = {
     s: c for s, c in zip(power_sources, DEFAULT_PLOTLY_COLORS[: len(power_sources)])
 }
-
-
+ 
+  
 @figure("Generation Split")
 @timestamp(y=0, x=1)
 def generate_gen_split_fig(df: pd.DataFrame) -> px.pie:
@@ -266,7 +297,7 @@ def generate_total_gen_fig(df: pd.DataFrame) -> px.line:
 
 
 @figure("Demand Total")
-@axes(ylabel="GW", yrange=[-5, 70])
+@axes(ylabel="Total Demand (GW)", yrange=[-5, 70])
 def generate_total_dem_fig(df: pd.DataFrame) -> px.line:
     """Creates Plotly figure for Total Demand graph.
 
@@ -286,6 +317,7 @@ def generate_total_dem_fig(df: pd.DataFrame) -> px.line:
                 "Total Demand",
             ],
         )
+        total_dem_fig.update_layout(showlegend=False)
     return total_dem_fig
 
 
@@ -315,9 +347,66 @@ def generate_system_freq_fig(df: pd.DataFrame) -> px.line:
     return system_freq_fig
 
 
+@axes(ylabel="MW", yrange=[-100, 100], xdomain=[0, 0.43])
+def generate_intraday_market_sys_fig_left(df: pd.DataFrame) -> go.Figure:
+    """Generate left panel of Intraday Market System figure.
+
+    Args:
+        df (pd.DataFrame): Opal Dataframe
+
+    Returns:
+        go.Figure: Plotly figure
+    """
+    if len(df.columns) == 1:
+        intraday_market_sys_fig_left = go.Figure(go.Scatter())
+    else:
+        columns = [
+            "Intra-Day Market Generation",
+            "Intra-Day Market Storage",
+            "Intra-Day Market Demand",
+        ]
+        intraday_market_sys_fig_left = go.Figure(
+            [
+                go.Scatter(
+                    x=df["Time"],
+                    y=df[c],
+                    mode="lines",
+                    name=c,
+                    showlegend=True,
+                )
+                for c in columns
+            ]
+        )
+    return intraday_market_sys_fig_left
+
+
+@axes(ylabel="Intra-Day Market Value (£/MW)", yrange=[-10000, 10000], xdomain=[0.57, 1])
+def generate_intraday_market_sys_fig_right(df: pd.DataFrame) -> px.line:
+    """Generate right panel of Intraday Market System figure.
+
+    Args:
+        df (pd.DataFrame): Opal dataframe
+
+    Returns:
+        px.line: Plotly figure
+    """
+    if len(df.columns) == 1:
+        intraday_market_sys_fig_right = go.Figure(go.Scatter())
+    else:
+        intraday_market_sys_fig_right = go.Figure(
+            go.Scatter(
+                x=df["Time"],
+                y=df["Intra-Day Market Value"],
+                mode="lines",
+                showlegend=False,
+            )
+        )
+    return intraday_market_sys_fig_right
+
+
 @figure("Intra-day Market System")
 def generate_intraday_market_sys_fig(df: pd.DataFrame) -> go.Figure:
-    """Creates Plotly figure for Intra-day Market System graph.
+    """Creates Intra-day Market System figure.
 
     Args:
         df: Opal data DataFrame
@@ -325,49 +414,72 @@ def generate_intraday_market_sys_fig(df: pd.DataFrame) -> go.Figure:
     Returns:
         Plotly graph_objects figure
     """
-    intraday_market_sys_fig = make_subplots(specs=[[{"secondary_y": True}]])
-
-    if not len(df.columns) == 1:
-        left_axis_columns = [
-            "Intra-Day Market Generation",
-            "Intra-Day Market Storage",
-            "Intra-Day Market Demand",
-        ]
-        intraday_market_sys_fig_left = px.line(
-            df,
-            x="Time",
-            y=left_axis_columns,
-        ).for_each_trace(lambda t: t.update(name=t.name + " (MW)"))
-
-        right_axis_columns = [
-            "Intra-Day Market Value",
-        ]
-        intraday_market_sys_fig_right = (
-            px.line(
-                df,
-                x="Time",
-                y=right_axis_columns,
-            )
-            .update_traces(yaxis="y2")
-            .for_each_trace(lambda t: t.update(name=t.name + " (£/MW)"))
-        )
-
-        intraday_market_sys_fig.add_traces(
-            intraday_market_sys_fig_left.data + intraday_market_sys_fig_right.data
-        )
-
-    intraday_market_sys_fig.layout.xaxis.title = "Time"
-    intraday_market_sys_fig.layout.xaxis.range = time_range
-    intraday_market_sys_fig.update_xaxes(type="date")
-    intraday_market_sys_fig.layout.yaxis.title = "MW"
-    intraday_market_sys_fig.layout.yaxis2.title = "£/MW"
-    intraday_market_sys_fig.layout.yaxis.range = [-100, 100]
-    intraday_market_sys_fig.layout.yaxis2.range = [-10000, 10000]
-    intraday_market_sys_fig.for_each_trace(
-        lambda t: t.update(line=dict(color=t.marker.color))
+    intraday_market_sys_fig_left = generate_intraday_market_sys_fig_left(df)
+    intraday_market_sys_fig_right = generate_intraday_market_sys_fig_right(df)
+    intraday_market_sys_fig = combine_left_right_subplots(
+        intraday_market_sys_fig_left, intraday_market_sys_fig_right
     )
-
+    intraday_market_sys_fig.update_layout(legend=dict(x=0, y=1))
     return intraday_market_sys_fig
+
+
+@axes(ylabel="MW", yrange=[-250, 250], xdomain=[0, 0.43])
+def generate_balancing_market_fig_left(df: pd.DataFrame) -> go.Figure:
+    """Generate left panel for Balancing Market figure.
+
+    Args:
+        df (pd.DataFrame): Opal dataframe
+
+    Returns:
+        go.Figure: Plotly figure
+    """
+    if len(df.columns) == 1:
+        balancing_market_fig_left = go.Figure(go.Scatter())
+    else:
+        columns = [
+            "Balancing Mechanism Generation",
+            "Balancing Mechanism Storage",
+            "Balancing Mechanism Demand",
+        ]
+        balancing_market_fig_left = go.Figure(
+            [
+                go.Scatter(
+                    x=df["Time"],
+                    y=df[c],
+                    mode="lines",
+                    name=c,
+                    showlegend=True,
+                )
+                for c in columns
+            ]
+        )
+    return balancing_market_fig_left
+
+
+@axes(
+    ylabel="Balancing Mechanism Value (£/MW)", yrange=[-50000, 50000], xdomain=[0.57, 1]
+)
+def generate_balancing_market_fig_right(df: pd.DataFrame) -> go.Figure:
+    """Generate right panel for Balancing Market figure.
+
+    Args:
+        df (pd.DataFrame): Opal dataframe
+
+    Returns:
+        go.Figure: Plotly figure
+    """
+    if len(df.columns) == 1:
+        balancing_market_fig_right = go.Figure(go.Scatter())
+    else:
+        balancing_market_fig_right = go.Figure(
+            go.Scatter(
+                x=df["Time"],
+                y=df["Balancing Mechanism Value"],
+                mode="lines",
+                showlegend=False,
+            )
+        )
+    return balancing_market_fig_right
 
 
 @figure("Balancing Market")
@@ -380,53 +492,17 @@ def generate_balancing_market_fig(df: pd.DataFrame) -> go.Figure:
     Returns:
         Plotly graph_objects figure
     """
-    balancing_market_fig = make_subplots(specs=[[{"secondary_y": True}]])
-
-    if not len(df.columns) == 1:
-        left_axis_columns = [
-            "Balancing Mechanism Generation",
-            "Balancing Mechanism Storage",
-            "Balancing Mechanism Demand",
-        ]
-        balancing_market_fig_left = px.line(
-            df,
-            x="Time",
-            y=left_axis_columns,
-        ).for_each_trace(lambda t: t.update(name=t.name + " (MW)"))
-
-        right_axis_columns = [
-            "Balancing Mechanism Value",
-        ]
-        balancing_market_fig_right = (
-            px.line(
-                df,
-                x="Time",
-                y=right_axis_columns,
-            )
-            .update_traces(yaxis="y2")
-            .for_each_trace(lambda t: t.update(name=t.name + " (£/MW)"))
-        )
-
-        balancing_market_fig.add_traces(
-            balancing_market_fig_left.data + balancing_market_fig_right.data
-        )
-
-    balancing_market_fig.layout.xaxis.title = "Time"
-    balancing_market_fig.layout.xaxis.range = time_range
-    balancing_market_fig.update_xaxes(type="date")
-    balancing_market_fig.layout.yaxis.title = "MW"
-    balancing_market_fig.layout.yaxis2.title = "£/MW"
-    balancing_market_fig.layout.yaxis.range = [-250, 250]
-    balancing_market_fig.layout.yaxis2.range = [-50000, 50000]
-    balancing_market_fig.for_each_trace(
-        lambda t: t.update(line=dict(color=t.marker.color))
+    balancing_market_fig_left = generate_balancing_market_fig_left(df)
+    balancing_market_fig_right = generate_balancing_market_fig_right(df)
+    balancing_market_fig = combine_left_right_subplots(
+        balancing_market_fig_left, balancing_market_fig_right
     )
-
+    balancing_market_fig.update_layout(legend=dict(x=0, y=1))
     return balancing_market_fig
 
 
 @figure("Energy Deficit")
-@axes(ylabel="MW", yrange=[-600, 600])
+@axes(ylabel="Energy Deficit (MW)", yrange=[-600, 600])
 def generate_energy_deficit_fig(df: pd.DataFrame) -> px.line:
     """Creates Plotly figure for Energy Deficit graph.
 
@@ -476,52 +552,85 @@ def generate_intraday_market_bids_fig(df: pd.DataFrame) -> go.Figure:
     return intraday_market_bids_fig
 
 
+@axes(ylabel="kW", yrange=[-1, 1], xdomain=[0, 0.43])
+def generate_dsr_fig_left(df: pd.DataFrame) -> go.Figure:
+    """Generate left panel of Demand Side Response figure.
+
+    TODO: this will need to be fixed when the data is available
+    Will either be in DSR or Opal
+
+    See https://github.com/ImperialCollegeLondon/gridlington-vis/issues/34#issuecomment-1768200705
+
+    Args:
+        df (pd.DataFrame): DSR data DataFrame
+
+    Returns:
+        go.Figure: Plotly figure
+    """
+    if len(df.columns) == 1:
+        dsr_fig_left = go.Figure(go.Scatter())
+    else:
+        columns = [
+            "Cost",  # TODO: This will need to be changed when data is available
+            "Cost",
+        ]
+        dsr_fig_left = go.Figure(
+            [
+                go.Scatter(
+                    x=df["Time"],
+                    y=df[c],
+                    mode="lines",
+                    name=c,
+                    showlegend=True,
+                )
+                for c in columns
+            ]
+        )
+    return dsr_fig_left
+
+
+@axes(ylabel="Cost (£/MW)", yrange=[-1, 1], xdomain=[0.57, 1])
+def generate_dsr_fig_right(df: pd.DataFrame) -> go.Figure:
+    """Generate right panel of Demand Side Response figure.
+
+    TODO: this will need to be checked when the DSR data is available
+
+    Args:
+        df (pd.DataFrame): DSR data DataFrame
+
+    Returns:
+        go.Figure: Plotly figure
+    """
+    if len(df.columns) == 1:
+        dsr_fig_right = go.Figure(go.Scatter())
+    else:
+        dsr_fig_right = go.Figure(
+            go.Scatter(
+                x=df["Time"],
+                y=df["Cost"],
+                mode="lines",
+                showlegend=False,
+            )
+        )
+    return dsr_fig_right
+
+
 @figure("Demand Side Response")
 def generate_dsr_fig(df: pd.DataFrame) -> go.Figure:
     """Creates plotly figure for Demand Side Response graph.
 
+    TODO: double check this when all the data is available
+
     Args:
-        df: DSR data DataFrame. TODO: Will this be DSR, Opal or both?
+        df: DSR data DataFrame (TODO: may take opal as well)
 
     Returns:
         Plotly graph objects figure
     """
-    dsr_fig = make_subplots(specs=[[{"secondary_y": True}]])
-
-    if not len(df.columns) == 1:
-        left_axis_columns = [
-            "Cost",  # TODO: This will need to be changed when data is available
-            "Cost",  # TODO: As above
-        ]
-        dsr_fig_left = px.line(
-            df,
-            x="Time",
-            y=left_axis_columns,
-        ).for_each_trace(lambda t: t.update(name=t.name + " (kW)"))
-
-        right_axis_columns = [
-            "Cost",
-        ]
-        dsr_fig_right = (
-            px.line(
-                df,
-                x="Time",
-                y=right_axis_columns,
-            )
-            .update_traces(yaxis="y2")
-            .for_each_trace(lambda t: t.update(name=t.name + " (£/MW)"))
-        )
-
-        dsr_fig.add_traces(dsr_fig_left.data + dsr_fig_right.data)
-
-    dsr_fig.layout.xaxis.title = "Time"
-    dsr_fig.layout.xaxis.range = time_range
-    dsr_fig.update_xaxes(type="date")
-    dsr_fig.layout.yaxis.title = "kW"
-    dsr_fig.layout.yaxis2.title = "£/MW"
-    dsr_fig.layout.yaxis.range = [-1, 1]  # TODO: Check range
-    dsr_fig.layout.yaxis2.range = [-1, 1]
-    dsr_fig.for_each_trace(lambda t: t.update(line=dict(color=t.marker.color)))
+    dsr_fig_left = generate_dsr_fig_left(df)
+    dsr_fig_right = generate_dsr_fig_right(df)
+    dsr_fig = combine_left_right_subplots(dsr_fig_left, dsr_fig_right)
+    dsr_fig.update_layout(legend=dict(x=0, y=1))
     return dsr_fig
 
 
@@ -857,7 +966,7 @@ def generate_weather_fig(wesim_data: dict[str, pd.DataFrame]) -> go.Figure:
 
 
 @figure("Reserve/Standby Generation")
-@axes(ylabel="MW", yrange=[25000, 35000])
+@axes(ylabel="Reserve/Standby Generation (MW)", yrange=[25000, 35000])
 def generate_reserve_generation_fig(wesim_data: dict[str, pd.DataFrame]) -> go.Figure:
     """Creates Plotly figure for Reserve/Standby Generation graph.
 
