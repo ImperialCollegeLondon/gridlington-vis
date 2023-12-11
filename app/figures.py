@@ -57,6 +57,10 @@ def axes(
     xrange: list[str | float] = time_range,  # type:ignore
     xdomain: list[float] = [0, 1],
     ydomain: list[float] = [0, 1],
+    xlabel_size: float = 15,
+    ylabel_size: float = 15,
+    xticklabel_size: float = 15,
+    yticklabel_size: float = 15,
 ) -> Callable:  # type: ignore[type-arg]
     """Decorator to set axis labels and ranges.
 
@@ -70,6 +74,12 @@ def axes(
             the x-axis. Defaults to [0, 1].
         ydomain (list[float], optional): Region of figure height occupied by
             the y-axis. Defaults to [0, 1].
+        xlabel_size (float, optional): X axis label size. Defaults to 15.
+        ylabel_size (float, optional): Y axis label size. Defaults to 15.
+        xticklabel_size (float, optional): X axis tick label size.
+            Defaults to 15.
+        yticklabel_size (float, optional): Y axis tick label size.
+            Defaults to 15.
 
     Returns:
         Callable: Decorated function
@@ -79,12 +89,22 @@ def axes(
         @wraps(func)
         def wrapper(df: pd.DataFrame) -> Union[px.pie, px.line, go.Figure]:
             fig = func(df)
+
+            # X axis
             fig.layout.xaxis.title = xlabel
+            fig.layout.xaxis.titlefont.size = xlabel_size
+            fig.layout.xaxis.tickfont.size = xticklabel_size
             fig.layout.xaxis.range = xrange
             if xlabel == "Time":
                 fig.update_xaxes(type="date")
+
+            # Y axis
             fig.layout.yaxis.title = ylabel
+            fig.layout.yaxis.titlefont.size = ylabel_size
+            fig.layout.yaxis.tickfont.size = yticklabel_size
             fig.layout.yaxis.range = yrange
+
+            # Layout
             fig.update_layout(xaxis=dict(domain=xdomain), yaxis=dict(domain=ydomain))
             return fig
 
@@ -94,7 +114,7 @@ def axes(
 
 
 def timestamp(
-    x: float = 0, y: float = 1, fontsize: float = 14, color: str = "black"
+    x: float = 0, y: float = 1, fontsize: float = 15, color: str = "black"
 ) -> Callable:  # type: ignore[type-arg]
     """Decorator to add timestamp to figure.
 
@@ -133,6 +153,59 @@ def timestamp(
     return decorator
 
 
+def legend(
+    show_legend: bool = True,
+    legend_font_size: int = 15,
+    legend_title: str | None = None,
+    legend_title_font_size: int = 20,
+    x: float = 1,
+    y: float = 1,
+) -> Callable:  # type: ignore[type-arg]
+    """Decorator to set legend properties.
+
+    Args:
+        show_legend (bool, optional): Show/hide the legend.
+            Defaults to True.
+        legend_font_size (int, optional): Font size of the legend items.
+            Defaults to 15.
+        legend_title (str, optional): Legend title. Defaults to None,
+            which means no title.
+        legend_title_font_size (int, optional): Font size of the title.
+            Defaults to 20.
+        x (float, optional): x position of the legend. Defaults to 1
+            (rightmost).
+        y (float, optional): y position of the legend. Defaults to 1
+            (topmost).
+
+    Returns:
+        Callable: Decorated function
+    """
+
+    def decorator(func: Callable) -> Callable:  # type: ignore[type-arg]
+        @wraps(func)
+        def wrapper(df: pd.DataFrame) -> Union[px.pie, go.Figure]:
+            fig = func(df)
+
+            # Legend
+            fig.update_layout(
+                showlegend=show_legend,
+                legend=dict(
+                    font=dict(size=legend_font_size),
+                    title=dict(
+                        text=legend_title, font=dict(size=legend_title_font_size)
+                    ),
+                    x=x,
+                    y=y,
+                ),
+            )
+
+            return fig
+
+        return wrapper
+
+    return decorator
+
+
 def combine_left_right_subplots(fig_left: go.Figure, fig_right: go.Figure) -> go.Figure:
     """Assembles two go.Figure objects into left-right subplots.
 
@@ -163,8 +236,27 @@ def combine_left_right_subplots(fig_left: go.Figure, fig_right: go.Figure) -> go
     return fig
 
 
+power_sources = [
+    "Battery Generation",
+    "Interconnector Power",
+    "Offshore Wind Generation",
+    "Onshore Wind Generation",
+    "Other Generation",
+    "Pump Generation",
+    "Pv Generation",
+    "Nuclear Generation",
+    "Hydro Generation",
+    "Gas Generation",
+]
+
+power_sources_colors = {
+    s: c for s, c in zip(power_sources, DEFAULT_PLOTLY_COLORS[: len(power_sources)])
+}
+
+
 @figure("Generation Split")
-@timestamp()
+@legend()
+@timestamp(y=0, x=1)
 def generate_gen_split_fig(df: pd.DataFrame) -> px.pie:
     """Creates Plotly figure for Generation Split graph.
 
@@ -175,30 +267,87 @@ def generate_gen_split_fig(df: pd.DataFrame) -> px.pie:
         Plotly express figure
     """
     if len(df.columns) == 1:
-        gen_split_fig = px.pie()
+        fig = go.Figure(go.Pie())
     else:
-        gen_split_df = df.iloc[-1, 13:23]
-        gen_split_fig = px.pie(
-            names=[
-                "Battery Generation",
-                "Interconnector Power",
-                "Offshore Wind Generation",
-                "Onshore Wind Generation",
-                "Other Generation",
-                "Pump Generation",
-                "Pv Generation",
-                "Nuclear Generation",
-                "Hydro Generation",
-                "Gas Generation",
-            ],
-            values=gen_split_df,
+        # Data
+        values = df.iloc[-1].loc[power_sources]
+        values_negative, names_negative = zip(
+            *[(val, name) for val, name in zip(values, power_sources) if val < 0]
+        )
+        values_positive, names_positive = zip(
+            *[(val, name) for val, name in zip(values, power_sources) if val >= 0]
+        )
+        sum_negative = -sum(values_negative)
+        sum_positive = sum(values_positive)
+        diameter_left = 1  # fixed diameter for left pie
+        diameter_right = diameter_left * (sum_negative / sum_positive) ** 0.5
+
+        # Left pie
+        pie_left = go.Pie(
+            labels=names_positive,
+            values=values_positive,
+            domain={
+                "x": [0, 0.5],
+                "y": [0.5 - diameter_left / 2, 0.5 + diameter_left / 2],
+            },
+            marker=dict(colors=[power_sources_colors[n] for n in names_positive]),
+            legendgroup="1",
+            sort=False,
+            direction="clockwise",
         )
 
-    return gen_split_fig
+        # Right pie
+        pie_right = go.Pie(
+            labels=names_negative,
+            values=[-v for v in values_negative],
+            domain={
+                "x": [0.5, 1],
+                "y": [0.5 - diameter_right / 2, 0.5 + diameter_right / 2],
+            },
+            marker=dict(colors=[power_sources_colors[n] for n in names_negative]),
+            legendgroup="2",
+            sort=False,
+            direction="clockwise",
+        )
+
+        # Figure
+        fig = go.Figure(data=[pie_left, pie_right])
+        fig.update_traces(
+            textposition="inside",
+            texttemplate="%{value:.1f} GW",
+        )
+        fig.update_layout(
+            uniformtext_minsize=15,
+            uniformtext_mode="hide",
+            legend_tracegroupgap=50,
+        )
+
+        # Titles
+        title_kwargs = {
+            "xref": "paper",
+            "yref": "paper",
+            "showarrow": False,
+            "font": dict(size=24),
+        }
+        fig.add_annotation(
+            text="Power Generation",
+            x=0.18,
+            y=1,
+            **title_kwargs,
+        )
+        fig.add_annotation(
+            text="Storage/Interconnector Use",
+            x=0.86,
+            y=1,
+            **title_kwargs,
+        )
+
+    return fig
 
 
 @figure("Generation Total")
-@axes(ylabel="GW", yrange=[-5, 70])
+@legend()
+@axes(ylabel="Power Generation (GW)", yrange=[-5, 70])
 def generate_total_gen_fig(df: pd.DataFrame) -> px.line:
     """Creates Plotly figure for Total Generation graph.
 
@@ -214,25 +363,15 @@ def generate_total_gen_fig(df: pd.DataFrame) -> px.line:
         total_gen_fig = px.line(
             df,
             x="Time",
-            y=[
-                "Total Generation",
-                "Battery Generation",
-                "Interconnector Power",
-                "Offshore Wind Generation",
-                "Onshore Wind Generation",
-                "Other Generation",
-                "Pump Generation",
-                "Pv Generation",
-                "Nuclear Generation",
-                "Hydro Generation",
-                "Gas Generation",
-            ],
+            y=["Total Generation"] + power_sources,
+            color_discrete_map={**power_sources_colors, "Total Generation": "black"},
         )
 
     return total_gen_fig
 
 
 @figure("Demand Total")
+@legend(show_legend=False)
 @axes(ylabel="Total Demand (GW)", yrange=[-5, 70])
 def generate_total_dem_fig(df: pd.DataFrame) -> px.line:
     """Creates Plotly figure for Total Demand graph.
@@ -253,14 +392,17 @@ def generate_total_dem_fig(df: pd.DataFrame) -> px.line:
                 "Total Demand",
             ],
         )
-        total_dem_fig.update_layout(showlegend=False)
     return total_dem_fig
 
 
 @figure("System Frequency")
-@axes(ylabel="Hz", yrange=[40, 70])
+@legend()
+@axes(ylabel="Hz", yrange=[30, 70])
 def generate_system_freq_fig(df: pd.DataFrame) -> px.line:
     """Creates Plotly figure for System Frequency graph.
+
+    TODO: This is using placeholder data. Update when data is available
+    https://github.com/ImperialCollegeLondon/gridlington-vis/issues/73
 
     Args:
         df: Opal data DataFrame
@@ -341,6 +483,7 @@ def generate_intraday_market_sys_fig_right(df: pd.DataFrame) -> px.line:
 
 
 @figure("Intra-day Market System")
+@legend(x=0, y=1)
 def generate_intraday_market_sys_fig(df: pd.DataFrame) -> go.Figure:
     """Creates Intra-day Market System figure.
 
@@ -355,7 +498,6 @@ def generate_intraday_market_sys_fig(df: pd.DataFrame) -> go.Figure:
     intraday_market_sys_fig = combine_left_right_subplots(
         intraday_market_sys_fig_left, intraday_market_sys_fig_right
     )
-    intraday_market_sys_fig.update_layout(legend=dict(x=0, y=1))
     return intraday_market_sys_fig
 
 
@@ -419,6 +561,7 @@ def generate_balancing_market_fig_right(df: pd.DataFrame) -> go.Figure:
 
 
 @figure("Balancing Market")
+@legend(x=0, y=1)
 def generate_balancing_market_fig(df: pd.DataFrame) -> go.Figure:
     """Creates Plotly figure for Balancing Market graph.
 
@@ -433,7 +576,6 @@ def generate_balancing_market_fig(df: pd.DataFrame) -> go.Figure:
     balancing_market_fig = combine_left_right_subplots(
         balancing_market_fig_left, balancing_market_fig_right
     )
-    balancing_market_fig.update_layout(legend=dict(x=0, y=1))
     return balancing_market_fig
 
 
@@ -479,8 +621,12 @@ def generate_intraday_market_bids_fig(df: pd.DataFrame) -> go.Figure:
         intraday_market_bids_fig = go.Figure(
             data=[
                 go.Table(
-                    header=dict(values=columns, align="left"),
-                    cells=dict(values=data, align="left"),
+                    header=dict(
+                        values=columns, align="left", height=30, font=dict(size=20)
+                    ),
+                    cells=dict(
+                        values=data, align="left", height=30, font=dict(size=20)
+                    ),
                 )
             ]
         )
@@ -552,6 +698,7 @@ def generate_dsr_fig_right(df: pd.DataFrame) -> go.Figure:
 
 
 @figure("Demand Side Response")
+@legend(x=0, y=1)
 def generate_dsr_fig(df: pd.DataFrame) -> go.Figure:
     """Creates plotly figure for Demand Side Response graph.
 
@@ -566,7 +713,6 @@ def generate_dsr_fig(df: pd.DataFrame) -> go.Figure:
     dsr_fig_left = generate_dsr_fig_left(df)
     dsr_fig_right = generate_dsr_fig_right(df)
     dsr_fig = combine_left_right_subplots(dsr_fig_left, dsr_fig_right)
-    dsr_fig.update_layout(legend=dict(x=0, y=1))
     return dsr_fig
 
 
@@ -606,6 +752,7 @@ def generate_dsr_commands_fig(df: pd.DataFrame) -> px.line:
 
     dsr_commands_fig.update_layout(
         legend_title=None,
+        legend=dict(font=dict(size=15)),
     )
     return dsr_commands_fig
 
@@ -749,17 +896,20 @@ def create_waffle_chart(
         align="left",
         xanchor="left",
         showarrow=False,
-        font=dict(size=12, color="black"),
+        font=dict(size=15, color="black"),
     )
 
-    waffle.update_layout(yaxis=dict(scaleanchor="x"), plot_bgcolor="rgba(0,0,0,0)")
+    waffle.update_layout(
+        yaxis=dict(scaleanchor="x"),
+        plot_bgcolor="rgba(0,0,0,0)",
+    )
     waffle.update_xaxes(visible=False)
     waffle.update_yaxes(visible=False, autorange="reversed")
-
     return waffle
 
 
 @figure("Agent Activity Breakdown")
+@legend()
 @timestamp(y=1.05)
 def generate_agent_activity_breakdown_fig(df: pd.DataFrame) -> go.Figure:
     """Creates waffle chart for agent activity breakdown figure.
@@ -795,6 +945,7 @@ def generate_agent_activity_breakdown_fig(df: pd.DataFrame) -> go.Figure:
 
 
 @figure("Electric Vehicle Charging Breakdown")
+@legend()
 @timestamp(y=1.05)
 def generate_ev_charging_breakdown_fig(df: pd.DataFrame) -> go.Figure:
     """Creates waffle chart for EV charging breakdown figure.
@@ -890,7 +1041,9 @@ def generate_weather_fig(wesim_data: dict[str, pd.DataFrame]) -> go.Figure:
         weather_fig = go.Figure(
             data=[
                 go.Table(
-                    header=dict(values=columns, align="center"),
+                    header=dict(
+                        values=columns, align="center", height=30, font=dict(size=20)
+                    ),
                     cells=dict(
                         values=data, align="center", height=50, font=dict(size=30)
                     ),
