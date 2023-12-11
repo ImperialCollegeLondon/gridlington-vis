@@ -179,8 +179,8 @@ power_sources = [
 power_sources_colors = {
     s: c for s, c in zip(power_sources, DEFAULT_PLOTLY_COLORS[: len(power_sources)])
 }
- 
-  
+
+
 @figure("Generation Split")
 @timestamp(y=0, x=1)
 def generate_gen_split_fig(df: pd.DataFrame) -> px.pie:
