@@ -171,11 +171,33 @@ layout = html.Div(
                         "display": "flex",
                         "justify-content": "space-around",
                         "padding": "10px",
-                        "width": "66%",
-                        "margin": "auto",
                     },
                     children=[
                         get_button("update", "mdi:tick"),
+                        html.Div(
+                            children=[
+                                html.Div(
+                                    dcc.Slider(
+                                        id="update-interval-slider",
+                                        min=1,
+                                        max=10,
+                                        step=1,
+                                        value=7,
+                                    ),
+                                    style={"width": "100%"},
+                                ),
+                                html.Label(
+                                    "Update Interval (s)",
+                                    style={"text-align": "center"},
+                                ),
+                            ],
+                            style={
+                                "width": "40%",
+                                "display": "flex",
+                                "flex-direction": "column",
+                                "justify-content": "center",
+                            },
+                        ),
                         get_button("default", "iconoir:undo"),
                     ],
                 ),
