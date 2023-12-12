@@ -327,3 +327,12 @@ def default_button_click(n_clicks: int | None) -> list[str]:
         get_default("PC02-Left"),
         get_default("PC02-Right"),
     ]
+
+
+@callback(
+    [Output("data_interval", "interval")], [Input("update-interval-slider", "value")]
+)
+def update_interval(value: int) -> list[int]:
+    """Returns the update interval value."""
+    log.debug(f"Update interval set to {value} seconds.")
+    return [value * 1000]
