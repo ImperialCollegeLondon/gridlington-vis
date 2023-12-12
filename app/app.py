@@ -25,21 +25,22 @@ log.info("Gridlington Visualisation System is running...")
     [Output("figure_interval", "disabled"), Output("figure_interval", "interval")],
     [Input("figure_interval", "n_intervals")],
 )
-def update_interval(
+def update_figure_interval(
     n_intervals: int,
 ) -> tuple[bool, int]:
-    """_summary_.
+    """Callback to synchronise the figure interval with the data interval.
 
     Args:
-        n_intervals (int): _description_
+        n_intervals (int): Number of times the figures have updated
 
     Returns:
-        tuple[bool, int]: _description_
+        data_ended (bool): Whether the data has ended
+        interval (int): The interval between updates
     """
     from .data import data_ended
     from .pages.control import interval
 
-    return (data_ended, interval)
+    return data_ended, interval
 
 
 if __name__ == "__main__":
