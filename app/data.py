@@ -25,6 +25,7 @@ else:
     WESIM = {"df": pd.DataFrame({"Col": [0]})}
 
 data_interval = dcc.Interval(id="data_interval", interval=interval)
+data_ended = False
 
 
 @callback(
@@ -43,7 +44,7 @@ def update_data(n_intervals: int) -> tuple[bool,]:
             terminate
 
     """
-    global DF_OPAL
+    global DF_OPAL, data_ended
 
     if n_intervals is None:
         raise PreventUpdate
@@ -59,5 +60,5 @@ def update_data(n_intervals: int) -> tuple[bool,]:
         DF_OPAL = OPAL_DATA.loc[:n_intervals]
         if n_intervals == len(OPAL_DATA):
             log.debug("Reached end of pre-set data")
-            return (True,)
-    return (False,)
+            data_ended = True
+    return (data_ended,)

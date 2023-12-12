@@ -13,6 +13,7 @@ import pandas as pd
 import plotly.express as px  # type: ignore
 from dash import Input, Output, callback, dcc  # type: ignore
 
+from .. import log
 from ..figures import (
     generate_gen_split_fig,
     generate_system_freq_fig,
@@ -86,7 +87,7 @@ def update_figures(
 
     Args:
         n_intervals (int): The number of times this page has updated.
-            indexes by 1 every 7 seconds.
+            indexes by 1 every interval.
 
     Returns:
         tuple[px.pie, px.line, px.line, px.line]: The new figures.
@@ -97,4 +98,5 @@ def update_figures(
     total_gen_fig = generate_total_gen_fig(DF_OPAL)
     total_dem_fig = generate_total_dem_fig(DF_OPAL)
     system_freq_fig = generate_system_freq_fig(DF_OPAL)
+    log.debug("Updating figures on Supply & Demand page")
     return gen_split_fig, total_gen_fig, total_dem_fig, system_freq_fig
