@@ -6,7 +6,7 @@ from dash_iconify import DashIconify  # type: ignore
 
 from .. import core_api as core
 from .. import log
-from ..data import data_interval, empty_output
+from ..data import data_interval
 
 dash.register_page(__name__)
 
@@ -182,7 +182,7 @@ layout = html.Div(
                                         min=1,
                                         max=10,
                                         step=1,
-                                        value=7,
+                                        value=data_interval.interval / 1000,
                                     ),
                                     style={"width": "100%"},
                                 ),
@@ -216,7 +216,6 @@ layout = html.Div(
             ],
         ),
         data_interval,
-        empty_output,
     ],
 )
 
