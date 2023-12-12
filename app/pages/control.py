@@ -334,10 +334,10 @@ def default_button_click(n_clicks: int | None) -> list[str]:
 @callback(
     [Output("data_interval", "interval")], [Input("update-interval-slider", "value")]
 )
-def update_data_interval(value: int) -> list[int]:
+def update_data_interval(value: int) -> tuple[int]:
     """Callback to update the data interval."""
     global interval
 
     log.debug(f"Update interval set to {value} seconds.")
     interval = value * 1000
-    return [value * 1000]
+    return (interval,)
