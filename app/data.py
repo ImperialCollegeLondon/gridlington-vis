@@ -6,10 +6,6 @@ from dash.exceptions import PreventUpdate  # type: ignore
 from . import LIVE_MODEL, log
 from .datahub_api import get_opal_data, get_wesim_data  # , get_dsr_data
 
-##################
-interval = 7000
-##################
-
 DF_OPAL = pd.DataFrame({"Col": [0]})
 
 WESIM_START_DATE = "2035-01-22 00:00"  # corresponding to hour 0 TODO: check
@@ -24,7 +20,7 @@ if LIVE_MODEL:
 else:
     WESIM = {"df": pd.DataFrame({"Col": [0]})}
 
-data_interval = dcc.Interval(id="data_interval", interval=interval)
+data_interval = dcc.Interval(id="data_interval")
 data_ended = False
 
 

@@ -10,6 +10,9 @@ from ..data import data_interval
 
 dash.register_page(__name__)
 
+##################
+interval = 7000
+##################
 
 options = [key for key in core.INIT_SECTIONS.keys() if key != "Control"]
 
@@ -179,10 +182,10 @@ layout = html.Div(
                                 html.Div(
                                     dcc.Slider(
                                         id="update-interval-slider",
-                                        min=1,
+                                        min=2,
                                         max=10,
                                         step=1,
-                                        value=data_interval.interval / 1000,
+                                        value=interval / 1000,
                                     ),
                                     style={"width": "100%"},
                                 ),
@@ -333,5 +336,8 @@ def default_button_click(n_clicks: int | None) -> list[str]:
 )
 def update_interval(value: int) -> list[int]:
     """Returns the update interval value."""
+    global interval
+
     log.debug(f"Update interval set to {value} seconds.")
+    interval = value * 1000
     return [value * 1000]
