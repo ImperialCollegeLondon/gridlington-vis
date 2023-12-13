@@ -10,7 +10,6 @@ from ..data import data_interval
 
 dash.register_page(__name__)
 
-interval = 7000
 
 options = [key for key in core.INIT_SECTIONS.keys() if key != "Control"]
 
@@ -183,7 +182,7 @@ layout = html.Div(
                                         min=2,
                                         max=10,
                                         step=1,
-                                        value=interval / 1000,
+                                        value=7,
                                     ),
                                     style={"width": "100%"},
                                 ),
@@ -334,8 +333,5 @@ def default_button_click(n_clicks: int | None) -> list[str]:
 )
 def update_data_interval(value: int) -> tuple[int]:
     """Callback to update the data interval."""
-    global interval
-
     log.debug(f"Update interval set to {value} seconds.")
-    interval = value * 1000
-    return (interval,)
+    return (value * 1000,)
