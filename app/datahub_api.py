@@ -94,3 +94,56 @@ def get_wesim_data() -> dict[str, dict]:  # type: ignore[type-arg]
     req = request_datahub("wesim")
 
     return req.json()["data"]
+
+
+def start_model() -> str:
+    """Function for starting the model.
+
+    Returns:
+        str: Message to display on the control app
+    """
+    try:
+        # Get signal to see if model is already running
+        start_signal = request_datahub("start").json()
+        if start_signal:
+            return "Model is already running"
+
+        # If not running, send signal to start
+        requests.post(f"{DH_URL}/set_model_signals", json={"start": True})
+
+        # Get signal to see if model has started properly
+        start_signal = request_datahub("start").json()
+        return (
+            "Model started successfully"
+            if start_signal
+            else "Failed to start the model"
+        )
+
+    except (DataHubConnectionError, DataHubRequestError):
+        return "Failed to connect to the DataHub"
+
+
+def stop_model() -> str:
+    """Function for stopping the model.
+
+    Returns:
+        str: Message to display on the control app
+    """
+    try:
+        # Get signal to see if model is already stopped
+        stop_signal = request_datahub("stop").json()
+        if stop_signal:
+            return "Model is not running"
+
+        # If running, send signal to stop
+        requests.post(f"{DH_URL}/set_model_signals", json={"start": False})
+
+        # Get signal to see if model has stopped properly
+        stop_signal = request_datahub("stop").json()
+        return (
+            "Model stopped successfully"
+            if not stop_signal
+            else "Failed to stop the model"
+        )
+    except (DataHubConnectionError, DataHubRequestError):
+        return "Failed to connect to the DataHub"

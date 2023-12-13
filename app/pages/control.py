@@ -1,12 +1,13 @@
 """Controller Page for Dash app."""
 
 import dash  # type: ignore
-from dash import Input, Output, State, callback, ctx, dcc, html  # type: ignore
+from dash import Input, Output, State, callback, dcc, html  # type: ignore
 from dash_iconify import DashIconify  # type: ignore
 
+from .. import LIVE_MODEL, log
 from .. import core_api as core
-from .. import log
 from ..data import data_interval
+from ..datahub_api import start_model, stop_model
 
 dash.register_page(__name__)
 
@@ -224,9 +225,6 @@ layout = html.Div(
     Output("message", "children", allow_duplicate=True),
     [
         Input("button_update", "n_clicks"),
-        Input("button_start", "n_clicks"),
-        Input("button_stop", "n_clicks"),
-        Input("button_restart", "n_clicks"),
     ],
     [
         State("Hub01_dropdown", "value"),
@@ -241,10 +239,7 @@ layout = html.Div(
     prevent_initial_call=True,
 )
 def update_button_click(
-    button_update: int | None,
-    button_start: int | None,
-    button_stop: int | None,
-    button_restart: int | None,
+    n_clicks: int | None,
     Hub01_dropdown: str,
     Hub02_dropdown: str,
     PC01_Top_dropdown: str,
@@ -254,47 +249,24 @@ def update_button_click(
     PC02_Left_dropdown: str,
     PC02_Right_dropdown: str,
 ) -> list[str]:
-    """Placeholder function for buttons."""
-    button_id = ctx.triggered_id[7:]
+    """Will make an API call to set up OVE sections accoding to dropdowns.
 
-    if button_id == "update":
-        """Will make an API call to set up OVE sections accoding to dropdowns.
-
-        Args: Value inputs for the 8 dropdown menus
-        """
-        log.debug("Clicked Update Button!")
-        message = core.assign_sections(
-            {
-                "Hub01": Hub01_dropdown,
-                "Hub02": Hub02_dropdown,
-                "PC01-Top": PC01_Top_dropdown,
-                "PC01-Left": PC01_Left_dropdown,
-                "PC01-Right": PC01_Right_dropdown,
-                "PC02-Top": PC02_Top_dropdown,
-                "PC02-Left": PC02_Left_dropdown,
-                "PC02-Right": PC02_Right_dropdown,
-            }
-        )
-        return [message]
-
-    elif button_id == "start":
-        """Will make an API call to start the Gridlington simulation and Datahub."""
-        log.debug("Clicked Start Button!")
-        return ["Clicked Start Button!"]
-
-    elif button_id == "stop":
-        """Will make an API call to stop the Gridlington simulation and Datahub."""
-        log.debug("Clicked Stop Button!")
-        return ["Clicked Stop Button!"]
-
-    elif button_id == "restart":
-        """Will make an API call to restart the Gridlington simulation and Datahub."""
-        log.debug("Clicked Restart Button!")
-        core.refresh_sections()
-        return ["Clicked Restart Button!"]
-
-    else:
-        return [""]
+    Args: Value inputs for the 8 dropdown menus
+    """
+    log.debug("Clicked Update Button!")
+    message = core.assign_sections(
+        {
+            "Hub01": Hub01_dropdown,
+            "Hub02": Hub02_dropdown,
+            "PC01-Top": PC01_Top_dropdown,
+            "PC01-Left": PC01_Left_dropdown,
+            "PC01-Right": PC01_Right_dropdown,
+            "PC02-Top": PC02_Top_dropdown,
+            "PC02-Left": PC02_Left_dropdown,
+            "PC02-Right": PC02_Right_dropdown,
+        }
+    )
+    return [message]
 
 
 @callback(
@@ -326,6 +298,50 @@ def default_button_click(n_clicks: int | None) -> list[str]:
         get_default("PC02-Left"),
         get_default("PC02-Right"),
     ]
+
+
+@callback(
+    Output("message", "children", allow_duplicate=True),
+    Output("data_interval", "disabled", allow_duplicate=True),
+    [Input("button_start", "n_clicks")],
+    prevent_initial_call=True,
+)
+def start_button_click(n_clicks: int | None) -> tuple[str, bool]:
+    """Function for start button."""
+    log.debug("Clicked Start Button!")
+    if LIVE_MODEL:
+        message = start_model()
+    else:
+        message = "Clicked Start Button!"
+    return message, False
+
+
+@callback(
+    Output("message", "children", allow_duplicate=True),
+    Output("data_interval", "disabled", allow_duplicate=True),
+    [Input("button_stop", "n_clicks")],
+    prevent_initial_call=True,
+)
+def stop_button_click(n_clicks: int | None) -> tuple[str, bool]:
+    """Function for stop button."""
+    log.debug("Clicked Stop Button!")
+    if LIVE_MODEL:
+        message = stop_model()
+    else:
+        message = "Clicked Stop Button!"
+    return message, True
+
+
+@callback(
+    Output("message", "children", allow_duplicate=True),
+    [Input("button_restart", "n_clicks")],
+    prevent_initial_call=True,
+)
+def restart_button_click(n_clicks: int | None) -> list[str]:
+    """Function for restart button. TODO."""
+    log.debug("Clicked Restart Button!")
+    core.refresh_sections()
+    return ["Clicked Restart Button!"]
 
 
 @callback(
