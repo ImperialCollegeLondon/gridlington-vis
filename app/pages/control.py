@@ -10,9 +10,7 @@ from ..data import data_interval
 
 dash.register_page(__name__)
 
-##################
 interval = 7000
-##################
 
 options = [key for key in core.INIT_SECTIONS.keys() if key != "Control"]
 

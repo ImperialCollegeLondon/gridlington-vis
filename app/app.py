@@ -14,6 +14,7 @@ app.layout = html.Div(
     children=[
         dash.page_container,
         dcc.Interval(id="figure_interval"),
+        dcc.Interval(id="sync_interval", interval=1000),
     ],
 )
 
@@ -23,7 +24,7 @@ log.info("Gridlington Visualisation System is running...")
 
 @callback(
     [Output("figure_interval", "disabled"), Output("figure_interval", "interval")],
-    [Input("figure_interval", "n_intervals")],
+    [Input("sync_interval", "n_intervals")],
 )
 def update_figure_interval(
     n_intervals: int,
