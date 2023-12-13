@@ -78,7 +78,7 @@ layout = grid.layout
         Output("graph-demand", "figure"),
         Output("graph-freq", "figure"),
     ],
-    [Input("figure_interval", "n_intervals")],
+    [Input("figure_interval", "data")],
 )
 def update_figures(
     n_intervals: int,

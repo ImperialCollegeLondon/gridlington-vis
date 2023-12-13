@@ -77,7 +77,7 @@ layout = grid.layout
         Output("balancing_market_fig", "figure"),
         Output("intraday_market_sys_fig", "figure"),
     ],
-    [Input("figure_interval", "n_intervals")],
+    [Input("figure_interval", "data")],
 )
 def update_figures(
     n_intervals: int,

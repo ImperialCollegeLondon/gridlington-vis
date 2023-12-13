@@ -6,6 +6,8 @@ from dash.exceptions import PreventUpdate  # type: ignore
 from . import LIVE_MODEL, log
 from .datahub_api import get_opal_data, get_wesim_data  # , get_dsr_data
 
+N_INTERVALS_DATA = 0
+
 DF_OPAL = pd.DataFrame({"Col": [0]})
 
 WESIM_START_DATE = "2035-01-22 00:00"  # corresponding to hour 0 TODO: check
@@ -21,7 +23,6 @@ else:
     WESIM = {"df": pd.DataFrame({"Col": [0]})}
 
 data_interval = dcc.Interval(id="data_interval")
-data_ended = False
 
 
 @callback(
@@ -40,11 +41,12 @@ def update_data(n_intervals: int) -> tuple[bool,]:
             terminate
 
     """
-    global DF_OPAL, data_ended
+    global DF_OPAL, N_INTERVALS_DATA
 
     if n_intervals is None:
         raise PreventUpdate
 
+    data_ended = False
     if LIVE_MODEL:
         log.debug("Updating data from live model")
         data_opal = get_opal_data()
@@ -57,4 +59,6 @@ def update_data(n_intervals: int) -> tuple[bool,]:
         if n_intervals == len(OPAL_DATA):
             log.debug("Reached end of pre-set data")
             data_ended = True
+
+    N_INTERVALS_DATA = n_intervals
     return (data_ended,)

@@ -1,6 +1,6 @@
 """Sets up the server for the Dash app."""
 import dash  # type: ignore
-from dash import Dash, Input, Output, callback, dcc, html  # type: ignore
+from dash import Dash, Input, Output, State, callback, dcc, html  # type: ignore
 
 from . import log
 
@@ -13,8 +13,8 @@ app.layout = html.Div(
     },
     children=[
         dash.page_container,
-        dcc.Interval(id="figure_interval"),
-        dcc.Interval(id="sync_interval", interval=1000),
+        dcc.Store(id="figure_interval", data=0),
+        dcc.Interval(id="sync_interval", interval=100),
     ],
 )
 
@@ -23,25 +23,33 @@ log.info("Gridlington Visualisation System is running...")
 
 
 @callback(
-    [Output("figure_interval", "disabled"), Output("figure_interval", "interval")],
+    [Output("figure_interval", "data")],
     [Input("sync_interval", "n_intervals")],
+    [State("figure_interval", "data")],
 )
 def update_figure_interval(
-    n_intervals: int,
-) -> tuple[bool, int]:
-    """Callback to synchronise the figure interval with the data interval.
+    n_intervals_sync: int,
+    n_intervals_figures: int,
+) -> tuple[int]:
+    """Callback to synchronise figure_interval with data_interval.
+
+    This pulls in N_INTERVALS_DATA (number of times the data has updated) from
+        the data module and increments figure_interval accordingly.
 
     Args:
-        n_intervals (int): Number of times the figures have updated
+        n_intervals_sync (int): Number of times this callback has run
+        n_intervals_figures (int): Number of times the figures have updated
 
     Returns:
-        data_ended (bool): Whether the data has ended
-        interval (int): The interval between updates
+        N_INTERVALS_DATA (int): Number of times the data has updated
     """
-    from .data import data_ended
-    from .pages.control import interval
+    from .data import N_INTERVALS_DATA
 
-    return data_ended, interval
+    return (
+        dash.no_update
+        if n_intervals_figures == N_INTERVALS_DATA
+        else (N_INTERVALS_DATA,)
+    )
 
 
 if __name__ == "__main__":

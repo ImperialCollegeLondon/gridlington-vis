@@ -91,7 +91,7 @@ layout = grid.layout
         Output("ev_charging_breakdown_fig", "figure"),
         Output("dsr_commands_fig", "figure"),
     ],
-    [Input("figure_interval", "n_intervals")],
+    [Input("figure_interval", "data")],
 )
 def update_figures(
     n_intervals: int,
