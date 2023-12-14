@@ -359,13 +359,15 @@ def stop_button_click(n_clicks: int | None) -> tuple[str, bool]:
 def restart_button_click(n_clicks: int | None) -> tuple[str, int, bool]:
     """Function for restart button.
 
+    TODO: this should send a signal to DataHub to restart the model
+
     Args:
         n_clicks (int | None): Number of times the button has been clicked
 
     Returns:
         str: Message for the control app
         int: 0 sends data interval back to the beginning
-        bool: Whether to disable data updates
+        bool: False (re-)enables data updates
     """
     log.debug("Clicked Restart Button!")
     try:

@@ -1,76 +1,50 @@
-from contextvars import copy_context
+from app.pages.control import (
+    default_button_click,
+    restart_button_click,
+    start_button_click,
+    stop_button_click,
+    update_button_click,
+    update_data_interval,
+)
 
-from dash._callback_context import context_value  # type: ignore
-from dash._utils import AttributeDict  # type: ignore
 
-
-def test_control_view_callback(mocker):
-    """Test for Control View callback function and buttons."""
-    from app.pages.control import update_button_click
-
-    def run_callback():
-        context_value.set(
-            AttributeDict(
-                **{"triggered_inputs": [{"prop_id": f"{button_id}.n_clicks"}]}
-            )
-        )
-        return update_button_click(
-            buttons[0],
-            buttons[1],
-            buttons[2],
-            buttons[3],
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-        )
-
+def test_update_button_callback(mocker):
     """Test Update Button."""
-    buttons = [1, None, None, None]
-    button_id = "button_update"
-
-    ctx = copy_context()
     patched_assign_sections = mocker.patch(
-        "app.core_api.assign_sections", return_value=button_id
+        "app.core_api.assign_sections", return_value="button_update"
     )
-    output = ctx.run(run_callback)
+    output = update_button_click(0, "", "", "", "", "", "", "", "")
     patched_assign_sections.assert_called_once()
-    assert output[0] == button_id
+    assert output[0] == "button_update"
 
+
+def test_start_button_callback():
     """Test Start Button."""
-    buttons = [None, 1, None, None]
-    button_id = "button_start"
+    output = start_button_click(0)
+    assert output[1] is False
 
-    ctx = copy_context()
-    output = ctx.run(run_callback)
-    assert output[0] == "Clicked Start Button!"
 
+def test_stop_button_callback():
     """Test Stop Button."""
-    buttons = [None, None, 1, None]
-    button_id = "button_stop"
+    output = stop_button_click(0)
+    assert output[1] is True
 
-    ctx = copy_context()
-    output = ctx.run(run_callback)
-    assert output[0] == "Clicked Stop Button!"
 
-    """Test Restart Button."""
-    buttons = [None, None, None, 1]
-    button_id = "button_restart"
-
-    ctx = copy_context()
+def test_restart_button_callback(mocker):
+    """Test Reset Button."""
     patched_refresh_sections = mocker.patch("app.core_api.refresh_sections")
-    output = ctx.run(run_callback)
+    output = restart_button_click(0)
     patched_refresh_sections.assert_called_once()
-    assert output[0] == "Clicked Restart Button!"
+    assert output[1] == 0
 
 
 def test_default_button_callback():
     """Test Default Button."""
-    from app.pages.control import default_button_click
-
     output = default_button_click(0)
     assert output[0] == "Dropdowns returned to default values. Click tick to assign."
+
+
+def test_data_interval_slider_callback():
+    """Test Interval Slider."""
+    output = update_data_interval(2)
+    assert output[0] == 2000
