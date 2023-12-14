@@ -1,6 +1,7 @@
 """Controller Page for Dash app."""
 
 import dash  # type: ignore
+import requests
 from dash import Input, Output, State, callback, dcc, html  # type: ignore
 from dash_iconify import DashIconify  # type: ignore
 
@@ -301,47 +302,77 @@ def default_button_click(n_clicks: int | None) -> list[str]:
 
 
 @callback(
-    Output("message", "children", allow_duplicate=True),
-    Output("data_interval", "disabled", allow_duplicate=True),
+    [
+        Output("message", "children", allow_duplicate=True),
+        Output("data_interval", "disabled", allow_duplicate=True),
+    ],
     [Input("button_start", "n_clicks")],
     prevent_initial_call=True,
 )
 def start_button_click(n_clicks: int | None) -> tuple[str, bool]:
-    """Function for start button."""
-    log.debug("Clicked Start Button!")
-    if LIVE_MODEL:
-        message = start_model()
-    else:
-        message = "Clicked Start Button!"
+    """Function for start button.
+
+    Args:
+        n_clicks (int | None): Number of times the button has been clicked
+
+    Returns:
+        str: Message to display on the control app
+        bool: Whether to disable data updates
+    """
+    message = start_model() if LIVE_MODEL else "Playback started"
+    log.debug(message)
     return message, False
 
 
 @callback(
-    Output("message", "children", allow_duplicate=True),
-    Output("data_interval", "disabled", allow_duplicate=True),
+    [
+        Output("message", "children", allow_duplicate=True),
+        Output("data_interval", "disabled", allow_duplicate=True),
+    ],
     [Input("button_stop", "n_clicks")],
     prevent_initial_call=True,
 )
 def stop_button_click(n_clicks: int | None) -> tuple[str, bool]:
-    """Function for stop button."""
-    log.debug("Clicked Stop Button!")
-    if LIVE_MODEL:
-        message = stop_model()
-    else:
-        message = "Clicked Stop Button!"
+    """Function for stop button.
+
+    Args:
+        n_clicks (int | None): Number of times the button has been clicked
+
+    Returns:
+        str: Message to display on the control app
+        bool: Whether to disable data updates
+    """
+    message = stop_model() if LIVE_MODEL else "Playback stopped"
+    log.debug(message)
     return message, True
 
 
 @callback(
-    Output("message", "children", allow_duplicate=True),
+    [
+        Output("message", "children", allow_duplicate=True),
+        Output("data_interval", "n_intervals"),
+        Output("data_interval", "disabled", allow_duplicate=True),
+    ],
     [Input("button_restart", "n_clicks")],
     prevent_initial_call=True,
 )
-def restart_button_click(n_clicks: int | None) -> list[str]:
-    """Function for restart button. TODO."""
+def restart_button_click(n_clicks: int | None) -> tuple[str, int, bool]:
+    """Function for restart button.
+
+    Args:
+        n_clicks (int | None): Number of times the button has been clicked
+
+    Returns:
+        str: Message for the control app
+        int: 0 sends data interval back to the beginning
+        bool: Whether to disable data updates
+    """
     log.debug("Clicked Restart Button!")
-    core.refresh_sections()
-    return ["Clicked Restart Button!"]
+    try:
+        core.refresh_sections()
+    except requests.exceptions.ConnectionError:
+        pass
+    return "Clicked Restart Button!", 0, False
 
 
 @callback(
