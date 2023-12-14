@@ -195,9 +195,9 @@ layout = html.Div(
                             ],
                             style={
                                 "width": "40%",
-                                "display": "flex",
                                 "flex-direction": "column",
                                 "justify-content": "center",
+                                "display": "none" if LIVE_MODEL else "flex",
                             },
                         ),
                         get_button("default", "iconoir:undo"),
