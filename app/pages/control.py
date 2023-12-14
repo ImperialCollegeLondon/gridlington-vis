@@ -4,8 +4,8 @@ import dash  # type: ignore
 from dash import Input, Output, State, callback, ctx, dcc, html  # type: ignore
 from dash_iconify import DashIconify  # type: ignore
 
+from .. import LIVE_MODEL, log
 from .. import core_api as core
-from .. import log
 from ..data import data_interval
 
 dash.register_page(__name__)
@@ -193,9 +193,9 @@ layout = html.Div(
                             ],
                             style={
                                 "width": "40%",
-                                "display": "flex",
                                 "flex-direction": "column",
                                 "justify-content": "center",
+                                "display": "none" if LIVE_MODEL else "flex",
                             },
                         ),
                         get_button("default", "iconoir:undo"),
