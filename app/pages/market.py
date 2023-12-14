@@ -14,6 +14,7 @@ import plotly.express as px  # type: ignore
 from dash import Input, Output, callback, dcc  # type: ignore
 from plotly import graph_objects as go  # type: ignore
 
+from .. import log
 from ..figures import (
     generate_dsr_commands_fig,
     generate_dsr_fig,
@@ -79,7 +80,7 @@ layout = grid.layout
         Output("graph-dsr", "figure"),
         Output("graph-dsr-commands", "figure"),
     ],
-    [Input("figure_interval", "n_intervals")],
+    [Input("figure_interval", "data")],
 )
 def update_figures(
     n_intervals: int,
@@ -88,7 +89,7 @@ def update_figures(
 
     Args:
         n_intervals (int): The number of times this page has updated.
-            indexes by 1 every 7 seconds.
+            indexes by 1 every interval.
 
     Returns:
         tuple[px.line, go.Figure, go.Figure, px.line]:
@@ -100,6 +101,7 @@ def update_figures(
     intraday_market_bids_fig = generate_intraday_market_bids_fig(DF_OPAL)
     dsr_fig = generate_dsr_fig(df)  # TODO: replace with df_dsr when available
     dsr_commands_fig = generate_dsr_commands_fig(DF_OPAL)
+    log.debug("Updating figures on Market page")
     return (
         energy_deficit_fig,
         intraday_market_bids_fig,

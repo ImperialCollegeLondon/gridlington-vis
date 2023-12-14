@@ -4,9 +4,9 @@ import dash  # type: ignore
 from dash import Input, Output, State, callback, ctx, dcc, html  # type: ignore
 from dash_iconify import DashIconify  # type: ignore
 
+from .. import LIVE_MODEL, log
 from .. import core_api as core
-from .. import log
-from ..data import data_interval, empty_output
+from ..data import data_interval
 
 dash.register_page(__name__)
 
@@ -171,11 +171,33 @@ layout = html.Div(
                         "display": "flex",
                         "justify-content": "space-around",
                         "padding": "10px",
-                        "width": "66%",
-                        "margin": "auto",
                     },
                     children=[
                         get_button("update", "mdi:tick"),
+                        html.Div(
+                            children=[
+                                html.Div(
+                                    dcc.Slider(
+                                        id="update-interval-slider",
+                                        min=2,
+                                        max=10,
+                                        step=1,
+                                        value=7,
+                                    ),
+                                    style={"width": "100%"},
+                                ),
+                                html.Label(
+                                    "Update Interval (s)",
+                                    style={"text-align": "center"},
+                                ),
+                            ],
+                            style={
+                                "width": "40%",
+                                "flex-direction": "column",
+                                "justify-content": "center",
+                                "display": "none" if LIVE_MODEL else "flex",
+                            },
+                        ),
                         get_button("default", "iconoir:undo"),
                     ],
                 ),
@@ -194,7 +216,6 @@ layout = html.Div(
             ],
         ),
         data_interval,
-        empty_output,
     ],
 )
 
@@ -305,3 +326,12 @@ def default_button_click(n_clicks: int | None) -> list[str]:
         get_default("PC02-Left"),
         get_default("PC02-Right"),
     ]
+
+
+@callback(
+    [Output("data_interval", "interval")], [Input("update-interval-slider", "value")]
+)
+def update_data_interval(value: int) -> tuple[int]:
+    """Callback to update the data interval."""
+    log.debug(f"Update interval set to {value} seconds.")
+    return (value * 1000,)
