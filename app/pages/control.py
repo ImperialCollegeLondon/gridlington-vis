@@ -1,12 +1,14 @@
 """Controller Page for Dash app."""
 
 import dash  # type: ignore
-from dash import Input, Output, State, callback, ctx, dcc, html  # type: ignore
+import requests
+from dash import Input, Output, State, callback, dcc, html  # type: ignore
 from dash_iconify import DashIconify  # type: ignore
 
+from .. import LIVE_MODEL, log
 from .. import core_api as core
-from .. import log
-from ..data import data_interval, empty_output
+from ..data import data_interval
+from ..datahub_api import start_model, stop_model
 
 dash.register_page(__name__)
 
@@ -171,11 +173,33 @@ layout = html.Div(
                         "display": "flex",
                         "justify-content": "space-around",
                         "padding": "10px",
-                        "width": "66%",
-                        "margin": "auto",
                     },
                     children=[
                         get_button("update", "mdi:tick"),
+                        html.Div(
+                            children=[
+                                html.Div(
+                                    dcc.Slider(
+                                        id="update-interval-slider",
+                                        min=2,
+                                        max=10,
+                                        step=1,
+                                        value=7,
+                                    ),
+                                    style={"width": "100%"},
+                                ),
+                                html.Label(
+                                    "Update Interval (s)",
+                                    style={"text-align": "center"},
+                                ),
+                            ],
+                            style={
+                                "width": "40%",
+                                "flex-direction": "column",
+                                "justify-content": "center",
+                                "display": "none" if LIVE_MODEL else "flex",
+                            },
+                        ),
                         get_button("default", "iconoir:undo"),
                     ],
                 ),
@@ -194,7 +218,6 @@ layout = html.Div(
             ],
         ),
         data_interval,
-        empty_output,
     ],
 )
 
@@ -203,9 +226,6 @@ layout = html.Div(
     Output("message", "children", allow_duplicate=True),
     [
         Input("button_update", "n_clicks"),
-        Input("button_start", "n_clicks"),
-        Input("button_stop", "n_clicks"),
-        Input("button_restart", "n_clicks"),
     ],
     [
         State("Hub01_dropdown", "value"),
@@ -220,10 +240,7 @@ layout = html.Div(
     prevent_initial_call=True,
 )
 def update_button_click(
-    button_update: int | None,
-    button_start: int | None,
-    button_stop: int | None,
-    button_restart: int | None,
+    n_clicks: int | None,
     Hub01_dropdown: str,
     Hub02_dropdown: str,
     PC01_Top_dropdown: str,
@@ -233,47 +250,24 @@ def update_button_click(
     PC02_Left_dropdown: str,
     PC02_Right_dropdown: str,
 ) -> list[str]:
-    """Placeholder function for buttons."""
-    button_id = ctx.triggered_id[7:]
+    """Will make an API call to set up OVE sections accoding to dropdowns.
 
-    if button_id == "update":
-        """Will make an API call to set up OVE sections accoding to dropdowns.
-
-        Args: Value inputs for the 8 dropdown menus
-        """
-        log.debug("Clicked Update Button!")
-        message = core.assign_sections(
-            {
-                "Hub01": Hub01_dropdown,
-                "Hub02": Hub02_dropdown,
-                "PC01-Top": PC01_Top_dropdown,
-                "PC01-Left": PC01_Left_dropdown,
-                "PC01-Right": PC01_Right_dropdown,
-                "PC02-Top": PC02_Top_dropdown,
-                "PC02-Left": PC02_Left_dropdown,
-                "PC02-Right": PC02_Right_dropdown,
-            }
-        )
-        return [message]
-
-    elif button_id == "start":
-        """Will make an API call to start the Gridlington simulation and Datahub."""
-        log.debug("Clicked Start Button!")
-        return ["Clicked Start Button!"]
-
-    elif button_id == "stop":
-        """Will make an API call to stop the Gridlington simulation and Datahub."""
-        log.debug("Clicked Stop Button!")
-        return ["Clicked Stop Button!"]
-
-    elif button_id == "restart":
-        """Will make an API call to restart the Gridlington simulation and Datahub."""
-        log.debug("Clicked Restart Button!")
-        core.refresh_sections()
-        return ["Clicked Restart Button!"]
-
-    else:
-        return [""]
+    Args: Value inputs for the 8 dropdown menus
+    """
+    log.debug("Clicked Update Button!")
+    message = core.assign_sections(
+        {
+            "Hub01": Hub01_dropdown,
+            "Hub02": Hub02_dropdown,
+            "PC01-Top": PC01_Top_dropdown,
+            "PC01-Left": PC01_Left_dropdown,
+            "PC01-Right": PC01_Right_dropdown,
+            "PC02-Top": PC02_Top_dropdown,
+            "PC02-Left": PC02_Left_dropdown,
+            "PC02-Right": PC02_Right_dropdown,
+        }
+    )
+    return [message]
 
 
 @callback(
@@ -305,3 +299,88 @@ def default_button_click(n_clicks: int | None) -> list[str]:
         get_default("PC02-Left"),
         get_default("PC02-Right"),
     ]
+
+
+@callback(
+    [
+        Output("message", "children", allow_duplicate=True),
+        Output("data_interval", "disabled", allow_duplicate=True),
+    ],
+    [Input("button_start", "n_clicks")],
+    prevent_initial_call=True,
+)
+def start_button_click(n_clicks: int | None) -> tuple[str, bool]:
+    """Function for start button.
+
+    Args:
+        n_clicks (int | None): Number of times the button has been clicked
+
+    Returns:
+        str: Message to display on the control app
+        bool: Whether to disable data updates
+    """
+    message = start_model() if LIVE_MODEL else "Playback started"
+    log.debug(message)
+    return message, False
+
+
+@callback(
+    [
+        Output("message", "children", allow_duplicate=True),
+        Output("data_interval", "disabled", allow_duplicate=True),
+    ],
+    [Input("button_stop", "n_clicks")],
+    prevent_initial_call=True,
+)
+def stop_button_click(n_clicks: int | None) -> tuple[str, bool]:
+    """Function for stop button.
+
+    Args:
+        n_clicks (int | None): Number of times the button has been clicked
+
+    Returns:
+        str: Message to display on the control app
+        bool: Whether to disable data updates
+    """
+    message = stop_model() if LIVE_MODEL else "Playback stopped"
+    log.debug(message)
+    return message, True
+
+
+@callback(
+    [
+        Output("message", "children", allow_duplicate=True),
+        Output("data_interval", "n_intervals"),
+        Output("data_interval", "disabled", allow_duplicate=True),
+    ],
+    [Input("button_restart", "n_clicks")],
+    prevent_initial_call=True,
+)
+def restart_button_click(n_clicks: int | None) -> tuple[str, int, bool]:
+    """Function for restart button.
+
+    TODO: this should send a signal to DataHub to restart the model
+
+    Args:
+        n_clicks (int | None): Number of times the button has been clicked
+
+    Returns:
+        str: Message for the control app
+        int: 0 sends data interval back to the beginning
+        bool: False (re-)enables data updates
+    """
+    log.debug("Clicked Restart Button!")
+    try:
+        core.refresh_sections()
+    except requests.exceptions.ConnectionError:
+        pass
+    return "Clicked Restart Button!", 0, False
+
+
+@callback(
+    [Output("data_interval", "interval")], [Input("update-interval-slider", "value")]
+)
+def update_data_interval(value: int) -> tuple[int]:
+    """Callback to update the data interval."""
+    log.debug(f"Update interval set to {value} seconds.")
+    return (value * 1000,)

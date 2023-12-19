@@ -14,6 +14,7 @@ import plotly.express as px  # type: ignore
 import plotly.graph_objects as go  # type: ignore
 from dash import Input, Output, callback, dcc  # type: ignore
 
+from .. import log
 from ..figures import (
     generate_agent_activity_breakdown_fig,
     generate_dsr_commands_fig,
@@ -90,7 +91,7 @@ layout = grid.layout
         Output("ev_charging_breakdown_fig", "figure"),
         Output("dsr_commands_fig", "figure"),
     ],
-    [Input("figure_interval", "n_intervals")],
+    [Input("figure_interval", "data")],
 )
 def update_figures(
     n_intervals: int,
@@ -99,7 +100,7 @@ def update_figures(
 
     Args:
         n_intervals (int): The number of times this page has updated.
-            indexes by 1 every 7 seconds.
+            indexes by 1 every interval.
 
     Returns:
         tuple[go.Figure, go.Figure, go.Figure, go.Figure, px.line]:
@@ -113,6 +114,7 @@ def update_figures(
     agent_activity_breakdown_fig = generate_agent_activity_breakdown_fig(DF_OPAL)
     ev_charging_breakdown_fig = generate_ev_charging_breakdown_fig(DF_OPAL)
     dsr_commands_fig = generate_dsr_commands_fig(DF_OPAL)
+    log.debug("Updating figures on Agent page")
     return (
         map_fig,
         sld_fig,

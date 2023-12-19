@@ -53,7 +53,7 @@ def request_datahub(
 
 def get_opal_data(
     start: int | None = None, end: int | None = None
-) -> dict[str, dict]:  # type: ignore[type-arg]
+) -> dict[str, list]:  # type: ignore[type-arg]
     """Function for making a GET request for Opal data.
 
     Args:
@@ -94,3 +94,33 @@ def get_wesim_data() -> dict[str, dict]:  # type: ignore[type-arg]
     req = request_datahub("wesim")
 
     return req.json()["data"]
+
+
+def start_model() -> str:
+    """Function for starting the model.
+
+    Returns:
+        str: Message to display on the control app
+    """
+    try:
+        if request_datahub("start").json():
+            return "Model is already running"
+        response = requests.post(f"{DH_URL}/set_model_signals", params={"start": True})
+        return response.text
+    except (DataHubConnectionError, DataHubRequestError):
+        return "Failed to connect to the DataHub"
+
+
+def stop_model() -> str:
+    """Function for stopping the model.
+
+    Returns:
+        str: Message to display on the control app
+    """
+    try:
+        if request_datahub("stop").json():
+            return "Model is not running"
+        response = requests.post(f"{DH_URL}/set_model_signals", params={"start": False})
+        return response.text
+    except (DataHubConnectionError, DataHubRequestError):
+        return "Failed to connect to the DataHub"

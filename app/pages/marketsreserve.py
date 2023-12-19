@@ -13,6 +13,7 @@ import pandas as pd
 from dash import Input, Output, callback, dcc  # type: ignore
 from plotly import graph_objects as go  # type: ignore
 
+from .. import log
 from ..data import WESIM
 from ..figures import (
     generate_balancing_market_fig,
@@ -76,7 +77,7 @@ layout = grid.layout
         Output("balancing_market_fig", "figure"),
         Output("intraday_market_sys_fig", "figure"),
     ],
-    [Input("figure_interval", "n_intervals")],
+    [Input("figure_interval", "data")],
 )
 def update_figures(
     n_intervals: int,
@@ -85,7 +86,7 @@ def update_figures(
 
     Args:
         n_intervals (int): The number of times this page has updated.
-            indexes by 1 every 7 seconds.
+            indexes by 1 every interval.
 
     Returns:
         tuple[go.Figure, go.Figure]: The new figures.
@@ -94,6 +95,7 @@ def update_figures(
 
     balancing_market_fig = generate_balancing_market_fig(DF_OPAL)
     intraday_market_sys_fig = generate_intraday_market_sys_fig(DF_OPAL)
+    log.debug("Updating figures of Markets and Reserve page")
     return (
         balancing_market_fig,
         intraday_market_sys_fig,
