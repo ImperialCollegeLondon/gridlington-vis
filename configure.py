@@ -41,8 +41,7 @@ def generate_docker_compose(template_file: str, ip: str, develop: bool = False) 
     """
     lines_to_replace = {
         "OVE_HOST": f"{ip}:8080",
-        # TODO: Point to the on-prem openvidu (keep as port 4443)
-        "OPENVIDU_HOST": "https://146.179.34.13:4443",
+        "OPENVIDU_HOST": f"https://{ip}:4443",
         "PLOT_URL": f"{ip}:8050",
         "DH_URL": f"{ip}:80",
     }
