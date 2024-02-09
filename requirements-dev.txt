@@ -4,17 +4,15 @@
 #
 #    pip-compile --extra=dev --output-file=requirements-dev.txt
 #
-ansi2html==1.8.0
-    # via dash
-attrs==23.1.0
+attrs==23.2.0
     # via pytest-mypy
-black==23.11.0
+black==24.1.1
     # via vis (pyproject.toml)
 blinker==1.7.0
     # via flask
 build==1.0.3
     # via pip-tools
-certifi==2023.7.22
+certifi==2024.2.2
     # via requests
 cfgv==3.4.0
     # via pre-commit
@@ -25,9 +23,11 @@ click==8.1.7
     #   black
     #   flask
     #   pip-tools
-coverage[toml]==7.3.2
-    # via pytest-cov
-dash==2.14.1
+coverage[toml]==7.4.1
+    # via
+    #   coverage
+    #   pytest-cov
+dash==2.15.0
     # via vis (pyproject.toml)
 dash-core-components==2.0.0
     # via dash
@@ -37,35 +37,35 @@ dash-iconify==0.1.2
     # via vis (pyproject.toml)
 dash-table==5.0.0
     # via dash
-distlib==0.3.7
+distlib==0.3.8
     # via virtualenv
-exceptiongroup==1.1.3
+exceptiongroup==1.2.0
     # via pytest
 filelock==3.13.1
     # via
     #   pytest-mypy
     #   virtualenv
-flask==3.0.0
+flask==3.0.2
     # via dash
 gunicorn==21.2.0
     # via vis (pyproject.toml)
-identify==2.5.31
+identify==2.5.33
     # via pre-commit
-idna==3.4
+idna==3.6
     # via requests
-importlib-metadata==6.8.0
+importlib-metadata==7.0.1
     # via dash
 iniconfig==2.0.0
     # via pytest
 itsdangerous==2.1.2
     # via flask
-jinja2==3.1.2
+jinja2==3.1.3
     # via flask
-markupsafe==2.1.3
+markupsafe==2.1.5
     # via
     #   jinja2
     #   werkzeug
-mypy==1.7.0
+mypy==1.8.0
     # via
     #   pytest-mypy
     #   vis (pyproject.toml)
@@ -73,11 +73,11 @@ mypy-extensions==1.0.0
     # via
     #   black
     #   mypy
-nest-asyncio==1.5.8
+nest-asyncio==1.6.0
     # via dash
 nodeenv==1.8.0
     # via pre-commit
-numpy==1.26.2
+numpy==1.26.4
     # via
     #   pandas
     #   pandas-stubs
@@ -88,27 +88,27 @@ packaging==23.2
     #   gunicorn
     #   plotly
     #   pytest
-pandas==2.1.3
+pandas==2.2.0
     # via vis (pyproject.toml)
-pandas-stubs==2.1.1.230928
+pandas-stubs==2.1.4.231227
     # via vis (pyproject.toml)
-pathspec==0.11.2
+pathspec==0.12.1
     # via black
 pip-tools==7.3.0
     # via vis (pyproject.toml)
-platformdirs==3.11.0
+platformdirs==4.2.0
     # via
     #   black
     #   virtualenv
 plotly==5.18.0
     # via dash
-pluggy==1.3.0
+pluggy==1.4.0
     # via pytest
-pre-commit==3.5.0
+pre-commit==3.6.0
     # via vis (pyproject.toml)
 pyproject-hooks==1.0.0
     # via build
-pytest==7.4.3
+pytest==8.0.0
     # via
     #   pytest-cov
     #   pytest-mock
@@ -122,7 +122,7 @@ pytest-mypy==0.10.3
     # via vis (pyproject.toml)
 python-dateutil==2.8.2
     # via pandas
-pytz==2023.3.post1
+pytz==2024.1
     # via pandas
 pyyaml==6.0.1
     # via
@@ -132,7 +132,7 @@ requests==2.31.0
     # via dash
 retrying==1.3.4
     # via dash
-ruff==0.1.5
+ruff==0.2.1
     # via vis (pyproject.toml)
 six==1.16.0
     # via
@@ -149,30 +149,30 @@ tomli==2.0.1
     #   pip-tools
     #   pyproject-hooks
     #   pytest
-types-pytz==2023.3.1.1
+types-pytz==2024.1.0.20240203
     # via pandas-stubs
 types-pyyaml==6.0.12.12
     # via vis (pyproject.toml)
-types-requests==2.31.0.10
+types-requests==2.31.0.20240125
     # via vis (pyproject.toml)
-typing-extensions==4.8.0
+typing-extensions==4.9.0
     # via
     #   black
     #   dash
     #   mypy
-tzdata==2023.3
+tzdata==2023.4
     # via pandas
-urllib3==2.1.0
+urllib3==2.2.0
     # via
     #   requests
     #   types-requests
-virtualenv==20.24.6
+virtualenv==20.25.0
     # via pre-commit
 werkzeug==3.0.1
     # via
     #   dash
     #   flask
-wheel==0.41.3
+wheel==0.42.0
     # via pip-tools
 zipp==3.17.0
     # via importlib-metadata

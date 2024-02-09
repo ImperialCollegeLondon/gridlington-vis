@@ -4,17 +4,15 @@
 #
 #    pip-compile
 #
-ansi2html==1.8.0
-    # via dash
 blinker==1.7.0
     # via flask
-certifi==2023.7.22
+certifi==2024.2.2
     # via requests
 charset-normalizer==3.3.2
     # via requests
 click==8.1.7
     # via flask
-dash==2.14.1
+dash==2.15.0
     # via vis (pyproject.toml)
 dash-core-components==2.0.0
     # via dash
@@ -24,37 +22,37 @@ dash-iconify==0.1.2
     # via vis (pyproject.toml)
 dash-table==5.0.0
     # via dash
-flask==3.0.0
+flask==3.0.2
     # via dash
 gunicorn==21.2.0
     # via vis (pyproject.toml)
-idna==3.4
+idna==3.6
     # via requests
-importlib-metadata==6.8.0
+importlib-metadata==7.0.1
     # via dash
 itsdangerous==2.1.2
     # via flask
-jinja2==3.1.2
+jinja2==3.1.3
     # via flask
-markupsafe==2.1.3
+markupsafe==2.1.5
     # via
     #   jinja2
     #   werkzeug
-nest-asyncio==1.5.8
+nest-asyncio==1.6.0
     # via dash
-numpy==1.26.2
+numpy==1.26.4
     # via pandas
 packaging==23.2
     # via
     #   gunicorn
     #   plotly
-pandas==2.1.3
+pandas==2.2.0
     # via vis (pyproject.toml)
 plotly==5.18.0
     # via dash
 python-dateutil==2.8.2
     # via pandas
-pytz==2023.3.post1
+pytz==2024.1
     # via pandas
 pyyaml==6.0.1
     # via vis (pyproject.toml)
@@ -68,11 +66,11 @@ six==1.16.0
     #   retrying
 tenacity==8.2.3
     # via plotly
-typing-extensions==4.8.0
+typing-extensions==4.9.0
     # via dash
-tzdata==2023.3
+tzdata==2023.4
     # via pandas
-urllib3==2.1.0
+urllib3==2.2.0
     # via requests
 werkzeug==3.0.1
     # via
