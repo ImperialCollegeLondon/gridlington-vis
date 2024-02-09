@@ -1,4 +1,5 @@
 """Module for generating figure grid layout."""
+
 from dash import html  # type: ignore
 
 

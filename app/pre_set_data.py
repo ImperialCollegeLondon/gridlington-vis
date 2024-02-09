@@ -1,4 +1,5 @@
 """Contains the logic for processing the pre-set data."""
+
 from glob import glob
 
 import pandas as pd

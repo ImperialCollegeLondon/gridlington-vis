@@ -1,4 +1,5 @@
 """Sets up the server for the Dash app."""
+
 import dash  # type: ignore
 from dash import Dash, Input, Output, State, callback, dcc, html  # type: ignore
 

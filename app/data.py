@@ -1,4 +1,5 @@
 """Calls the Datahub to update data."""
+
 import pandas as pd
 from dash import Input, Output, callback, dcc  # type: ignore
 from dash.exceptions import PreventUpdate  # type: ignore

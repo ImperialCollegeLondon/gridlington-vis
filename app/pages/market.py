@@ -7,7 +7,6 @@ Four plots (2x2):
 - DSR commands to agents.
 """
 
-
 import dash  # type: ignore
 import pandas as pd
 import plotly.express as px  # type: ignore

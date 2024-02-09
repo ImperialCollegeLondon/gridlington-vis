@@ -1,4 +1,5 @@
 """Dict configuration for formal logging."""
+
 import os
 
 LOG_LEVEL: str = os.environ.get("LOG_LEVEL", "DEBUG")

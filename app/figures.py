@@ -1,4 +1,5 @@
 """Functions for generating plotly figures."""
+
 from functools import wraps
 from typing import Callable, Union
 

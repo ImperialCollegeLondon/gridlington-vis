@@ -7,7 +7,6 @@ Four plots (2x2):
 - Reserve/Standby Generation
 """
 
-
 import dash  # type: ignore
 import pandas as pd
 from dash import Input, Output, callback, dcc  # type: ignore

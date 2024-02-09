@@ -1,4 +1,5 @@
 """Home Page for Dash app."""
+
 from pathlib import Path
 
 import dash  # type: ignore

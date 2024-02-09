@@ -1,4 +1,5 @@
 """The main module for the Vis system."""
+
 import logging
 import logging.config
 import os

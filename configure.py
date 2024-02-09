@@ -53,15 +53,15 @@ def generate_docker_compose(template_file: str, ip: str, develop: bool = False) 
         docker_compose = yaml.safe_load(f)
 
     # Replace the values in the docker-compose.yml file
-    docker_compose["services"]["ovehub-ove-apps"]["environment"][
-        "OVE_HOST"
-    ] = lines_to_replace["OVE_HOST"]
-    docker_compose["services"]["ovehub-ove-apps"]["environment"][
-        "OPENVIDU_HOST"
-    ] = lines_to_replace["OPENVIDU_HOST"]
-    docker_compose["services"]["ovehub-ove-ui"]["environment"][
-        "OVE_HOST"
-    ] = lines_to_replace["OVE_HOST"]
+    docker_compose["services"]["ovehub-ove-apps"]["environment"]["OVE_HOST"] = (
+        lines_to_replace["OVE_HOST"]
+    )
+    docker_compose["services"]["ovehub-ove-apps"]["environment"]["OPENVIDU_HOST"] = (
+        lines_to_replace["OPENVIDU_HOST"]
+    )
+    docker_compose["services"]["ovehub-ove-ui"]["environment"]["OVE_HOST"] = (
+        lines_to_replace["OVE_HOST"]
+    )
 
     # Add the dash app to to docker-compose.yml file
     logging.info("Adding dash app to docker-compose.yml...")
