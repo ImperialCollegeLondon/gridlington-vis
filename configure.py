@@ -88,8 +88,8 @@ def generate_docker_compose(
         docker_compose["services"]["dash"]["volumes"] += ["./app:/app"]
         docker_compose["services"]["dash"]["environment"]["DH_URL"] = "http://127.0.0.1"
         docker_compose["services"]["dash"]["environment"]["LOG_LEVEL"] = "DEBUG"
-        docker_compose["services"]["dash"]["environment"]["DEVELOP"] = "true"
     else:
+        docker_compose["services"]["dash"]["environment"]["PRODUCTION"] = "true"
         docker_compose["services"]["dash"][
             "image"
         ] = "ghcr.io/imperialcollegelondon/gridlington-vis:latest"
