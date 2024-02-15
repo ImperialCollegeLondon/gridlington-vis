@@ -26,7 +26,12 @@ def get_ip_address() -> str:
     return ip
 
 
-def generate_docker_compose(template_file: str, ip: str, develop: bool = False) -> None:
+def generate_docker_compose(
+    template_file: str,
+    ip: str,
+    develop: bool = False,
+    live_model: bool = False,
+) -> None:
     """Generate the docker-compose.yml file.
 
     Uses a template file and the IP address of the machine.
@@ -34,15 +39,16 @@ def generate_docker_compose(template_file: str, ip: str, develop: bool = False) 
     Args:
         template_file: Path to the template file.
         ip: IP address of the machine.
-        develop: Flag for when running in develop mode.
+        develop: Flag for when running in develop mode (localhost for datahub).
+        live_model: Flag for when running with a live model. This requires an available
+            connection to a datahub, either in production or local for develop.
 
     Returns:
         None
     """
     lines_to_replace = {
         "OVE_HOST": f"{ip}:8080",
-        # TODO: Point to the on-prem openvidu (keep as port 4443)
-        "OPENVIDU_HOST": "https://146.179.34.13:4443",
+        "OPENVIDU_HOST": f"https://{ip}:4443",
         "PLOT_URL": f"{ip}:8050",
         "DH_URL": f"{ip}:80",
     }
@@ -83,9 +89,12 @@ def generate_docker_compose(template_file: str, ip: str, develop: bool = False) 
         docker_compose["services"]["dash"]["environment"]["DH_URL"] = "http://127.0.0.1"
         docker_compose["services"]["dash"]["environment"]["LOG_LEVEL"] = "DEBUG"
     else:
+        docker_compose["services"]["dash"]["environment"]["PRODUCTION"] = "true"
         docker_compose["services"]["dash"][
             "image"
         ] = "ghcr.io/imperialcollegelondon/gridlington-vis:latest"
+
+    if live_model:
         docker_compose["services"]["dash"]["environment"]["LIVE_MODEL"] = "true"
 
     # Configure logging for nginx
@@ -106,4 +115,5 @@ if __name__ == "__main__":
         "docker-compose.setup.ove.yml",
         ip,
         develop="develop" in sys.argv,
+        live_model="live_model" in sys.argv,
     )

@@ -4,7 +4,7 @@ import pandas as pd
 from dash import Input, Output, callback, dcc  # type: ignore
 from dash.exceptions import PreventUpdate  # type: ignore
 
-from . import LIVE_MODEL, log
+from . import LIVE_MODEL, PRODUCTION, log
 from .datahub_api import get_opal_data, get_wesim_data  # , get_dsr_data
 
 N_INTERVALS_DATA = 0
@@ -13,7 +13,7 @@ DF_OPAL = pd.DataFrame({"Col": [0]})
 
 WESIM_START_DATE = "2035-01-22 00:00"  # corresponding to hour 0 TODO: check
 
-if LIVE_MODEL:
+if PRODUCTION:
     WESIM = {key: pd.DataFrame(**item) for key, item in get_wesim_data().items()}
     for df in WESIM.values():
         if "Hour" in df.columns:

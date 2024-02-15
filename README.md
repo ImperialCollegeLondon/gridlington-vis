@@ -45,7 +45,7 @@ There is also a requirements to have the OpenVidu server running - see [Deployin
 
 1. Make sure nothing's running
 2. Run `bash run_develop.sh` for vis system to run config script and `docker-compose.yml`
-   - For production, use `run.sh`
+   - For production, use `run.sh` when using pre-set data, or `run_live.sh` when using the live model.
 3. Go to OVE Core at the IP address defined in the `API_URL` environment variable you will now find in `docker-compose.yml`
 4. Go to OpenVidu IP address and manually trust website (OPENVIDU_HOST in the `docker-compose.yml`)
 5. Log in with username: admin, password: (OPENVIDU_SECRET from docker-compose.yml)
