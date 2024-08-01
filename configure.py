@@ -31,6 +31,7 @@ def generate_docker_compose(
     ip: str,
     develop: bool = False,
     live_model: bool = False,
+    version: str = "",
 ) -> None:
     """Generate the docker-compose.yml file.
 
@@ -42,6 +43,7 @@ def generate_docker_compose(
         develop: Flag for when running in develop mode (localhost for datahub).
         live_model: Flag for when running with a live model. This requires an available
             connection to a datahub, either in production or local for develop.
+        version: The version of the image to use.
 
     Returns:
         None
@@ -92,7 +94,7 @@ def generate_docker_compose(
         docker_compose["services"]["dash"]["environment"]["PRODUCTION"] = "true"
         docker_compose["services"]["dash"][
             "image"
-        ] = "ghcr.io/imperialcollegelondon/gridlington-vis:latest"
+        ] = f"ghcr.io/imperialcollegelondon/gridlington-vis:{version if version else 'latest'}"  # noqa: E501
 
     if live_model:
         docker_compose["services"]["dash"]["environment"]["LIVE_MODEL"] = "true"
@@ -116,4 +118,7 @@ if __name__ == "__main__":
         ip,
         develop="develop" in sys.argv,
         live_model="live_model" in sys.argv,
+        version=(
+            sys.argv[sys.argv.index("version") + 1] if "version" in sys.argv else ""
+        ),
     )
