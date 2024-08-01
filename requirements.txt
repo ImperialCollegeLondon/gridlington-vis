@@ -6,13 +6,13 @@
 #
 blinker==1.8.2
     # via flask
-certifi==2024.6.2
+certifi==2024.7.4
     # via requests
 charset-normalizer==3.3.2
     # via requests
 click==8.1.7
     # via flask
-dash==2.17.0
+dash==2.17.1
     # via vis (pyproject.toml)
 dash-core-components==2.0.0
     # via dash
@@ -28,7 +28,7 @@ gunicorn==22.0.0
     # via vis (pyproject.toml)
 idna==3.7
     # via requests
-importlib-metadata==7.1.0
+importlib-metadata==8.2.0
     # via dash
 itsdangerous==2.2.0
     # via flask
@@ -40,15 +40,15 @@ markupsafe==2.1.5
     #   werkzeug
 nest-asyncio==1.6.0
     # via dash
-numpy==1.26.4
+numpy==2.0.1
     # via pandas
-packaging==24.0
+packaging==24.1
     # via
     #   gunicorn
     #   plotly
 pandas==2.2.2
     # via vis (pyproject.toml)
-plotly==5.22.0
+plotly==5.23.0
     # via dash
 python-dateutil==2.9.0.post0
     # via pandas
@@ -64,13 +64,13 @@ six==1.16.0
     # via
     #   python-dateutil
     #   retrying
-tenacity==8.3.0
+tenacity==9.0.0
     # via plotly
-typing-extensions==4.12.1
+typing-extensions==4.12.2
     # via dash
 tzdata==2024.1
     # via pandas
-urllib3==2.2.1
+urllib3==2.2.2
     # via requests
 werkzeug==3.0.3
     # via
