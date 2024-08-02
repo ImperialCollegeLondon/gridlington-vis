@@ -23,8 +23,8 @@ jobs:
           images: ghcr.io/${{ github.repository }}
           tags: |
             type=semver,pattern={{raw}}
-            type=raw,value=latest,enable={{!github.event.release.prerelease}}
-            type=raw,value=pre-release,enable={{github.event.release.prerelease}}
+            type=raw,value=latest,enable=${{ !github.event.release.prerelease }}
+            type=raw,value=pre-release,enable=${{ github.event.release.prerelease }}
       # - name: Build and push Docker image
       #   uses: docker/build-push-action@v2
       #   with:
