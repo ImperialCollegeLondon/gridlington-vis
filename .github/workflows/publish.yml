@@ -10,6 +10,7 @@ jobs:
     runs-on: ubuntu-20.04
     needs: test
     steps:
+      - run: echo ${{ github.event.release.target_commitish }}
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v1
         with:
@@ -25,9 +26,9 @@ jobs:
             type=semver,pattern={{raw}}
             type=raw,value=latest,enable=${{ !github.event.release.prerelease }}
             type=raw,value=pre-release,enable=${{ github.event.release.prerelease }}
-            type=raw,value=stable,enable=${{ !github.event.release.prerelease && github.ref == 'refs/heads/main'}}
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v2
-        with:
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
+            type=raw,value=stable,enable=${{ !github.event.release.prerelease && github.event.release.target_commitish == 'fix-stabl-tag'}}
+      # - name: Build and push Docker image
+      #   uses: docker/build-push-action@v2
+      #   with:
+      #     push: true
+      #     tags: ${{ steps.meta.outputs.tags }}
