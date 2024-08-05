@@ -35,7 +35,7 @@ webrtc = {"url": f"{API_URL}/app/webrtc", "states": {"load": "ScreenShare"}}
 """Initial config for sections."""
 INIT_SECTIONS = {
     "Control": {"space": "Tablet", "app": html("control")},
-    "NMX": {"space": "PC01-Top", "app": webrtc},
+    "Map View": {"space": "PC01-Top", "app": html("map")},
     "Balance of Supply and Demand": {"space": "PC01-Left", "app": html("market")},
     "Markets and Reserve": {"space": "PC01-Right", "app": html("marketsreserve")},
     "NMX Geographic Map": {"space": "PC02-Top", "app": webrtc},

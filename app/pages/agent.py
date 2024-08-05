@@ -42,7 +42,7 @@ grid.add_element(
         style={"height": "100%", "width": "100%"},
     ),
     row=0,
-    col=0,
+    col=1,
 )
 grid.add_element(
     dcc.Graph(
@@ -51,7 +51,7 @@ grid.add_element(
         style={"height": "100%", "width": "100%"},
     ),
     row=0,
-    col=1,
+    col=0,
 )
 grid.add_element(
     dcc.Graph(
