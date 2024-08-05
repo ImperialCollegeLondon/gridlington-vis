@@ -4,4 +4,5 @@ if [ "$1" == "" ]; then
 fi
 
 python3 configure.py version $1
+docker-compose pull dash
 docker-compose up -d
