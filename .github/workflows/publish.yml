@@ -22,7 +22,7 @@ jobs:
         with:
           images: ghcr.io/${{ github.repository }}
           tags: |
-            type=semver,pattern={{raw}}
+            type=ref,event=tag
             type=raw,value=latest,enable=${{ !github.event.release.prerelease }}
             type=raw,value=pre-release,enable=${{ github.event.release.prerelease }}
             type=raw,value=stable,enable=${{ !github.event.release.prerelease && github.event.release.target_commitish == 'main'}}
