@@ -250,6 +250,19 @@ power_sources = [
     "Gas Generation",
 ]
 
+power_sources_names = [
+    "Battery",
+    "Interconnectors",
+    "Offshore Wind",
+    "Onshore Wind",
+    "Other",
+    "Pumped Hydro",
+    "Solar PV",
+    "Nuclear",
+    "Hydro",
+    "Gas",
+]
+
 power_sources_colors = {
     s: c for s, c in zip(power_sources, DEFAULT_PLOTLY_COLORS[: len(power_sources)])
 }
@@ -373,7 +386,7 @@ def generate_total_gen_fig(df: pd.DataFrame) -> px.line:
 
 @figure("Demand Total")
 @legend(show_legend=False)
-@axes(ylabel="Total Demand (GW)", yrange=[-5, 70])
+@axes(ylabel="Total Demand (GW)", yrange=[30, 60])
 def generate_total_dem_fig(df: pd.DataFrame) -> px.line:
     """Creates Plotly figure for Total Demand graph.
 
@@ -426,7 +439,7 @@ def generate_system_freq_fig(df: pd.DataFrame) -> px.line:
     return system_freq_fig
 
 
-@axes(ylabel="MW", yrange=[-100, 100], xdomain=[0, 0.43])
+@axes(ylabel="Power (MW)", yrange=[-100, 100], xdomain=[0, 0.43])
 def generate_intraday_market_sys_fig_left(df: pd.DataFrame) -> go.Figure:
     """Generate left panel of Intraday Market System figure.
 
@@ -444,22 +457,27 @@ def generate_intraday_market_sys_fig_left(df: pd.DataFrame) -> go.Figure:
             "Intra-Day Market Storage",
             "Intra-Day Market Demand",
         ]
+        col_names = [
+            "Gen.",
+            "Sto.",
+            "DSR",
+        ]
         intraday_market_sys_fig_left = go.Figure(
             [
                 go.Scatter(
                     x=df["Time"],
-                    y=df[c],
+                    y=df[columns[c]],
                     mode="lines",
-                    name=c,
+                    name=col_names[c],
                     showlegend=True,
                 )
-                for c in columns
+                for c in [0, 1, 2]
             ]
         )
     return intraday_market_sys_fig_left
 
 
-@axes(ylabel="Intra-Day Market Value (£/MW)", yrange=[-10000, 10000], xdomain=[0.57, 1])
+@axes(ylabel="Value (£/MW)", yrange=[-50000, 50000], xdomain=[0.57, 1])
 def generate_intraday_market_sys_fig_right(df: pd.DataFrame) -> px.line:
     """Generate right panel of Intraday Market System figure.
 
@@ -502,7 +520,7 @@ def generate_intraday_market_sys_fig(df: pd.DataFrame) -> go.Figure:
     return intraday_market_sys_fig
 
 
-@axes(ylabel="MW", yrange=[-250, 250], xdomain=[0, 0.43])
+@axes(ylabel="Power (MW)", yrange=[-250, 250], xdomain=[0, 0.43])
 def generate_balancing_market_fig_left(df: pd.DataFrame) -> go.Figure:
     """Generate left panel for Balancing Market figure.
 
@@ -520,24 +538,27 @@ def generate_balancing_market_fig_left(df: pd.DataFrame) -> go.Figure:
             "Balancing Mechanism Storage",
             "Balancing Mechanism Demand",
         ]
+        col_names = [
+            "Gen.",
+            "Sto.",
+            "DSR",
+        ]
         balancing_market_fig_left = go.Figure(
             [
                 go.Scatter(
                     x=df["Time"],
-                    y=df[c],
+                    y=df[columns[c]],
                     mode="lines",
-                    name=c,
+                    name=col_names[c],
                     showlegend=True,
                 )
-                for c in columns
+                for c in [0, 1, 2]
             ]
         )
     return balancing_market_fig_left
 
 
-@axes(
-    ylabel="Balancing Mechanism Value (£/MW)", yrange=[-50000, 50000], xdomain=[0.57, 1]
-)
+@axes(ylabel="Value (£/MW)", yrange=[-50000, 50000], xdomain=[0.57, 1])
 def generate_balancing_market_fig_right(df: pd.DataFrame) -> go.Figure:
     """Generate right panel for Balancing Market figure.
 
