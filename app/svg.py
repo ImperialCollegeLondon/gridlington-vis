@@ -38,16 +38,16 @@ class SVG:
         self.url = f"data:image/svg+xml;base64,{encoded.decode()}"
 
 
-"""Load SVGs"""
+"""Load SVGs and Gridlington Datafile"""
 with open(Path(__file__).parent / "map.svg", "rt", encoding="utf-8") as f:
     svg_map = SVG(f.read())
 
 with open(Path(__file__).parent / "sld.svg", "rt", encoding="utf-8") as f:
     svg_sld = SVG(f.read())
 
-""" Load the Gridlington JSON data """
 with open(Path(__file__).parent / "GridlingtonData.json", "rt", encoding="utf-8") as f:
     Gridlington = json.load(f)
+
 
 def write_agents_sld(
     centre_x: float,
@@ -193,8 +193,6 @@ def get_agent_map_coordinates(df: pd.DataFrame) -> tuple[list[float], list[float
         x_coordinates.append(poly_c[0] * svg_map.width)
         y_coordinates.append(poly_c[1] * svg_map.width)
 
-    # x_coordinates = np.random.uniform(0, svg_map.width, 1000).tolist()
-    # y_coordinates = np.random.uniform(0, svg_map.height, 1000).tolist()
     return x_coordinates, y_coordinates
 
 
