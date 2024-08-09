@@ -2,10 +2,12 @@
 
 import base64
 import math
+import json
 from pathlib import Path
 
 import numpy as np
 import pandas as pd
+
 
 
 class SVG:
@@ -44,6 +46,9 @@ with open(Path(__file__).parent / "map.svg", "rt", encoding="utf-8") as f:
 with open(Path(__file__).parent / "sld.svg", "rt", encoding="utf-8") as f:
     svg_sld = SVG(f.read())
 
+""" Load the Gridlington JSON data """
+with open(Path(__file__).parent / "GridlingtonData.json", "rt", encoding="utf-8") as f:
+    Gridlington = json.load(f)
 
 def write_agents_sld(
     centre_x: float,
@@ -178,8 +183,18 @@ def get_agent_map_coordinates(df: pd.DataFrame) -> tuple[list[float], list[float
     Returns:
         tuple[list[float], list[float]]: lists of x and y coordinates
     """
-    x_coordinates = np.random.uniform(0, svg_map.width, 1000).tolist()
-    y_coordinates = np.random.uniform(0, svg_map.height, 1000).tolist()
+
+    x_coordinates = []
+    y_coordinates = []
+    agent_polys = np.random.uniform(0, len(Gridlington['Polygons']['ID'])-1, 1000).tolist()
+
+    for poly in agent_polys:
+        poly_c = Gridlington['Polygons']['SVG_Centre'][round(poly)]
+        x_coordinates.append(poly_c[0]*svg_map.width)
+        y_coordinates.append(poly_c[1]*svg_map.width)
+
+    #x_coordinates = np.random.uniform(0, svg_map.width, 1000).tolist()
+    #y_coordinates = np.random.uniform(0, svg_map.height, 1000).tolist()
     return x_coordinates, y_coordinates
 
 
@@ -191,7 +206,7 @@ def get_ev_map_coordinates(df: pd.DataFrame) -> tuple[list[float], list[float]]:
         will then output two lists containing the x and y coordinates of each
         EV
 
-    For now, this is just making up random data
+    For now, this is just making up random polygon number
 
     Args:
         df (pd.DataFrame): Opal/DSR dataframe?
@@ -199,8 +214,15 @@ def get_ev_map_coordinates(df: pd.DataFrame) -> tuple[list[float], list[float]]:
     Returns:
         tuple[list[float], list[float]]: lists of x and y coordinates
     """
-    x_coordinates = np.random.uniform(0, svg_map.width, 1000).tolist()
-    y_coordinates = np.random.uniform(0, svg_map.height, 1000).tolist()
+    x_coordinates = []
+    y_coordinates = []
+    agent_polys = np.random.uniform(0, len(Gridlington['Polygons']['ID'])-1, 1000).tolist()
+
+    for poly in agent_polys:
+        poly_c = Gridlington['Polygons']['SVG_Centre'][round(poly)]
+        x_coordinates.append(poly_c[0]*svg_map.width)
+        y_coordinates.append(poly_c[1]*svg_map.width)
+
     return x_coordinates, y_coordinates
 
 
