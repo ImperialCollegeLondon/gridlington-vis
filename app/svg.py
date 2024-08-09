@@ -1,13 +1,12 @@
 """Module for handling and displaying SVGs."""
 
 import base64
-import math
 import json
+import math
 from pathlib import Path
 
 import numpy as np
 import pandas as pd
-
 
 
 class SVG:
@@ -183,18 +182,19 @@ def get_agent_map_coordinates(df: pd.DataFrame) -> tuple[list[float], list[float
     Returns:
         tuple[list[float], list[float]]: lists of x and y coordinates
     """
-
     x_coordinates = []
     y_coordinates = []
-    agent_polys = np.random.uniform(0, len(Gridlington['Polygons']['ID'])-1, 1000).tolist()
+    agent_polys = np.random.uniform(
+        0, len(Gridlington["Polygons"]["ID"]) - 1, 1000
+    ).tolist()
 
     for poly in agent_polys:
-        poly_c = Gridlington['Polygons']['SVG_Centre'][round(poly)]
-        x_coordinates.append(poly_c[0]*svg_map.width)
-        y_coordinates.append(poly_c[1]*svg_map.width)
+        poly_c = Gridlington["Polygons"]["SVG_Centre"][round(poly)]
+        x_coordinates.append(poly_c[0] * svg_map.width)
+        y_coordinates.append(poly_c[1] * svg_map.width)
 
-    #x_coordinates = np.random.uniform(0, svg_map.width, 1000).tolist()
-    #y_coordinates = np.random.uniform(0, svg_map.height, 1000).tolist()
+    # x_coordinates = np.random.uniform(0, svg_map.width, 1000).tolist()
+    # y_coordinates = np.random.uniform(0, svg_map.height, 1000).tolist()
     return x_coordinates, y_coordinates
 
 
@@ -216,12 +216,14 @@ def get_ev_map_coordinates(df: pd.DataFrame) -> tuple[list[float], list[float]]:
     """
     x_coordinates = []
     y_coordinates = []
-    agent_polys = np.random.uniform(0, len(Gridlington['Polygons']['ID'])-1, 1000).tolist()
+    agent_polys = np.random.uniform(
+        0, len(Gridlington["Polygons"]["ID"]) - 1, 1000
+    ).tolist()
 
     for poly in agent_polys:
-        poly_c = Gridlington['Polygons']['SVG_Centre'][round(poly)]
-        x_coordinates.append(poly_c[0]*svg_map.width)
-        y_coordinates.append(poly_c[1]*svg_map.width)
+        poly_c = Gridlington["Polygons"]["SVG_Centre"][round(poly)]
+        x_coordinates.append(poly_c[0] * svg_map.width)
+        y_coordinates.append(poly_c[1] * svg_map.width)
 
     return x_coordinates, y_coordinates
 
