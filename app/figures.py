@@ -778,6 +778,7 @@ def generate_dsr_commands_fig(df: pd.DataFrame) -> px.line:
     )
     return dsr_commands_fig
 
+
 @figure("EV Charging Demand")
 @axes(ylabel="MW", yrange=[-0.5, 4.5])
 def generate_ev_demand_fig(df: pd.DataFrame) -> px.line:
@@ -797,12 +798,8 @@ def generate_ev_demand_fig(df: pd.DataFrame) -> px.line:
                 "Time",
             ]
         ].copy()
-        figure_data["Planned"] = (
-            df["Expected Ev Charging Power"]
-        )
-        figure_data["Actual"] = (
-            df["Real Ev Charging Power"]
-        )
+        figure_data["Planned"] = df["Expected Ev Charging Power"]
+        figure_data["Actual"] = df["Real Ev Charging Power"]
         ev_demand_fig = px.line(
             figure_data,
             x="Time",
@@ -817,6 +814,7 @@ def generate_ev_demand_fig(df: pd.DataFrame) -> px.line:
         legend=dict(font=dict(size=15)),
     )
     return ev_demand_fig
+
 
 def sainte_lague_algorithm(votes: list[int], seats: int) -> list[int]:
     """Saint-Lague algorithm for proportional representation in voting.

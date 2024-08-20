@@ -18,9 +18,9 @@ from ..figures import (
     generate_agent_activity_breakdown_fig,
     generate_balancing_market_fig,
     generate_dsr_commands_fig,
-    generate_ev_demand_fig,
     generate_energy_deficit_fig,
     generate_ev_charging_breakdown_fig,
+    generate_ev_demand_fig,
     generate_intraday_market_sys_fig,
     generate_map_fig,
     generate_total_dem_fig,
@@ -148,14 +148,24 @@ layout = grid.layout
 )
 def update_figures(
     n_intervals: int,
-) -> tuple[go.Figure, px.line, px.line, go.Figure, go.Figure, px.line, px.line, go.Figure, go.Figure]:
+) -> tuple[
+    go.Figure,
+    px.line,
+    px.line,
+    go.Figure,
+    go.Figure,
+    px.line,
+    px.line,
+    go.Figure,
+    go.Figure,
+]:
     """Function to update the plots in this page.
 
     Args:
         n_intervals (int): The number of times this page has updated.
             indexes by 1 every interval.
 
-    Returns: # TODO check this
+    Returns:
         tuple[px.line,
         px.line,
         px.line,
