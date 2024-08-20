@@ -41,8 +41,8 @@ INIT_SECTIONS = {
     "Single Line Diagram": {"space": "PC02-Top", "app": html("sld")},
     "NMX 11kV Schematic": {"space": "PC02-Left", "app": webrtc},
     "NMX Issues": {"space": "PC02-Right", "app": webrtc},
-    "Overview": {"space": "Hub01", "app": html("overview")},
-    "Agent": {"space": "Hub02", "app": html("agent")},
+    "Agent": {"space": "Hub01", "app": html("agent")},
+    "Overview": {"space": "Hub02", "app": html("overview")},
 }
 
 
