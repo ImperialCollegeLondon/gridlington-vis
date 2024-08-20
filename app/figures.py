@@ -439,7 +439,7 @@ def generate_system_freq_fig(df: pd.DataFrame) -> px.line:
     return system_freq_fig
 
 
-@axes(ylabel="Power (MW)", yrange=[-100, 100], xdomain=[0, 0.43])
+@axes(ylabel="Power (MW)", yrange=[-250, 250], xdomain=[0, 0.43])
 def generate_intraday_market_sys_fig_left(df: pd.DataFrame) -> go.Figure:
     """Generate left panel of Intraday Market System figure.
 
@@ -739,7 +739,7 @@ def generate_dsr_fig(df: pd.DataFrame) -> go.Figure:
 
 
 @figure("Overall Gridlington DSR Action")
-@axes(ylabel="MW", yrange=[-8, 8])
+@axes(ylabel="MW", yrange=[-3.5, 1.5])
 def generate_dsr_commands_fig(df: pd.DataFrame) -> px.line:
     """Creates Plotly figure for DSR Commands to Agents graph.
 
