@@ -738,7 +738,7 @@ def generate_dsr_fig(df: pd.DataFrame) -> go.Figure:
     return dsr_fig
 
 
-@figure("DSR Commands to Agents")
+@figure("Overall Gridlington DSR Action")
 @axes(ylabel="MW", yrange=[-8, 8])
 def generate_dsr_commands_fig(df: pd.DataFrame) -> px.line:
     """Creates Plotly figure for DSR Commands to Agents graph.
@@ -757,18 +757,18 @@ def generate_dsr_commands_fig(df: pd.DataFrame) -> px.line:
                 "Time",
             ]
         ].copy()
-        figure_data["Name"] = (  # TODO: Give this column an appropriate name
+        figure_data["Home"] = (  # TODO: Give this column an appropriate name
             df["Real Gridlington Demand"] - df["Expected Gridlington Demand"]
-        ) + (df["Real Ev Charging Power"] - df["Expected Ev Charging Power"])
-        figure_data["Name2"] = (  # TODO: Give this column an appropriate name
+        ) - (df["Real Ev Charging Power"] - df["Expected Ev Charging Power"])
+        figure_data["EV"] = (  # TODO: Give this column an appropriate name
             df["Real Ev Charging Power"] - df["Expected Ev Charging Power"]
         )
         dsr_commands_fig = px.line(
             figure_data,
             x="Time",
             y=[
-                "Name",
-                "Name2",
+                "Home",
+                "EV",
             ],
         )
 
@@ -778,6 +778,45 @@ def generate_dsr_commands_fig(df: pd.DataFrame) -> px.line:
     )
     return dsr_commands_fig
 
+@figure("EV Charging Demand")
+@axes(ylabel="MW", yrange=[-0.5, 4.5])
+def generate_ev_demand_fig(df: pd.DataFrame) -> px.line:
+    """Creates Plotly figure for EV charging planned vs real.
+
+    Args:
+        df: Opal data DataFrame
+
+    Returns:
+        Plotly express figure
+    """
+    if len(df.columns) == 1:
+        ev_demand_fig = px.line()
+    else:
+        figure_data = df[
+            [
+                "Time",
+            ]
+        ].copy()
+        figure_data["Planned"] = (
+            df["Expected Ev Charging Power"]
+        )
+        figure_data["Actual"] = (
+            df["Real Ev Charging Power"]
+        )
+        ev_demand_fig = px.line(
+            figure_data,
+            x="Time",
+            y=[
+                "Planned",
+                "Actual",
+            ],
+        )
+
+    ev_demand_fig.update_layout(
+        legend_title=None,
+        legend=dict(font=dict(size=15)),
+    )
+    return ev_demand_fig
 
 def sainte_lague_algorithm(votes: list[int], seats: int) -> list[int]:
     """Saint-Lague algorithm for proportional representation in voting.

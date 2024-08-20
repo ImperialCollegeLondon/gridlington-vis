@@ -18,6 +18,7 @@ from ..figures import (
     generate_agent_activity_breakdown_fig,
     generate_balancing_market_fig,
     generate_dsr_commands_fig,
+    generate_ev_demand_fig,
     generate_energy_deficit_fig,
     generate_ev_charging_breakdown_fig,
     generate_intraday_market_sys_fig,
@@ -38,6 +39,7 @@ energy_deficit_fig = generate_energy_deficit_fig(df)
 balancing_market_fig = generate_balancing_market_fig(df)
 intraday_market_sys_fig = generate_intraday_market_sys_fig(df)
 dsr_commands_fig = generate_dsr_commands_fig(df)
+ev_demand_fig = generate_ev_demand_fig(df)
 agent_activity_breakdown_fig = generate_agent_activity_breakdown_fig(df)
 ev_charging_breakdown_fig = generate_ev_charging_breakdown_fig(df)
 
@@ -58,17 +60,9 @@ grid.add_element(
         style={"height": "100%", "width": "100%"},
     ),
     row=0,
-    col=1,
+    col=0,
 )
-# grid.add_element(
-#     dcc.Graph(
-#         id="ov-demand",
-#         figure=total_dem_fig,
-#         style={"height": "100%", "width": "100%"},
-#     ),
-#     row=1,
-#     col=1,
-# )
+
 grid.add_element(
     dcc.Graph(
         id="ov-energy-deficit",
@@ -76,7 +70,7 @@ grid.add_element(
         style={"height": "100%", "width": "100%"},
     ),
     row=1,
-    col=1,
+    col=0,
 )
 grid.add_element(
     dcc.Graph(
@@ -85,7 +79,7 @@ grid.add_element(
         style={"height": "100%", "width": "100%"},
     ),
     row=0,
-    col=2,
+    col=1,
 )
 grid.add_element(
     dcc.Graph(
@@ -94,17 +88,29 @@ grid.add_element(
         style={"height": "100%", "width": "100%"},
     ),
     row=1,
+    col=1,
+)
+
+grid.add_element(
+    dcc.Graph(
+        id="ov-dsr",
+        figure=dsr_commands_fig,
+        style={"height": "100%", "width": "100%"},
+    ),
+    row=0,
     col=2,
 )
-# grid.add_element(
-#     dcc.Graph(
-#         id="ov-dsr",
-#         figure=dsr_commands_fig,
-#         style={"height": "100%", "width": "100%"},
-#     ),
-#     row=2,
-#     col=2,
-# )
+
+grid.add_element(
+    dcc.Graph(
+        id="ov-ev",
+        figure=ev_demand_fig,
+        style={"height": "100%", "width": "100%"},
+    ),
+    row=1,
+    col=2,
+)
+
 grid.add_element(
     dcc.Graph(
         id="ov-agent-waffle",
@@ -133,6 +139,8 @@ layout = grid.layout
         Output("ov-energy-deficit", "figure"),
         Output("ov-bm", "figure"),
         Output("ov-id", "figure"),
+        Output("ov-dsr", "figure"),
+        Output("ov-ev", "figure"),
         Output("ov-agent-waffle", "figure"),
         Output("ov-ev-waffle", "figure"),
     ],
@@ -140,14 +148,14 @@ layout = grid.layout
 )
 def update_figures(
     n_intervals: int,
-) -> tuple[go.Figure, px.line, px.line, go.Figure, go.Figure, go.Figure, go.Figure]:
+) -> tuple[go.Figure, px.line, px.line, go.Figure, go.Figure, px.line, px.line, go.Figure, go.Figure]:
     """Function to update the plots in this page.
 
     Args:
         n_intervals (int): The number of times this page has updated.
             indexes by 1 every interval.
 
-    Returns:
+    Returns: # TODO check this
         tuple[px.line,
         px.line,
         px.line,
@@ -166,7 +174,8 @@ def update_figures(
     energy_deficit_fig = generate_energy_deficit_fig(DF_OPAL)
     balancing_market_fig = generate_balancing_market_fig(DF_OPAL)
     intraday_market_sys_fig = generate_intraday_market_sys_fig(DF_OPAL)
-    # dsr_commands_fig = generate_dsr_commands_fig(DF_OPAL)
+    dsr_commands_fig = generate_dsr_commands_fig(DF_OPAL)
+    ev_demand_fig = generate_ev_demand_fig(DF_OPAL)
     agent_activity_breakdown_fig = generate_agent_activity_breakdown_fig(DF_OPAL)
     ev_charging_breakdown_fig = generate_ev_charging_breakdown_fig(DF_OPAL)
 
@@ -178,7 +187,8 @@ def update_figures(
         energy_deficit_fig,
         balancing_market_fig,
         intraday_market_sys_fig,
-        # dsr_commands_fig,
+        dsr_commands_fig,
+        ev_demand_fig,
         agent_activity_breakdown_fig,
         ev_charging_breakdown_fig,
     )
