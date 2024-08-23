@@ -255,7 +255,7 @@ def generate_sld_location_svg(
 def generate_map_location_svg(
     x_coordinates: list[float],
     y_coordinates: list[float],
-    dot_size: float = 1.5,
+    dot_size: float = 3,
     colour: str = "#6A0DAD",
 ) -> SVG:
     """Generates an SVG of agent/EV locations for placement over the map image.
@@ -274,8 +274,8 @@ def generate_map_location_svg(
     for x, y in zip(x_coordinates, y_coordinates):
         svg += (
             f'<circle fill="{colour}" '
-            f'stroke="#000000" '
-            f'stroke-width="0" '
+            f'stroke="#FFFFFF" '
+            f'stroke-width="1" '
             f'cx="{x}" '
             f'cy="{y}" '
             f'r="{dot_size}"/>\n'
