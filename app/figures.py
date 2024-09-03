@@ -1146,7 +1146,7 @@ def generate_reserve_generation_fig(wesim_data: dict[str, pd.DataFrame]) -> go.F
     return reserve_generation_fig
 
 
-@figure("Agent and EV Locations")
+@figure("Map of Gridlington")
 def generate_map_fig(df: pd.DataFrame) -> go.Figure:
     """Creates map figure.
 
