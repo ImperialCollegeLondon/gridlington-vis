@@ -48,6 +48,45 @@ with open(Path(__file__).parent / "sld.svg", "rt", encoding="utf-8") as f:
 with open(Path(__file__).parent / "GridlingtonData.json", "rt", encoding="utf-8") as f:
     Gridlington = json.load(f)
 
+with open(
+    Path(__file__).parent / "Agent_Location_Data.json", "rt", encoding="utf-8"
+) as f:
+    Agent_Locations = json.load(f)
+
+
+def rotate_point_svg(
+    point: tuple[float, float],
+    center: tuple[float, float],
+    angle: float,
+) -> tuple[float, float]:
+    """Rotates a point around a center point with a flipped y-axis (like in SVG).
+
+    Args:
+        point (tuple): The (x, y) coordinates of the point to rotate.
+        center (tuple): The (cx, cy) coordinates of the center point.
+        angle (float): The angle of rotation in degrees.
+
+    Returns:
+        tuple: The (x, y) coordinates of the rotated point.
+    """
+    angle_rad = math.radians(angle)  # Convert angle to radians
+    x, y = point
+    cx, cy = center
+
+    # Translate point back to origin
+    x -= cx
+    y -= cy
+
+    # Rotate point (accounting for flipped y-axis)
+    x_new = x * math.cos(angle_rad) + y * math.sin(angle_rad)
+    y_new = -x * math.sin(angle_rad) + y * math.cos(angle_rad)
+
+    # Translate point back
+    x_new += cx
+    y_new += cy
+
+    return x_new, y_new
+
 
 def write_agents_sld(
     centre_x: float,
@@ -58,7 +97,7 @@ def write_agents_sld(
     radius: float = 17.06,
     radius_delta: float = 4.0,
     dot_size: float = 1.5,
-    colour: str = "#6A0DAD",
+    colour: str = "#FFAA00",
 ) -> str:
     """Creates an SVG string of circles representing agents/EVs at a given locus.
 
@@ -182,16 +221,19 @@ def get_agent_map_coordinates(df: pd.DataFrame) -> tuple[list[float], list[float
     Returns:
         tuple[list[float], list[float]]: lists of x and y coordinates
     """
+    time_of_day = len(df.columns)
     x_coordinates = []
     y_coordinates = []
-    agent_polys = np.random.uniform(
-        0, len(Gridlington["Polygons"]["ID"]) - 1, 1000
-    ).tolist()
+    # agent_polys = np.random.uniform(
+    #     0, len(Gridlington["Polygons"]["ID"]) - 1, 1000
+    # ).tolist()
+
+    agent_polys = Agent_Locations[time_of_day]
 
     for poly in agent_polys:
         poly_c = Gridlington["Polygons"]["SVG_Centre"][round(poly)]
-        x_coordinates.append(poly_c[0] * svg_map.width)
-        y_coordinates.append(poly_c[1] * svg_map.width)
+        x_coordinates.append(poly_c[0] * (svg_map.width - 400))
+        y_coordinates.append(poly_c[1] * (svg_map.width - 400))
 
     return x_coordinates, y_coordinates
 
@@ -214,14 +256,15 @@ def get_ev_map_coordinates(df: pd.DataFrame) -> tuple[list[float], list[float]]:
     """
     x_coordinates = []
     y_coordinates = []
-    agent_polys = np.random.uniform(
-        0, len(Gridlington["Polygons"]["ID"]) - 1, 1000
-    ).tolist()
+    # ev_polys = np.random.uniform(
+    #     0, len(Gridlington["Polygons"]["ID"]) - 1, 1000
+    # ).tolist()
+    ev_polys = [1]
 
-    for poly in agent_polys:
+    for poly in ev_polys:
         poly_c = Gridlington["Polygons"]["SVG_Centre"][round(poly)]
-        x_coordinates.append(poly_c[0] * svg_map.width)
-        y_coordinates.append(poly_c[1] * svg_map.width)
+        x_coordinates.append(poly_c[0] * (svg_map.width - 400))
+        y_coordinates.append(poly_c[1] * (svg_map.width - 400))
 
     return x_coordinates, y_coordinates
 
@@ -256,7 +299,7 @@ def generate_map_location_svg(
     x_coordinates: list[float],
     y_coordinates: list[float],
     dot_size: float = 3,
-    colour: str = "#6A0DAD",
+    colour: str = "#FFF000",
 ) -> SVG:
     """Generates an SVG of agent/EV locations for placement over the map image.
 
@@ -275,10 +318,146 @@ def generate_map_location_svg(
         svg += (
             f'<circle fill="{colour}" '
             f'stroke="#FFFFFF" '
-            f'stroke-width="1" '
+            f'stroke-width="0" '
             f'cx="{x}" '
             f'cy="{y}" '
             f'r="{dot_size}"/>\n'
         )
+    svg += "</svg>"
+    return SVG(svg)
+
+
+def generate_map_clock_svg(
+    opal_data: pd.DataFrame,
+    clock_cx: float = 2319,
+    clock_cy: float = 250,
+    clock_r: float = 150,
+    sim_hour: float = 1,
+    sim_min: float = 0,
+) -> SVG:
+    """Generates an SVG of the clock hands to show the time.
+
+    Args:
+        opal_data (pd.DataFrame): Opal dataframe
+        clock_cx (float, optional): Clock centre x coordinate (defaults to 2319)
+        clock_cy (float, optional): Clock centre y coordinate (defaults to 250)
+        clock_r (float, optional): Clock radius (defaults to 150)
+        sim_hour (float, optional): the hour component of the sim time (defaults to 1)
+        sim_min (float, optional): the minute component of the sim time (defaults to 0)
+
+    Returns:
+        SVG: SVG of clock hands for placement over map
+    """
+    if len(opal_data.columns) == 1:  # No data so default to 3 o clock
+        sim_hour = 3
+        sim_min = 0
+        sim_date = "Please Wait ..."
+        print("oops")
+    else:  # strip the last datapoint for time into date and time, and then hours, mins
+        sim_date_time = opal_data["Time"].values[-1]
+        [sim_date, sim_time] = sim_date_time.split(" ", 1)
+        [sim_hour, sim_min, sim_sec] = sim_time.split(":", 2)
+        sim_hour = int(sim_hour)
+        sim_min = int(sim_min)
+
+    hour_colour = "#085573"
+    hour_width = 9
+
+    hour_length = clock_r / 2
+
+    hour_x1 = clock_cx
+    hour_y1 = clock_cy
+    hour_x2 = clock_cx
+    hour_y2 = clock_cy - hour_length
+
+    if sim_hour >= 12:
+        hour_angle = (sim_hour - 12) * -30
+    else:
+        hour_angle = sim_hour * -30
+
+    [hour_x1, hour_y1] = rotate_point_svg(
+        (hour_x1, hour_y1), (clock_cx, clock_cy), hour_angle
+    )
+    [hour_x2, hour_y2] = rotate_point_svg(
+        (hour_x2, hour_y2), (clock_cx, clock_cy), hour_angle
+    )
+
+    clock_hour = (
+        '<line x1="'
+        + f"{hour_x1:.2f}"
+        + '" y1="'
+        + f"{hour_y1:.2f}"
+        + '" x2="'
+        + f"{hour_x2:.2f}"
+        + '" y2="'
+        + f"{hour_y2:.2f}"
+        + '" stroke="'
+        + hour_colour
+        + '" stroke-width="'
+        + str(hour_width)
+        + '" />\n'
+    )
+
+    minute_colour = "#10A3DD"
+    minute_width = 7
+    minute_length = 5 * clock_r / 6
+
+    minute_x1 = clock_cx
+    minute_y1 = clock_cy
+    minute_x2 = clock_cx
+    minute_y2 = clock_cy - minute_length
+
+    minute_angle = sim_min * -6
+
+    [minute_x1, minute_y1] = rotate_point_svg(
+        (minute_x1, minute_y1), (clock_cx, clock_cy), minute_angle
+    )
+    [minute_x2, minute_y2] = rotate_point_svg(
+        (minute_x2, minute_y2), (clock_cx, clock_cy), minute_angle
+    )
+
+    clock_minute = (
+        '<line x1="'
+        + f"{minute_x1:.2f}"
+        + '" y1="'
+        + f"{minute_y1:.2f}"
+        + '" x2="'
+        + f"{minute_x2:.2f}"
+        + '" y2="'
+        + f"{minute_y2:.2f}"
+        + '" stroke="'
+        + minute_colour
+        + '" stroke-width="'
+        + str(minute_width)
+        + '" />\n'
+    )
+
+    clock_time = (
+        '<text x="'
+        + str(clock_cx)
+        + '" y="'
+        + str(clock_cy + clock_r + 60)
+        + '" fill="black" font-size="35" text-anchor="middle">'
+        + f"{sim_hour:02}"
+        + ":"
+        + f"{sim_min:02}"
+        + "</text>\n"
+    )
+
+    clock_date = (
+        '<text x="'
+        + str(clock_cx)
+        + '" y="'
+        + str(clock_cy + clock_r + 120)
+        + '" fill="black" font-size="35" text-anchor="middle">'
+        + sim_date
+        + "</text>\n"
+    )
+
+    svg = svg_map.header
+    svg += clock_hour
+    svg += clock_minute
+    svg += clock_time
+    svg += clock_date
     svg += "</svg>"
     return SVG(svg)

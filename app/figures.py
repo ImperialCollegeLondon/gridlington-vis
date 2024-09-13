@@ -11,6 +11,7 @@ from plotly.colors import DEFAULT_PLOTLY_COLORS  # type: ignore
 from plotly.subplots import make_subplots  # type: ignore
 
 from .svg import (
+    generate_map_clock_svg,
     generate_map_location_svg,
     generate_sld_location_svg,
     get_agent_map_coordinates,
@@ -1157,13 +1158,15 @@ def generate_map_fig(df: pd.DataFrame) -> go.Figure:
         go.Figure: Plotly figure object
     """
     agent_x, agent_y = get_agent_map_coordinates(df)
-    agent_svg = generate_map_location_svg(agent_x, agent_y, colour="#6A0DAD")
+    agent_svg = generate_map_location_svg(agent_x, agent_y, colour="#FFAA00")
     ev_x, ev_y = get_ev_map_coordinates(df)
-    ev_svg = generate_map_location_svg(ev_x, ev_y, colour="#fcba03")
+    ev_svg = generate_map_location_svg(ev_x, ev_y, colour="#000000")
+    clock_svg = generate_map_clock_svg(df)
 
     map_fig = go.Figure()
     args = {"x": 0, "y": 1, "xref": "paper", "yref": "paper", "sizex": 1, "sizey": 1}
     map_fig.add_layout_image(source=svg_map.url, **args)
+    map_fig.add_layout_image(source=clock_svg.url, **args)
     map_fig.add_layout_image(source=agent_svg.url, **args)
     map_fig.add_layout_image(source=ev_svg.url, **args)
     map_fig.update_layout(yaxis=dict(scaleanchor="x"), plot_bgcolor="rgba(0,0,0,0)")
