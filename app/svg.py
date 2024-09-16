@@ -352,7 +352,7 @@ def generate_map_clock_svg(
         sim_hour = 3
         sim_min = 0
         sim_date = "Please Wait ..."
-        print("oops")
+        #print("oops")
     else:  # strip the last datapoint for time into date and time, and then hours, mins
         sim_date_time = opal_data["Time"].values[-1]
         [sim_date, sim_time] = sim_date_time.split(" ", 1)
