@@ -5998,18 +5998,23 @@ width="2519px" height="1312px" viewBox="0 0 2519 1312" enable-background="new 0 
 <rect width="40" height="10 " x="335" y="1272" fill="#085573" />
 <rect width="40" height="10 " x="375" y="1272" fill="#FFFFFF" />
 <text x="20" y="1262" fill="#085573">Approximate scale 1 rectangle = 200m</text>
-<circle cx="2319" cy="250" r="150" fill ="#F0F0F0" stroke="#404040" stroke-width="3" />
-<line x1="2319.00" y1="100.00" x2="2319.00" y2="145.00" stroke="#404040" stroke-width="5" />
-<line x1="2244.00" y1="120.10" x2="2259.00" y2="146.08" stroke="#404040" stroke-width="3" />
-<line x1="2189.10" y1="175.00" x2="2215.08" y2="190.00" stroke="#404040" stroke-width="3" />
-<line x1="2169.00" y1="250.00" x2="2214.00" y2="250.00" stroke="#404040" stroke-width="5" />
-<line x1="2189.10" y1="325.00" x2="2215.08" y2="310.00" stroke="#404040" stroke-width="3" />
-<line x1="2244.00" y1="379.90" x2="2259.00" y2="353.92" stroke="#404040" stroke-width="3" />
-<line x1="2319.00" y1="400.00" x2="2319.00" y2="355.00" stroke="#404040" stroke-width="5" />
-<line x1="2394.00" y1="379.90" x2="2379.00" y2="353.92" stroke="#404040" stroke-width="3" />
-<line x1="2448.90" y1="325.00" x2="2422.92" y2="310.00" stroke="#404040" stroke-width="3" />
-<line x1="2469.00" y1="250.00" x2="2424.00" y2="250.00" stroke="#404040" stroke-width="5" />
-<line x1="2448.90" y1="175.00" x2="2422.92" y2="190.00" stroke="#404040" stroke-width="3" />
-<line x1="2394.00" y1="120.10" x2="2379.00" y2="146.08" stroke="#404040" stroke-width="3" />
-<text x="2319" y="70" fill="black" font-size="35" text-anchor="middle">Time of Day</text>
-</svg>
+<circle cx="2368" cy="400" r="150" fill ="#F0F0F0" stroke="#404040" stroke-width="3" />
+<line x1="2368.00" y1="250.00" x2="2368.00" y2="295.00" stroke="#404040" stroke-width="5" />
+<line x1="2293.00" y1="270.10" x2="2308.00" y2="296.08" stroke="#404040" stroke-width="3" />
+<line x1="2238.10" y1="325.00" x2="2264.08" y2="340.00" stroke="#404040" stroke-width="3" />
+<line x1="2218.00" y1="400.00" x2="2263.00" y2="400.00" stroke="#404040" stroke-width="5" />
+<line x1="2238.10" y1="475.00" x2="2264.08" y2="460.00" stroke="#404040" stroke-width="3" />
+<line x1="2293.00" y1="529.90" x2="2308.00" y2="503.92" stroke="#404040" stroke-width="3" />
+<line x1="2368.00" y1="550.00" x2="2368.00" y2="505.00" stroke="#404040" stroke-width="5" />
+<line x1="2443.00" y1="529.90" x2="2428.00" y2="503.92" stroke="#404040" stroke-width="3" />
+<line x1="2497.90" y1="475.00" x2="2471.92" y2="460.00" stroke="#404040" stroke-width="3" />
+<line x1="2518.00" y1="400.00" x2="2473.00" y2="400.00" stroke="#404040" stroke-width="5" />
+<line x1="2497.90" y1="325.00" x2="2471.92" y2="340.00" stroke="#404040" stroke-width="3" />
+<line x1="2443.00" y1="270.10" x2="2428.00" y2="296.08" stroke="#404040" stroke-width="3" />
+<text x="2368" y="220" fill="black" font-size="35" text-anchor="middle">Time of Day</text>
+<text x="2368" y="800" fill="black" font-size="35" text-anchor="middle" text-decoration="underline">Map Legend</text>
+<text x="2218" y="875" fill="black" font-size="25" text-anchor="right">Residence - </text>
+<rect width="60" height="40" x="2458" y="845.0" fill="#10A3DD" /><text x="2218" y="950" fill="black" font-size="25" text-anchor="right">Workplace - </text>
+<rect width="60" height="40" x="2458" y="920.0" fill="#085573" /><text x="2218" y="1025" fill="black" font-size="25" text-anchor="right">Resident - </text>
+<circle r="15" cx="2488.0" cy="1015" fill="#6A0DAD" /><text x="2218" y="1100" fill="black" font-size="25" text-anchor="right">Electric Vehicle - </text>
+<circle r="15" cx="2488.0" cy="1090" fill="#fcba03" /></svg>
