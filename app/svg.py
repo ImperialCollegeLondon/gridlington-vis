@@ -329,8 +329,8 @@ def generate_map_location_svg(
 
 def generate_map_clock_svg(
     opal_data: pd.DataFrame,
-    clock_cx: float = 2319,
-    clock_cy: float = 250,
+    clock_cx: float = 2359,
+    clock_cy: float = 400,
     clock_r: float = 150,
     sim_hour: float = 1,
     sim_min: float = 0,
