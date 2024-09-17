@@ -6015,6 +6015,6 @@ width="2519px" height="1312px" viewBox="0 0 2519 1312" enable-background="new 0 
 <text x="2368" y="800" fill="black" font-size="35" text-anchor="middle" text-decoration="underline">Map Legend</text>
 <text x="2218" y="875" fill="black" font-size="25" text-anchor="right">Residence - </text>
 <rect width="60" height="40" x="2458" y="845.0" fill="#10A3DD" /><text x="2218" y="950" fill="black" font-size="25" text-anchor="right">Workplace - </text>
-<rect width="60" height="40" x="2458" y="920.0" fill="#085573" /><text x="2218" y="1025" fill="black" font-size="25" text-anchor="right">Resident - </text>
-<circle r="15" cx="2488.0" cy="1015" fill="#6A0DAD" /><text x="2218" y="1100" fill="black" font-size="25" text-anchor="right">Electric Vehicle - </text>
-<circle r="15" cx="2488.0" cy="1090" fill="#fcba03" /></svg>
+<rect width="60" height="40" x="2458" y="920.0" fill="#085573" /><text x="2218" y="1025" fill="black" font-size="25" text-anchor="right">Residents - </text>
+<circle r="10" cx="2488.0" cy="1015" fill="#fcba03" /><text x="2218" y="1100" fill="black" font-size="25" text-anchor="right">Electric Vehicles - </text>
+<circle r="10" cx="2488.0" cy="1090" fill="#6A0DAD" /></svg>
