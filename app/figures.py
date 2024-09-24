@@ -1158,9 +1158,11 @@ def generate_map_fig(df: pd.DataFrame) -> go.Figure:
         go.Figure: Plotly figure object
     """
     agent_x, agent_y = get_agent_map_coordinates(df)
-    agent_svg = generate_map_location_svg(agent_x, agent_y, colour="#FFAA00")
+    agent_svg = generate_map_location_svg(
+        agent_x, agent_y, dot_size=1, colour="#FFAA00"
+    )
     ev_x, ev_y = get_ev_map_coordinates(df)
-    ev_svg = generate_map_location_svg(ev_x, ev_y, colour="#000000")
+    ev_svg = generate_map_location_svg(ev_x, ev_y, dot_size=1, colour="#6A0DAD")
     clock_svg = generate_map_clock_svg(df)
 
     map_fig = go.Figure()

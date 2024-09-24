@@ -48,10 +48,8 @@ with open(Path(__file__).parent / "sld.svg", "rt", encoding="utf-8") as f:
 with open(Path(__file__).parent / "GridlingtonData.json", "rt", encoding="utf-8") as f:
     Gridlington = json.load(f)
 
-with open(
-    Path(__file__).parent / "Agent_Location_Data.json", "rt", encoding="utf-8"
-) as f:
-    Agent_Locations = json.load(f)
+with open(Path(__file__).parent / "Location_Data.json", "rt", encoding="utf-8") as f:
+    Location_Data = json.load(f)
 
 
 def rotate_point_svg(
@@ -221,19 +219,31 @@ def get_agent_map_coordinates(df: pd.DataFrame) -> tuple[list[float], list[float
     Returns:
         tuple[list[float], list[float]]: lists of x and y coordinates
     """
-    time_of_day = len(df.columns)
+    if len(df.columns) == 1:  # No data so default to 3 o clock
+        time_of_day = 1
+    else:  # strip the last datapoint for time into date and time, and then hours, mins
+        sim_date_time = df["Time"].values[-1]
+        [sim_date, sim_time] = sim_date_time.split(" ", 1)
+        [sim_hour, sim_min, sim_sec] = sim_time.split(":", 2)
+        sim_hour = int(sim_hour)
+        sim_min = int(sim_min)
+        time_of_day = round(
+            ((sim_hour + (sim_min / 60)) - 4) * (55 / 7) - 2
+        )  # This is some sketchy hardcoded logic ...
+
     x_coordinates = []
     y_coordinates = []
     # agent_polys = np.random.uniform(
     #     0, len(Gridlington["Polygons"]["ID"]) - 1, 1000
     # ).tolist()
 
-    agent_polys = Agent_Locations[time_of_day]
+    agent_polys = Location_Data["Agent_Locations"][time_of_day]
 
     for poly in agent_polys:
-        poly_c = Gridlington["Polygons"]["SVG_Centre"][round(poly)]
-        x_coordinates.append(poly_c[0] * (svg_map.width - 400))
-        y_coordinates.append(poly_c[1] * (svg_map.width - 400))
+        if poly != -1:
+            poly_c = Gridlington["Polygons"]["SVG_Centre"][poly]
+            x_coordinates.append(poly_c[0] * (svg_map.width - 400))
+            y_coordinates.append(poly_c[1] * (svg_map.width - 400))
 
     return x_coordinates, y_coordinates
 
@@ -254,17 +264,30 @@ def get_ev_map_coordinates(df: pd.DataFrame) -> tuple[list[float], list[float]]:
     Returns:
         tuple[list[float], list[float]]: lists of x and y coordinates
     """
+    if len(df.columns) == 1:  # No data so default to 3 o clock
+        time_of_day = 1
+    else:  # strip the last datapoint for time into date and time, and then hours, mins
+        sim_date_time = df["Time"].values[-1]
+        [sim_date, sim_time] = sim_date_time.split(" ", 1)
+        [sim_hour, sim_min, sim_sec] = sim_time.split(":", 2)
+        sim_hour = int(sim_hour)
+        sim_min = int(sim_min)
+        time_of_day = round(
+            ((sim_hour + (sim_min / 60)) - 4) * (55 / 7) - 2
+        )  # This is some sketchy hardcoded logic ...
+
     x_coordinates = []
     y_coordinates = []
     # ev_polys = np.random.uniform(
     #     0, len(Gridlington["Polygons"]["ID"]) - 1, 1000
     # ).tolist()
-    ev_polys = [1]
+    ev_polys = Location_Data["EV_Locations"][time_of_day]
 
     for poly in ev_polys:
-        poly_c = Gridlington["Polygons"]["SVG_Centre"][round(poly)]
-        x_coordinates.append(poly_c[0] * (svg_map.width - 400))
-        y_coordinates.append(poly_c[1] * (svg_map.width - 400))
+        if poly != -1:
+            poly_c = Gridlington["Polygons"]["SVG_Centre"][poly]
+            x_coordinates.append(poly_c[0] * (svg_map.width - 400))
+            y_coordinates.append(poly_c[1] * (svg_map.width - 400))
 
     return x_coordinates, y_coordinates
 
@@ -314,22 +337,39 @@ def generate_map_location_svg(
         SVG: SVG of EV/agent locations for placement over map
     """
     svg = svg_map.header
+    used_locations: list[list[float]] = []
+    # print(len(x_coordinates))
+
     for x, y in zip(x_coordinates, y_coordinates):
-        svg += (
-            f'<circle fill="{colour}" '
-            f'stroke="#FFFFFF" '
-            f'stroke-width="0" '
-            f'cx="{x}" '
-            f'cy="{y}" '
-            f'r="{dot_size}"/>\n'
-        )
+
+        if [x, y] in used_locations:
+            appearances = used_locations.count([x, y])
+            # print(appearances)
+            svg += (
+                f'<circle fill="{colour}" '
+                f'stroke="#FFFFFF" '
+                f'stroke-width="0" '
+                f'cx="{x}" '
+                f'cy="{y}" '
+                f'r="{dot_size * math.sqrt(appearances)}"/>\n'
+            )
+        else:
+            svg += (
+                f'<circle fill="{colour}" '
+                f'stroke="#FFFFFF" '
+                f'stroke-width="0" '
+                f'cx="{x}" '
+                f'cy="{y}" '
+                f'r="{dot_size}"/>\n'
+            )
+        used_locations.append([x, y])
     svg += "</svg>"
     return SVG(svg)
 
 
 def generate_map_clock_svg(
     opal_data: pd.DataFrame,
-    clock_cx: float = 2359,
+    clock_cx: float = 2319 + 49,
     clock_cy: float = 400,
     clock_r: float = 150,
     sim_hour: float = 1,
